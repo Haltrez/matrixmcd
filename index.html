@@ -45,11 +45,13 @@
   a { color: inherit; text-decoration: none; }
   section { scroll-margin-top: 100px; }
 
-  /* view switcher */
+  /* view switcher.
+     .view hides by default; the show rules give each view its correct display type
+     (id selectors beat .view on specificity, so the display MUST live in the show rule). */
   .view { display: none; }
-  body.view-landing #landing,
-  body.view-site    #site,
-  body.view-game    #game { display: block; }
+  body.view-landing #landing { display: flex; }
+  body.view-site    #site    { display: block; }
+  body.view-game    #game    { display: flex; }
 
   /* =====================================================
      LANDING / OPENING MENU
@@ -59,11 +61,67 @@
     inset: 0;
     background:
       radial-gradient(ellipse at 50% 30%, #FFE082 0%, var(--yellow) 55%, var(--yellow-dark) 100%);
-    display: flex;
     align-items: center;
     justify-content: center;
     padding: 24px;
+    padding-top: 62px;
     z-index: 100;
+    overflow: hidden;
+  }
+  /* Scrolling stock ticker across the top */
+  .ticker {
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 38px;
+    background: #0b120a;
+    border-bottom: 3px solid #00ff41;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    z-index: 3;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.35);
+  }
+  .ticker-track {
+    display: flex;
+    gap: 34px;
+    white-space: nowrap;
+    padding-left: 100%;
+    animation: ticker-scroll 42s linear infinite;
+    font-family: ui-monospace, Menlo, Consolas, monospace;
+    font-weight: 700;
+    font-size: 14px;
+    letter-spacing: 1px;
+  }
+  .ticker-track span { color: #7dff8a; }
+  .ticker-track span.up   { color: #00ff41; }
+  .ticker-track span.down { color: #ff5252; }
+  .ticker-track span.hot  { color: #FFC72C; text-shadow: 0 0 8px rgba(255,199,44,0.7); }
+  @keyframes ticker-scroll {
+    from { transform: translateX(0); }
+    to   { transform: translateX(-100%); }
+  }
+  /* Corner meme labels */
+  .meme-corner {
+    position: absolute;
+    z-index: 3;
+    background: #000;
+    color: #00ff41;
+    border: 2px solid #00ff41;
+    border-radius: 6px;
+    padding: 8px 12px;
+    font-family: ui-monospace, Menlo, Consolas, monospace;
+    font-weight: 700;
+    font-size: 12px;
+    letter-spacing: 1.5px;
+    line-height: 1.2;
+    text-align: center;
+    box-shadow: 0 0 20px rgba(0,255,65,0.25);
+  }
+  .meme-corner span { display: inline-block; }
+  .meme-corner.top-left    { top: 54px;  left: 14px; }
+  .meme-corner.bottom-right{ bottom: 70px; right: 14px; color: #FFC72C; border-color: #FFC72C; box-shadow: 0 0 20px rgba(255,199,44,0.35); }
+  @media (max-width: 640px) {
+    .meme-corner { display: none; }
   }
   .menu-wrap {
     max-width: 980px;
@@ -501,11 +559,11 @@
     inset: 0;
     background:
       radial-gradient(ellipse at 50% 30%, #FFE082 0%, var(--yellow) 55%, var(--yellow-dark) 100%);
-    display: flex;
     flex-direction: column;
     z-index: 10;
     overflow: hidden;
   }
+  body.view-game #game { display: flex; }
   .game-top {
     display: flex;
     align-items: center;
@@ -994,9 +1052,14 @@
      LANDING (opening menu)
 ========================================================= -->
 <section id="landing" class="view">
+  <div class="ticker" aria-hidden="true">
+    <div class="ticker-track" id="ticker-track"></div>
+  </div>
+  <div class="meme-corner top-left"><span>SAME BURGERS</span><br><span>DIFFERENT REALITY</span></div>
+  <div class="meme-corner bottom-right"><span>COOK ▸ HODL ▸ REPEAT</span></div>
   <div class="menu-wrap">
     <div class="menu-brand">
-      <svg class="arch"><use href="#mcd-arches"/></svg>
+      <svg class="arch" viewBox="0 0 240 180" aria-hidden="true"><use href="#mcd-arches"/></svg>
       <div class="lovin">i'm lovin' it&nbsp;™</div>
       <h1>Tokenised <span class="accent">McDonald's</span></h1>
       <p class="lede">Hold $TMCD. Earn real McDonald's stock. That is the whole idea.</p>
@@ -1031,7 +1094,7 @@
   <header class="topnav">
     <div class="topnav-inner">
       <a class="brand" href="#" data-goto="landing" aria-label="Home">
-        <svg><use href="#mcd-arches"/></svg>
+        <svg viewBox="0 0 240 180" aria-hidden="true"><use href="#mcd-arches"/></svg>
         <span>Tokenised McDonald's</span>
       </a>
       <nav>
@@ -1067,7 +1130,7 @@
           <span style="top:38%; right:6%; animation-delay:.8s;">★</span>
           <span style="bottom:26%; right:22%; animation-delay:1.4s;">✦</span>
         </div>
-        <div class="box-wrap"><svg><use href="#hm-box"/></svg></div>
+        <div class="box-wrap"><svg viewBox="0 0 200 200" aria-hidden="true"><use href="#hm-box"/></svg></div>
       </div>
     </section>
 
@@ -1139,7 +1202,7 @@
   <div class="game-top">
     <button class="exit" type="button" data-goto="landing">← Menu</button>
     <div class="game-brand">
-      <svg class="game-arch"><use href="#mcd-arches"/></svg>
+      <svg class="game-arch" viewBox="0 0 240 180" aria-hidden="true"><use href="#mcd-arches"/></svg>
       <div class="game-titles">
         <h1>Happy Meal Builder</h1>
         <div class="lovin-small">i'm lovin' it™ · drive-thru edition</div>
@@ -1161,7 +1224,7 @@
 
     <div class="box-panel" id="g-box-panel">
       <div class="box-hint" id="g-hint">Hit START to begin. Click items to fill the box.</div>
-      <svg class="hm-svg" aria-hidden="true"><use href="#hm-box"/></svg>
+      <svg class="hm-svg" viewBox="0 0 200 200" aria-hidden="true"><use href="#hm-box"/></svg>
       <div class="box-items" id="g-box"></div>
     </div>
 
@@ -1200,6 +1263,41 @@ document.getElementById('ca-value').textContent = CONTRACT_ADDRESS;
 document.getElementById('x-link').href = X_URL;
 document.getElementById('x-link-menu').href = X_URL;
 
+/* Landing stock ticker */
+(function initTicker() {
+  const track = document.getElementById('ticker-track');
+  if (!track) return;
+  const rows = [
+    ['$TMCD', '+420.0%', 'hot'],
+    ['MCD',   '+3.7%',   'up'],
+    ['SPX',   '+12.4%',  'up'],
+    ['NVDA',  '+18.9%',  'up'],
+    ['BTC',   '+5.4%',   'up'],
+    ['ETH',   '+7.3%',   'up'],
+    ['SOL',   '+12.6%',  'up'],
+    ['DOGE',  '+19.8%',  'up'],
+    ['TSLA',  '+6.2%',   'up'],
+    ['AAPL',  '+4.1%',   'up'],
+    ['GME',   '+25.6%',  'up'],
+    ['AMC',   '+11.3%',  'up'],
+    ['COIN',  '+9.4%',   'up'],
+    ['META',  '+5.8%',   'up'],
+    ['AMZN',  '+6.1%',   'up'],
+    ['MSFT',  '+4.9%',   'up'],
+    ['QQQ',   '+3.2%',   'up'],
+    ['FIAT',  '-99.9%',  'down'],
+    ['HAPPY MEAL INDEX', '+69.0%', 'hot'],
+    ['BIG MAC', '+4.20%', 'up'],
+    ['NUGGETS', '+8.4%',  'up'],
+  ];
+  const html = rows.map(([sym, chg, cls]) => {
+    const arrow = cls === 'down' ? '▼' : '▲';
+    return `<span class="${cls}">${sym} ${arrow} ${chg}</span>`;
+  }).join('');
+  // duplicate so the scroll loop is seamless
+  track.innerHTML = html + html;
+})();
+
 /* =========================================================
    VIEW ROUTER
    Only 3 view names are intercepted. Section anchors like
@@ -1213,8 +1311,10 @@ function goto(view, opts = {}) {
   if (!isView(view)) view = 'landing';
   document.body.classList.remove('view-landing', 'view-site', 'view-game');
   document.body.classList.add('view-' + view);
-  if (view === 'landing') history.replaceState(null, '', ' ');
-  else                    history.replaceState(null, '', '#' + view);
+  try {
+    if (view === 'landing') history.replaceState(null, '', location.pathname + location.search);
+    else                    history.replaceState(null, '', '#' + view);
+  } catch (e) { /* replaceState can throw in some file:// contexts; ignore */ }
   if (view === 'game') Game.start(); else Game.stop();
   window.scrollTo(0, 0);
   if (opts.scrollTo) {
