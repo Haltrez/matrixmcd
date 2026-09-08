@@ -9,7 +9,9 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bagel+Fat+One&family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%23DA291C'/%3E%3Cpath fill='%23FFC72C' d='M6 27V12c0-3 2-5 4.5-5s3.5 2 4 4c.5-2 1.5-4 4-4s4.5 2 4.5 5v15h-4v-11c0-1.5-.8-2.3-1.7-2.3s-1.8 1-1.8 2.5V27h-3.5V13.7c0-1.5-.9-2.5-1.8-2.5s-1.7.8-1.7 2.3V27z'/%3E%3C/svg%3E">
+<link rel="icon" href="assets/logo.jpg">
+<link rel="apple-touch-icon" href="assets/logo.jpg">
+<meta property="og:image" content="assets/logo.jpg">
 <style>
   :root {
     --yellow: #FFBC0D;        /* McDonald's Yellow (Pantone 123) */
@@ -164,13 +166,18 @@
     gap: 8px;
     margin-bottom: 34px;
   }
-  .menu-brand .arch {
+  .menu-brand .coin-logo {
     width: 160px;
-    height: 120px;
+    height: 160px;
     display: block;
     filter:
-      drop-shadow(0 0 24px rgba(255,199,44,0.85))
-      drop-shadow(0 0 48px rgba(255,199,44,0.45));
+      drop-shadow(0 0 24px rgba(255,199,44,0.75))
+      drop-shadow(0 0 48px rgba(218,41,28,0.35));
+    animation: coinFloat 4.2s ease-in-out infinite;
+  }
+  @keyframes coinFloat {
+    0%, 100% { transform: translateY(0) rotate(-1deg); }
+    50%      { transform: translateY(-10px) rotate(1deg); }
   }
   .menu-brand .lovin {
     display: inline-block;
@@ -334,12 +341,14 @@
     color: var(--yellow);
     text-shadow: 0 0 12px rgba(255,199,44,0.4);
   }
-  .brand svg {
-    width: 34px;
-    height: 34px;
+  .brand svg,
+  .brand .brand-coin {
+    width: 38px;
+    height: 38px;
     display: block;
     filter: drop-shadow(0 0 8px rgba(255,199,44,0.5));
   }
+  .brand .brand-coin { border-radius: 6px; }
   .topnav nav {
     display: flex;
     gap: 4px;
@@ -440,6 +449,23 @@
     display: flex;
     align-items: center;
     justify-content: center;
+  }
+  .hero-coin {
+    width: 380px;
+    max-width: 92%;
+    height: auto;
+    display: block;
+    margin: 0 auto;
+    border-radius: 24px;
+    filter:
+      drop-shadow(0 0 60px rgba(255,199,44,0.55))
+      drop-shadow(0 0 120px rgba(218,41,28,0.35))
+      drop-shadow(0 24px 40px rgba(0,0,0,0.6));
+    animation: coinSpin 8s ease-in-out infinite;
+  }
+  @keyframes coinSpin {
+    0%, 100% { transform: translateY(0)   rotate(-4deg) scale(1); }
+    50%      { transform: translateY(-14px) rotate(4deg) scale(1.02); }
   }
   .hero-art .box-wrap {
     width: 340px;
@@ -673,11 +699,13 @@
     align-items: center;
     gap: 12px;
   }
-  .game-arch {
+  .game-arch,
+  .game-coin {
     width: 42px;
-    height: 32px;
+    height: 42px;
     display: block;
-    filter: drop-shadow(0 3px 4px rgba(200,140,0,0.4));
+    border-radius: 8px;
+    filter: drop-shadow(0 0 8px rgba(255,199,44,0.5));
   }
   .lovin-small {
     font-family: 'Fredoka', sans-serif;
@@ -1176,7 +1204,7 @@
   <div class="meme-corner bottom-right"><span>COOK ▸ HODL ▸ REPEAT</span></div>
   <div class="menu-wrap">
     <div class="menu-brand">
-      <svg class="arch" viewBox="0 0 240 180" aria-hidden="true"><use href="#mcd-arches"/></svg>
+      <img class="coin-logo" src="assets/logo.jpg" alt="Tokenised McDonald's coin">
       <div class="lovin">i'm lovin' it&nbsp;™</div>
       <h1>Tokenised <span class="accent">McDonald's</span></h1>
       <p class="lede">Hold $TMCD. Earn real McDonald's stock. That is the whole idea.</p>
@@ -1212,7 +1240,7 @@
   <header class="topnav">
     <div class="topnav-inner">
       <a class="brand" href="#" data-goto="landing" aria-label="Home">
-        <svg viewBox="0 0 240 180" aria-hidden="true"><use href="#mcd-arches"/></svg>
+        <img class="brand-coin" src="assets/logo.jpg" alt="">
         <span>Tokenised McDonald's</span>
       </a>
       <nav>
@@ -1248,7 +1276,7 @@
           <span style="top:38%; right:6%; animation-delay:.8s;">★</span>
           <span style="bottom:26%; right:22%; animation-delay:1.4s;">✦</span>
         </div>
-        <div class="box-wrap"><svg viewBox="0 0 200 200" aria-hidden="true"><use href="#hm-box"/></svg></div>
+        <img class="hero-coin" src="assets/logo.jpg" alt="$TMCD coin">
       </div>
     </section>
 
@@ -1321,7 +1349,8 @@
   <div class="game-top">
     <button class="exit" type="button" data-goto="landing">← Menu</button>
     <div class="game-brand">
-      <svg class="game-arch" viewBox="0 0 240 180" aria-hidden="true"><use href="#mcd-arches"/></svg>
+      <img class="game-coin" src="assets/logo.jpg" alt="">
+
       <div class="game-titles">
         <h1>Happy Meal Builder</h1>
         <div class="lovin-small">i'm lovin' it™ · drive-thru edition</div>
