@@ -1,0 +1,864 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TOKENISED MATRIX ($MATRIX) — Hodl to Earn McDonald's</title>
+<meta name="description" content="Stuck in a tokenised matrix. Hold $MATRIX, earn McDonald's ($MCD) stock. The system is fries. The fries are the system.">
+<meta property="og:title" content="TOKENISED MATRIX — $MATRIX">
+<meta property="og:description" content="Stuck in a tokenised matrix. Hodl to earn McDonald's.">
+<meta name="theme-color" content="#000000">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=VT323&family=Bebas+Neue&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23000'/%3E%3Ctext x='50%25' y='50%25' font-family='monospace' font-size='22' fill='%2300ff41' text-anchor='middle' dominant-baseline='central' font-weight='bold'%3EM%3C/text%3E%3C/svg%3E">
+<style>
+  :root {
+    --matrix: #00ff41;
+    --matrix-dim: #00b830;
+    --mcd-red: #DA291C;
+    --mcd-yellow: #FFC72C;
+    --bg: #000;
+    --panel: rgba(0, 15, 5, 0.72);
+    --panel-border: rgba(0, 255, 65, 0.35);
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: var(--bg);
+    color: var(--matrix);
+    font-family: 'Space Mono', ui-monospace, Menlo, Consolas, monospace;
+    min-height: 100vh;
+    overflow-x: hidden;
+    scroll-behavior: smooth;
+  }
+  a { color: var(--mcd-yellow); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  /* --- Backdrop layers --- */
+  #matrix-rain {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    display: block;
+    background: #000;
+  }
+  .wojak-scenes {
+    position: fixed;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    overflow: hidden;
+  }
+  .wojak-scene {
+    position: absolute;
+    width: 260px;
+    height: 200px;
+    opacity: 0.55;
+    filter: drop-shadow(0 0 8px rgba(0, 255, 65, 0.15));
+    animation: bob 3.4s ease-in-out infinite;
+  }
+  .wojak-scene svg { width: 100%; height: 100%; display: block; }
+  .wojak-scene.s1 { top: 4%;   left: 1%;   transform: rotate(-4deg); }
+  .wojak-scene.s2 { top: 8%;   right: 2%;  transform: rotate(3deg) scaleX(-1); animation-delay: -0.6s; }
+  .wojak-scene.s3 { top: 42%;  left: -20px; transform: rotate(-2deg); animation-delay: -1.2s; opacity: 0.42; }
+  .wojak-scene.s4 { top: 46%;  right: -10px; transform: rotate(4deg) scaleX(-1); animation-delay: -1.9s; opacity: 0.42; }
+  .wojak-scene.s5 { bottom: 3%; left: 3%;   transform: rotate(2deg); animation-delay: -2.4s; }
+  .wojak-scene.s6 { bottom: 5%; right: 5%;  transform: rotate(-3deg) scaleX(-1); animation-delay: -1.5s; }
+
+  @keyframes bob {
+    0%, 100% { translate: 0 0; }
+    50%      { translate: 0 -6px; }
+  }
+  /* fry animations, driven by SVG classes */
+  .fry {
+    transform-origin: center;
+    animation: fryFall 1.6s cubic-bezier(.4,0,.7,1) infinite;
+  }
+  .fry.d1 { animation-delay: -0.1s; }
+  .fry.d2 { animation-delay: -0.5s; }
+  .fry.d3 { animation-delay: -0.9s; }
+  .fry.d4 { animation-delay: -1.3s; }
+  @keyframes fryFall {
+    0%   { transform: translate(0,   -8px) rotate(-10deg); opacity: 0; }
+    10%  { opacity: 1; }
+    70%  { transform: translate(2px, 22px) rotate(35deg); opacity: 1; }
+    100% { transform: translate(4px, 34px) rotate(60deg); opacity: 0; }
+  }
+  /* Flush swirl */
+  .swirl {
+    transform-origin: 145px 132px;
+    animation: swirl 1.6s linear infinite;
+  }
+  @keyframes swirl {
+    0%   { transform: rotate(0deg) scale(1, 1); }
+    50%  { transform: rotate(180deg) scale(0.8, 1); }
+    100% { transform: rotate(360deg) scale(1, 1); }
+  }
+  /* Poop bubble */
+  .plop {
+    animation: plop 2.2s ease-in-out infinite;
+    transform-origin: center;
+  }
+  @keyframes plop {
+    0%, 100% { transform: translateY(0); opacity: 0.8; }
+    50%      { transform: translateY(-2px); opacity: 1; }
+  }
+
+  /* --- Top bar --- */
+  .top-bar {
+    position: relative;
+    z-index: 4;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 28px;
+    border-bottom: 1px solid var(--panel-border);
+    background: linear-gradient(180deg, rgba(0,0,0,0.85), rgba(0,0,0,0.35));
+    backdrop-filter: blur(4px);
+  }
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-family: 'Bebas Neue', sans-serif;
+    letter-spacing: 2px;
+    font-size: 28px;
+  }
+  .logo .m-arch {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    background: var(--mcd-yellow);
+    color: var(--mcd-red);
+    border-radius: 6px;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 34px;
+    font-weight: 900;
+    box-shadow: 0 0 12px rgba(255, 199, 44, 0.65), inset 0 0 0 2px #000;
+    text-shadow: 0 1px 0 rgba(0,0,0,0.15);
+    line-height: 1;
+    padding-top: 2px;
+  }
+  .logo .logo-text {
+    background: linear-gradient(180deg, var(--matrix), var(--matrix-dim));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    text-shadow: 0 0 12px rgba(0, 255, 65, 0.4);
+  }
+  .x-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 42px;
+    height: 42px;
+    border: 1px solid var(--panel-border);
+    border-radius: 8px;
+    background: rgba(0, 0, 0, 0.55);
+    transition: transform .15s ease, box-shadow .15s ease, background .15s ease;
+  }
+  .x-icon svg {
+    width: 20px;
+    height: 20px;
+    fill: #fff;
+  }
+  .x-icon:hover {
+    transform: translateY(-1px);
+    background: #fff;
+    box-shadow: 0 0 14px rgba(255, 255, 255, 0.5);
+  }
+  .x-icon:hover svg { fill: #000; }
+
+  /* --- Main content --- */
+  main {
+    position: relative;
+    z-index: 3;
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: 44px 24px 120px;
+  }
+
+  .hero { text-align: center; padding: 24px 0 8px; }
+  .mega-title {
+    font-family: 'Bebas Neue', sans-serif;
+    line-height: 0.9;
+    letter-spacing: 4px;
+    margin: 0;
+  }
+  .mega-title .tokenised {
+    display: block;
+    font-size: clamp(28px, 5.5vw, 62px);
+    color: var(--mcd-yellow);
+    text-shadow: 0 0 18px rgba(255, 199, 44, 0.4);
+  }
+  .mega-title .matrix {
+    display: block;
+    font-family: 'VT323', ui-monospace, monospace;
+    font-size: clamp(72px, 15vw, 190px);
+    letter-spacing: 6px;
+    color: var(--matrix);
+    text-shadow:
+      0 0 8px rgba(0, 255, 65, 0.9),
+      0 0 24px rgba(0, 255, 65, 0.6),
+      0 0 46px rgba(0, 255, 65, 0.3);
+    animation: flicker 5s infinite steps(1,end);
+  }
+  @keyframes flicker {
+    0%, 92%, 100% { opacity: 1; }
+    93% { opacity: 0.7; }
+    94% { opacity: 1; }
+    96% { opacity: 0.4; }
+    97% { opacity: 1; }
+  }
+  .tagline {
+    margin: 18px auto 26px;
+    font-size: clamp(14px, 2vw, 20px);
+    letter-spacing: 2px;
+    color: #cfffd6;
+    max-width: 760px;
+  }
+  .tagline .hi {
+    color: var(--mcd-yellow);
+    background: linear-gradient(90deg, transparent, rgba(255,199,44,0.12), transparent);
+    padding: 0 6px;
+  }
+
+  .ticker-row {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 18px;
+    margin: 8px 0 34px;
+    flex-wrap: wrap;
+  }
+  .ticker-card {
+    min-width: 200px;
+    padding: 14px 22px;
+    background: var(--panel);
+    border: 1px solid var(--panel-border);
+    border-radius: 10px;
+    text-align: left;
+    box-shadow: 0 0 22px rgba(0, 255, 65, 0.15) inset;
+  }
+  .ticker-card .label {
+    font-size: 11px;
+    letter-spacing: 3px;
+    color: var(--matrix-dim);
+    margin-bottom: 4px;
+  }
+  .ticker-card .value {
+    font-family: 'VT323', ui-monospace, monospace;
+    font-size: 40px;
+    color: var(--matrix);
+    letter-spacing: 2px;
+    line-height: 1;
+  }
+  .ticker-card.mcd .value { color: var(--mcd-yellow); }
+  .ticker-card.mcd { border-color: rgba(255, 199, 44, 0.45); }
+  .ticker-row .pair {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 42px;
+    color: var(--mcd-red);
+    text-shadow: 0 0 12px rgba(218, 41, 28, 0.7);
+    padding: 0 4px;
+  }
+
+  /* --- CA section --- */
+  .ca-section {
+    margin: 10px auto 40px;
+    display: flex;
+    justify-content: center;
+  }
+  .ca-box {
+    width: 100%;
+    max-width: 760px;
+    background: linear-gradient(135deg, rgba(0, 25, 8, 0.85), rgba(15, 0, 0, 0.85));
+    border: 2px solid var(--matrix);
+    border-radius: 14px;
+    padding: 22px 24px;
+    box-shadow:
+      0 0 24px rgba(0, 255, 65, 0.25),
+      inset 0 0 20px rgba(0, 255, 65, 0.08);
+    position: relative;
+    overflow: hidden;
+  }
+  .ca-box::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+      repeating-linear-gradient(0deg, transparent 0 3px, rgba(0,255,65,0.05) 3px 4px);
+    pointer-events: none;
+  }
+  .ca-label {
+    font-size: 11px;
+    letter-spacing: 4px;
+    color: var(--matrix-dim);
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .ca-label::before {
+    content: "";
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    background: var(--mcd-red);
+    border-radius: 50%;
+    box-shadow: 0 0 8px var(--mcd-red);
+    animation: blink 1s steps(1,end) infinite;
+  }
+  @keyframes blink {
+    0%, 55% { opacity: 1; }
+    56%, 100% { opacity: 0.2; }
+  }
+  .ca-row {
+    display: flex;
+    gap: 12px;
+    align-items: stretch;
+    flex-wrap: wrap;
+  }
+  #ca-value {
+    flex: 1 1 320px;
+    font-family: 'VT323', ui-monospace, monospace;
+    font-size: clamp(20px, 3vw, 28px);
+    color: var(--matrix);
+    background: rgba(0, 0, 0, 0.55);
+    padding: 12px 14px;
+    border-radius: 8px;
+    border: 1px dashed rgba(0, 255, 65, 0.4);
+    word-break: break-all;
+    letter-spacing: 1px;
+    text-shadow: 0 0 8px rgba(0, 255, 65, 0.4);
+  }
+  #copy-btn {
+    font-family: 'Bebas Neue', sans-serif;
+    letter-spacing: 3px;
+    font-size: 18px;
+    padding: 10px 20px;
+    background: var(--mcd-yellow);
+    color: #000;
+    border: 2px solid #000;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: transform .1s ease, box-shadow .15s ease, background .15s ease;
+    box-shadow: 0 0 14px rgba(255, 199, 44, 0.55);
+    align-self: center;
+  }
+  #copy-btn:hover { transform: translateY(-1px); background: #fff; }
+  #copy-btn:active { transform: translateY(1px); }
+  #copy-btn.ok { background: var(--matrix); color: #000; box-shadow: 0 0 14px rgba(0, 255, 65, 0.6); }
+
+  /* --- Lore cards --- */
+  .lore {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 18px;
+    margin: 20px 0 44px;
+  }
+  .lore-card {
+    background: var(--panel);
+    border: 1px solid var(--panel-border);
+    border-radius: 12px;
+    padding: 20px 22px;
+    position: relative;
+    overflow: hidden;
+  }
+  .lore-card::after {
+    content: "";
+    position: absolute;
+    top: -40%;
+    right: -30%;
+    width: 220px;
+    height: 220px;
+    background: radial-gradient(circle, rgba(255,199,44,0.08), transparent 60%);
+    pointer-events: none;
+  }
+  .lore-card h3 {
+    font-family: 'Bebas Neue', sans-serif;
+    letter-spacing: 3px;
+    color: var(--mcd-yellow);
+    margin: 0 0 10px;
+    font-size: 22px;
+  }
+  .lore-card p, .lore-card li {
+    color: #d6ffde;
+    line-height: 1.55;
+    font-size: 15px;
+  }
+  .lore-card b { color: var(--mcd-yellow); }
+  .lore-card ul {
+    margin: 6px 0 0;
+    padding-left: 20px;
+  }
+
+  /* --- How to enter --- */
+  .how {
+    background: var(--panel);
+    border: 1px solid var(--panel-border);
+    border-radius: 12px;
+    padding: 22px 26px;
+    margin: 0 auto 44px;
+    max-width: 760px;
+  }
+  .how h3 {
+    font-family: 'Bebas Neue', sans-serif;
+    letter-spacing: 3px;
+    color: var(--matrix);
+    margin: 0 0 12px;
+    font-size: 24px;
+  }
+  .how ol {
+    margin: 0;
+    padding-left: 24px;
+    color: #d6ffde;
+    line-height: 1.7;
+  }
+  .how ol li::marker {
+    color: var(--mcd-yellow);
+    font-weight: bold;
+  }
+
+  footer {
+    text-align: center;
+    color: rgba(0, 255, 65, 0.55);
+    font-size: 12px;
+    letter-spacing: 1px;
+    line-height: 1.7;
+    padding-top: 20px;
+    border-top: 1px dashed rgba(0, 255, 65, 0.25);
+  }
+  footer .disclaimer { color: rgba(255, 255, 255, 0.35); }
+
+  /* --- Sound toggle --- */
+  #sound-toggle {
+    position: fixed;
+    right: 18px;
+    bottom: 18px;
+    z-index: 50;
+    font-family: 'Bebas Neue', sans-serif;
+    letter-spacing: 2px;
+    font-size: 14px;
+    padding: 10px 14px;
+    border-radius: 999px;
+    border: 2px solid #000;
+    background: var(--mcd-red);
+    color: #fff;
+    cursor: pointer;
+    box-shadow: 0 4px 18px rgba(218, 41, 28, 0.55);
+    transition: transform .1s ease, box-shadow .15s ease;
+  }
+  #sound-toggle:hover { transform: translateY(-1px); }
+  #sound-toggle.sound-on {
+    background: var(--matrix);
+    color: #000;
+    box-shadow: 0 4px 18px rgba(0, 255, 65, 0.55);
+  }
+
+  /* --- Splash gate (required for audio autoplay) --- */
+  #splash {
+    position: fixed;
+    inset: 0;
+    z-index: 200;
+    background: radial-gradient(ellipse at center, rgba(0, 40, 15, 0.98), #000 70%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    transition: opacity .7s ease;
+  }
+  #splash.hide { opacity: 0; pointer-events: none; }
+  .splash-inner {
+    text-align: center;
+    max-width: 520px;
+    padding: 32px 28px;
+    border: 1px solid var(--panel-border);
+    border-radius: 14px;
+    background: rgba(0, 0, 0, 0.7);
+    box-shadow: 0 0 40px rgba(0, 255, 65, 0.25);
+  }
+  .splash-inner h2 {
+    font-family: 'VT323', ui-monospace, monospace;
+    font-size: 44px;
+    letter-spacing: 4px;
+    color: var(--matrix);
+    margin: 0 0 12px;
+    text-shadow: 0 0 12px rgba(0, 255, 65, 0.6);
+  }
+  .splash-inner p {
+    color: #cfffd6;
+    margin: 0 0 22px;
+    font-size: 14px;
+    letter-spacing: 1px;
+    line-height: 1.6;
+  }
+  #enter-btn {
+    font-family: 'Bebas Neue', sans-serif;
+    letter-spacing: 4px;
+    font-size: 22px;
+    padding: 14px 30px;
+    background: var(--mcd-yellow);
+    color: #000;
+    border: 2px solid #000;
+    border-radius: 10px;
+    cursor: pointer;
+    box-shadow: 0 0 24px rgba(255, 199, 44, 0.6);
+    transition: transform .1s ease, box-shadow .15s ease, background .15s ease;
+  }
+  #enter-btn:hover { transform: translateY(-1px); background: #fff; }
+  .splash-inner small {
+    display: block;
+    margin-top: 14px;
+    color: rgba(255,255,255,0.5);
+    font-size: 11px;
+    letter-spacing: 2px;
+  }
+
+  @media (max-width: 620px) {
+    .top-bar { padding: 12px 16px; }
+    .logo { font-size: 22px; }
+    .logo .m-arch { width: 34px; height: 34px; font-size: 28px; }
+    .wojak-scene { width: 200px; height: 150px; opacity: 0.42; }
+    main { padding: 30px 14px 100px; }
+    .ca-box { padding: 18px 16px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ===== SPLASH GATE (needed so browsers allow the beeping audio) ===== -->
+<div id="splash" role="dialog" aria-label="Enter the Matrix">
+  <div class="splash-inner">
+    <h2>THE TOKENISED MATRIX</h2>
+    <p>You are inside. The fries are falling. Click below to unmute the system.</p>
+    <button id="enter-btn" type="button">ENTER THE MATRIX</button>
+    <small>SOUND ON — YOU HAVE BEEN WARNED</small>
+  </div>
+</div>
+
+<!-- ===== BACKDROP: matrix rain ===== -->
+<canvas id="matrix-rain" aria-hidden="true"></canvas>
+
+<!-- ===== BACKDROP: wojaks flushing fries ===== -->
+<div class="wojak-scenes" aria-hidden="true">
+  <!-- Six scattered scenes; SVG defined once, cloned via <use> -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <defs>
+      <symbol id="wojak-scene" viewBox="0 0 200 150">
+        <!-- Floor tiles -->
+        <rect x="0" y="140" width="200" height="10" fill="rgba(0,255,65,0.08)"/>
+        <line x1="0" y1="140" x2="200" y2="140" stroke="rgba(0,255,65,0.35)" stroke-width="0.5"/>
+
+        <!-- Wojak body -->
+        <path d="M40 138 Q40 108 60 108 L82 108 Q102 108 102 138 Z" fill="#efefef" stroke="#000" stroke-width="1.8"/>
+        <!-- Wojak head -->
+        <circle cx="71" cy="92" r="20" fill="#f4c9a0" stroke="#000" stroke-width="1.8"/>
+        <!-- Eyes (defeated) -->
+        <ellipse cx="63" cy="90" rx="1.6" ry="2.6" fill="#000"/>
+        <ellipse cx="79" cy="90" rx="1.6" ry="2.6" fill="#000"/>
+        <!-- Brows (worried) -->
+        <path d="M58 84 L67 86" stroke="#000" stroke-width="1.4" stroke-linecap="round"/>
+        <path d="M75 86 L84 84" stroke="#000" stroke-width="1.4" stroke-linecap="round"/>
+        <!-- Mouth (frown) -->
+        <path d="M62 101 Q71 96 80 101" fill="none" stroke="#000" stroke-width="1.5" stroke-linecap="round"/>
+        <!-- Tears -->
+        <path d="M60 94 L59 104" stroke="#3bf" stroke-width="1.8" stroke-linecap="round"/>
+        <path d="M82 94 L83 104" stroke="#3bf" stroke-width="1.8" stroke-linecap="round"/>
+        <!-- Arm holding fries -->
+        <path d="M96 116 L112 106" stroke="#f4c9a0" stroke-width="5" stroke-linecap="round"/>
+
+        <!-- Fries cup (McDonald's) tilted over the bowl -->
+        <g transform="translate(107 96) rotate(35)">
+          <path d="M0 0 L22 0 L18 24 L4 24 Z" fill="#DA291C" stroke="#000" stroke-width="1.5"/>
+          <path d="M2 6 L20 6" stroke="#FFC72C" stroke-width="2"/>
+          <text x="8.5" y="17" fill="#FFC72C" font-family="Bebas Neue, sans-serif" font-size="10" font-weight="700">M</text>
+        </g>
+
+        <!-- Falling fries -->
+        <g>
+          <rect class="fry d1" x="128" y="118" width="2.4" height="12" fill="#FFC72C" stroke="#c99500" stroke-width="0.4"/>
+          <rect class="fry d2" x="132" y="118" width="2.4" height="10" fill="#FFC72C" stroke="#c99500" stroke-width="0.4"/>
+          <rect class="fry d3" x="126" y="118" width="2.4" height="13" fill="#FFC72C" stroke="#c99500" stroke-width="0.4"/>
+          <rect class="fry d4" x="134" y="118" width="2.4" height="11" fill="#FFC72C" stroke="#c99500" stroke-width="0.4"/>
+        </g>
+
+        <!-- Toilet tank -->
+        <rect x="162" y="88" width="22" height="32" fill="#eef2f5" stroke="#000" stroke-width="1.6" rx="2"/>
+        <rect x="157" y="97" width="8" height="3.5" fill="#888" stroke="#000" stroke-width="0.8"/>
+        <!-- Toilet bowl -->
+        <ellipse cx="150" cy="132" rx="30" ry="7" fill="#eef2f5" stroke="#000" stroke-width="1.6"/>
+        <path d="M120 132 Q120 146 150 146 Q180 146 180 132" fill="#eef2f5" stroke="#000" stroke-width="1.6"/>
+        <!-- Water + swirl -->
+        <ellipse cx="150" cy="132" rx="24" ry="4.5" fill="#8ecff5"/>
+        <ellipse class="swirl" cx="150" cy="132" rx="16" ry="3" fill="#4aa8e6" opacity="0.85"/>
+        <!-- "Poop" hint -->
+        <g class="plop" transform="translate(150 130)">
+          <ellipse cx="0" cy="0" rx="6" ry="3" fill="#6b3a13"/>
+          <ellipse cx="-1" cy="-2" rx="4" ry="2.2" fill="#7a4418"/>
+          <ellipse cx="0" cy="-4" rx="2.4" ry="1.4" fill="#8a4e1c"/>
+        </g>
+      </symbol>
+    </defs>
+  </svg>
+
+  <div class="wojak-scene s1"><svg><use href="#wojak-scene"/></svg></div>
+  <div class="wojak-scene s2"><svg><use href="#wojak-scene"/></svg></div>
+  <div class="wojak-scene s3"><svg><use href="#wojak-scene"/></svg></div>
+  <div class="wojak-scene s4"><svg><use href="#wojak-scene"/></svg></div>
+  <div class="wojak-scene s5"><svg><use href="#wojak-scene"/></svg></div>
+  <div class="wojak-scene s6"><svg><use href="#wojak-scene"/></svg></div>
+</div>
+
+<!-- ===== TOP BAR ===== -->
+<header class="top-bar">
+  <div class="logo">
+    <span class="m-arch" aria-hidden="true">M</span>
+    <span class="logo-text">TOKENISED&nbsp;MATRIX</span>
+  </div>
+  <a id="x-link" class="x-icon" href="#" target="_blank" rel="noopener noreferrer" title="Open on X" aria-label="Open on X">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+  </a>
+</header>
+
+<!-- ===== MAIN ===== -->
+<main>
+  <section class="hero">
+    <h1 class="mega-title">
+      <span class="tokenised">TOKENISED</span>
+      <span class="matrix">MATRIX</span>
+    </h1>
+    <p class="tagline">STUCK IN A TOKENISED MATRIX. <span class="hi">HODL TO EARN MCDONALD'S.</span></p>
+
+    <div class="ticker-row">
+      <div class="ticker-card">
+        <div class="label">TICKER</div>
+        <div class="value">$MATRIX</div>
+      </div>
+      <span class="pair" aria-hidden="true">×</span>
+      <div class="ticker-card mcd">
+        <div class="label">PAIRED WITH</div>
+        <div class="value">$MCD</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTRACT ADDRESS: edit the CONTRACT_ADDRESS constant at the bottom of this file. -->
+  <section class="ca-section">
+    <div class="ca-box">
+      <div class="ca-label">CONTRACT ADDRESS</div>
+      <div class="ca-row">
+        <code id="ca-value">COMING SOON — PASTE CA HERE</code>
+        <button id="copy-btn" type="button">COPY</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="lore">
+    <div class="lore-card">
+      <h3>THE LORE</h3>
+      <p>You wake up. Neo was right. The Matrix is real, and it runs on <b>McNuggets</b>.</p>
+      <p>Every green candle is a Big Mac. Every red candle is a broken ice-cream machine. Every wojak in the walls is flushing his fries so the system keeps ticking.</p>
+      <p>You cannot escape. But you can <b>HODL</b>.</p>
+    </div>
+    <div class="lore-card">
+      <h3>THE MECHANIC</h3>
+      <ul>
+        <li>Ticker: <b>$MATRIX</b></li>
+        <li>Paired with <b>$MCD</b> (McDonald's stock)</li>
+        <li>Every holder earns real <b>McDonald's stock rewards</b></li>
+        <li>The longer you hold, the deeper you go</li>
+      </ul>
+    </div>
+    <div class="lore-card">
+      <h3>THE PILLS</h3>
+      <p>The red pill is a <b>McRib</b>. The blue pill is a <b>Filet-O-Fish</b>. Both taste the same after enough candles.</p>
+      <p>Choose one. Or better — <b>choose the fries</b>.</p>
+    </div>
+  </section>
+
+  <section class="how" id="how">
+    <h3>HOW TO ENTER THE MATRIX</h3>
+    <ol>
+      <li>Get a wallet.</li>
+      <li>Copy the <b>CA</b> above.</li>
+      <li>Swap for <b>$MATRIX</b> on the DEX pair with <b>$MCD</b>.</li>
+      <li>Hold. The Matrix streams <b>McDonald's stock rewards</b> to every holder.</li>
+      <li>Beep. Beep. Beep. You are one of us now.</li>
+    </ol>
+  </section>
+
+  <footer>
+    <p>$MATRIX is a memecoin. This site is satire. Nothing here is financial advice.</p>
+    <p class="disclaimer">Not affiliated with, endorsed by, or associated with McDonald's Corporation or Warner Bros. Meme use only.</p>
+  </footer>
+</main>
+
+<button id="sound-toggle" type="button" aria-label="Toggle sound">🔇 SOUND OFF</button>
+
+<script>
+  // ============================================================
+  //  EDIT THESE ONCE THE TOKEN LAUNCHES
+  // ============================================================
+  const CONTRACT_ADDRESS = "COMING SOON — PASTE CA HERE";
+  const X_URL            = "https://x.com/";   // <-- put your X (Twitter) profile URL here
+  // ============================================================
+
+  // Wire the CA + X link
+  document.getElementById('ca-value').textContent = CONTRACT_ADDRESS;
+  document.getElementById('x-link').href = X_URL;
+
+  // -------- Matrix rain --------
+  (() => {
+    const canvas = document.getElementById('matrix-rain');
+    const ctx = canvas.getContext('2d');
+    const glyphs = 'ﾊﾐﾋｰｳｼﾅﾓﾆｻﾜﾂｵﾘｱﾎﾃﾏｹﾒｴｶｷﾑﾕﾗｾﾈｽﾀﾇﾍMcDONALDSMATRIX01ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789#$%*';
+    const fontSize = 16;
+    let cols = 0;
+    let drops = [];
+
+    function resize() {
+      canvas.width  = window.innerWidth;
+      canvas.height = window.innerHeight;
+      cols = Math.floor(canvas.width / fontSize);
+      drops = Array(cols).fill(0).map(() => Math.random() * -canvas.height / fontSize);
+    }
+    window.addEventListener('resize', resize);
+    resize();
+
+    function draw() {
+      // trail fade
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.07)';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.font = fontSize + "px 'VT323', ui-monospace, monospace";
+
+      for (let i = 0; i < cols; i++) {
+        const ch = glyphs.charAt(Math.floor(Math.random() * glyphs.length));
+        const x = i * fontSize;
+        const y = drops[i] * fontSize;
+
+        const roll = Math.random();
+        if (roll < 0.012) ctx.fillStyle = '#FFC72C';        // McD yellow
+        else if (roll < 0.02) ctx.fillStyle = '#DA291C';    // McD red
+        else if (roll < 0.05) ctx.fillStyle = '#a7ffb6';    // head glow
+        else ctx.fillStyle = '#00ff41';                     // matrix green
+
+        ctx.fillText(ch, x, y);
+        if (y > canvas.height && Math.random() > 0.975) drops[i] = 0;
+        drops[i]++;
+      }
+    }
+    setInterval(draw, 45);
+  })();
+
+  // -------- Beeping McDonald's meme sound --------
+  //  Recreates the classic order-ready timer: 5 short square-wave beeps ~2.1 kHz,
+  //  then a 1s pause, on loop. Generated locally with WebAudio (no external files).
+  const audio = (() => {
+    let ctx = null;
+    let loopHandle = null;
+    let on = false;
+
+    function ensure() {
+      if (!ctx) ctx = new (window.AudioContext || window.webkitAudioContext)();
+      if (ctx.state === 'suspended') ctx.resume();
+    }
+
+    function scheduleBurst(startAt) {
+      const beeps = 5;
+      const gap = 0.17;    // seconds between beeps
+      const dur = 0.11;
+      for (let i = 0; i < beeps; i++) {
+        const t = startAt + i * gap;
+        const osc  = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'square';
+        osc.frequency.setValueAtTime(2100, t);
+        gain.gain.setValueAtTime(0.0001, t);
+        gain.gain.exponentialRampToValueAtTime(0.12, t + 0.005);
+        gain.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+        osc.connect(gain).connect(ctx.destination);
+        osc.start(t);
+        osc.stop(t + dur + 0.02);
+      }
+    }
+
+    function tick() {
+      if (!on) return;
+      ensure();
+      scheduleBurst(ctx.currentTime + 0.02);
+    }
+
+    function start() {
+      ensure();
+      on = true;
+      tick();                              // immediate
+      loopHandle = setInterval(tick, 2000); // ~5 beeps then rest, ~every 2s
+      paint();
+    }
+
+    function stop() {
+      on = false;
+      if (loopHandle) clearInterval(loopHandle);
+      loopHandle = null;
+      paint();
+    }
+
+    function toggle() { on ? stop() : start(); }
+
+    function paint() {
+      const btn = document.getElementById('sound-toggle');
+      if (on) {
+        btn.textContent = '🔊 SOUND ON';
+        btn.classList.add('sound-on');
+      } else {
+        btn.textContent = '🔇 SOUND OFF';
+        btn.classList.remove('sound-on');
+      }
+    }
+
+    return { start, stop, toggle };
+  })();
+
+  // -------- Splash / audio gate --------
+  const splash = document.getElementById('splash');
+  document.getElementById('enter-btn').addEventListener('click', () => {
+    splash.classList.add('hide');
+    setTimeout(() => splash && splash.remove(), 750);
+    audio.start();
+  });
+  document.getElementById('sound-toggle').addEventListener('click', () => audio.toggle());
+
+  // Keyboard escape from splash (still counts as user gesture)
+  splash.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      document.getElementById('enter-btn').click();
+    }
+  });
+
+  // -------- Copy CA --------
+  document.getElementById('copy-btn').addEventListener('click', async () => {
+    const btn = document.getElementById('copy-btn');
+    const val = document.getElementById('ca-value').textContent.trim();
+    try {
+      await navigator.clipboard.writeText(val);
+    } catch {
+      const ta = document.createElement('textarea');
+      ta.value = val;
+      document.body.appendChild(ta);
+      ta.select();
+      try { document.execCommand('copy'); } catch {}
+      ta.remove();
+    }
+    const orig = btn.textContent;
+    btn.textContent = 'COPIED ✓';
+    btn.classList.add('ok');
+    setTimeout(() => { btn.textContent = orig; btn.classList.remove('ok'); }, 1500);
+  });
+</script>
+</body>
+</html>
