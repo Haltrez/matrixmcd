@@ -60,14 +60,31 @@
     position: fixed;
     inset: 0;
     background:
-      radial-gradient(ellipse at 50% 30%, #FFE082 0%, var(--yellow) 55%, var(--yellow-dark) 100%);
+      radial-gradient(ellipse at 50% 35%, #0a1a10 0%, #050b06 60%, #000 100%);
     align-items: center;
     justify-content: center;
     padding: 24px;
     padding-top: 62px;
     z-index: 100;
     overflow: hidden;
+    color: #fff;
   }
+  #landing-rain {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    opacity: 0.55;
+  }
+  .landing-vignette {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    pointer-events: none;
+    background:
+      radial-gradient(ellipse at 50% 45%, transparent 0%, transparent 30%, rgba(0,0,0,0.55) 100%);
+  }
+  #landing .menu-wrap { position: relative; z-index: 4; }
   /* Scrolling stock ticker across the top */
   .ticker {
     position: absolute;
@@ -119,7 +136,12 @@
   }
   .meme-corner span { display: inline-block; }
   .meme-corner.top-left    { top: 54px;  left: 14px; }
+  .meme-corner.top-right   { top: 54px;  right: 14px; color: #FFC72C; border-color: #FFC72C; box-shadow: 0 0 20px rgba(255,199,44,0.35); }
+  .meme-corner.bottom-left { bottom: 70px; left: 14px; color: #ff5252; border-color: #ff5252; box-shadow: 0 0 20px rgba(255,82,82,0.4); }
   .meme-corner.bottom-right{ bottom: 70px; right: 14px; color: #FFC72C; border-color: #FFC72C; box-shadow: 0 0 20px rgba(255,199,44,0.35); }
+  @media (max-width: 900px) {
+    .meme-corner.bottom-left, .meme-corner.top-right { display: none; }
+  }
   @media (max-width: 640px) {
     .meme-corner { display: none; }
   }
@@ -136,10 +158,12 @@
     margin-bottom: 34px;
   }
   .menu-brand .arch {
-    width: 140px;
-    height: 108px;
+    width: 160px;
+    height: 120px;
     display: block;
-    filter: drop-shadow(0 8px 14px rgba(200,140,0,0.35));
+    filter:
+      drop-shadow(0 0 24px rgba(255,199,44,0.85))
+      drop-shadow(0 0 48px rgba(255,199,44,0.45));
   }
   .menu-brand .lovin {
     display: inline-block;
@@ -159,30 +183,35 @@
   .menu-brand h1 {
     font-family: 'Bagel Fat One', sans-serif;
     font-size: clamp(38px, 6vw, 76px);
-    color: var(--ink);
+    color: #fff;
     line-height: 1;
     letter-spacing: -0.5px;
+    text-shadow: 0 0 24px rgba(255,199,44,0.35);
   }
-  .menu-brand h1 .accent { color: var(--red); }
+  .menu-brand h1 .accent {
+    color: var(--red);
+    text-shadow: 0 0 22px rgba(218,41,28,0.6);
+  }
   .menu-brand .lede {
     font-size: clamp(15px, 1.5vw, 18px);
-    color: var(--ink);
+    color: #cfe9d3;
     max-width: 560px;
     line-height: 1.55;
     font-weight: 600;
   }
   .menu-pick {
     display: inline-block;
-    background: #fff;
-    color: var(--ink);
-    border: 3px solid #000;
+    background: #000;
+    color: #00ff41;
+    border: 2px solid #00ff41;
     padding: 10px 20px;
     border-radius: 999px;
+    font-family: ui-monospace, Menlo, Consolas, monospace;
     font-weight: 700;
-    font-size: 13px;
-    letter-spacing: 2px;
+    font-size: 12px;
+    letter-spacing: 3px;
     text-transform: uppercase;
-    box-shadow: 0 5px 0 #000;
+    box-shadow: 0 0 22px rgba(0,255,65,0.35);
     margin: 20px auto 24px;
   }
   .menu {
@@ -237,7 +266,7 @@
     flex-wrap: wrap;
     font-size: 13px;
     font-weight: 600;
-    color: rgba(0,0,0,0.6);
+    color: rgba(255,255,255,0.6);
   }
   .menu-foot a {
     display: inline-flex;
@@ -1052,10 +1081,14 @@
      LANDING (opening menu)
 ========================================================= -->
 <section id="landing" class="view">
+  <canvas id="landing-rain" aria-hidden="true"></canvas>
+  <div class="landing-vignette" aria-hidden="true"></div>
   <div class="ticker" aria-hidden="true">
     <div class="ticker-track" id="ticker-track"></div>
   </div>
   <div class="meme-corner top-left"><span>SAME BURGERS</span><br><span>DIFFERENT REALITY</span></div>
+  <div class="meme-corner top-right"><span>GOOD FOOD</span><br><span>HIGHER NUMBERS</span></div>
+  <div class="meme-corner bottom-left"><span>FIAT FOOD</span><br><span>IS DEAD</span></div>
   <div class="meme-corner bottom-right"><span>COOK ▸ HODL ▸ REPEAT</span></div>
   <div class="menu-wrap">
     <div class="menu-brand">
@@ -1262,6 +1295,46 @@ const AUDIO_URL        = "sounds/mcd-beep.mp3"; // loops non-stop after entry
 document.getElementById('ca-value').textContent = CONTRACT_ADDRESS;
 document.getElementById('x-link').href = X_URL;
 document.getElementById('x-link-menu').href = X_URL;
+
+/* Landing matrix rain (green code, McDonald's glyph highlights) */
+(function initMatrixRain() {
+  const canvas = document.getElementById('landing-rain');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const glyphs = 'ﾊﾐﾋｰｳｼﾅﾓﾆｻﾜﾂｵﾘｱﾎﾃﾏｹﾒｴｶｷﾑﾕﾗｾﾈｽﾀﾇﾍMcDONALDSHAPPYMEAL$TMCD01234567890$';
+  const fontSize = 16;
+  let cols = 0;
+  let drops = [];
+
+  function resize() {
+    canvas.width  = window.innerWidth;
+    canvas.height = window.innerHeight;
+    cols = Math.floor(canvas.width / fontSize);
+    drops = Array(cols).fill(0).map(() => Math.random() * -canvas.height / fontSize);
+  }
+  window.addEventListener('resize', resize, { passive: true });
+  resize();
+
+  function draw() {
+    ctx.fillStyle = 'rgba(0, 8, 3, 0.09)';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.font = fontSize + 'px ui-monospace, Menlo, monospace';
+    for (let i = 0; i < cols; i++) {
+      const ch = glyphs.charAt(Math.floor(Math.random() * glyphs.length));
+      const x = i * fontSize;
+      const y = drops[i] * fontSize;
+      const r = Math.random();
+      if      (r < 0.015) ctx.fillStyle = '#FFC72C';
+      else if (r < 0.025) ctx.fillStyle = '#DA291C';
+      else if (r < 0.06)  ctx.fillStyle = '#c7ffb0';
+      else                ctx.fillStyle = '#00ff41';
+      ctx.fillText(ch, x, y);
+      if (y > canvas.height && Math.random() > 0.975) drops[i] = 0;
+      drops[i]++;
+    }
+  }
+  setInterval(draw, 45);
+})();
 
 /* Landing stock ticker */
 (function initTicker() {
