@@ -25,8 +25,8 @@
   html, body {
     margin: 0;
     padding: 0;
-    background: var(--yellow);
-    color: var(--ink);
+    background: #050a06;
+    color: #e6f4e2;
     font-family: 'Fredoka', system-ui, -apple-system, sans-serif;
     font-weight: 500;
     min-height: 100vh;
@@ -34,6 +34,13 @@
     -webkit-font-smoothing: antialiased;
   }
   body.view-landing, body.view-game { overflow: hidden; height: 100vh; }
+  .rain-bg {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    opacity: 0.28;
+  }
   h1, h2, h3, .display {
     font-family: 'Bagel Fat One', 'Fredoka', system-ui, sans-serif;
     font-weight: 400;
@@ -286,9 +293,17 @@
   .menu-foot a svg { width: 16px; height: 16px; fill: #fff; }
 
   /* =====================================================
-     SITE
+     SITE — dark Virtual McDonald's theme
   ===================================================== */
-  #site { min-height: 100vh; }
+  #site {
+    min-height: 100vh;
+    position: relative;
+    background:
+      radial-gradient(ellipse at 50% 0%, #0e1a10 0%, #050a06 60%, #000 100%);
+    color: #e6f4e2;
+  }
+  #site > *:not(canvas) { position: relative; z-index: 2; }
+  #site #site-rain { position: fixed; z-index: 0; opacity: 0.22; }
   .topnav {
     position: sticky;
     top: 14px;
@@ -298,14 +313,17 @@
     padding: 0 16px;
   }
   .topnav-inner {
-    background: #fff;
-    border: 3px solid #000;
+    background: rgba(15, 26, 16, 0.92);
+    border: 2px solid rgba(0,255,65,0.35);
     border-radius: 999px;
     padding: 10px 14px 10px 18px;
     display: flex;
     align-items: center;
     gap: 18px;
-    box-shadow: 0 6px 0 #000;
+    box-shadow:
+      0 0 24px rgba(0,255,65,0.15),
+      0 6px 0 rgba(0,0,0,0.7);
+    backdrop-filter: blur(6px);
   }
   .brand {
     display: flex;
@@ -313,9 +331,15 @@
     gap: 10px;
     font-family: 'Bagel Fat One', sans-serif;
     font-size: 20px;
-    color: var(--red);
+    color: var(--yellow);
+    text-shadow: 0 0 12px rgba(255,199,44,0.4);
   }
-  .brand svg { width: 34px; height: 34px; display: block; }
+  .brand svg {
+    width: 34px;
+    height: 34px;
+    display: block;
+    filter: drop-shadow(0 0 8px rgba(255,199,44,0.5));
+  }
   .topnav nav {
     display: flex;
     gap: 4px;
@@ -328,10 +352,10 @@
     border-radius: 999px;
     font-weight: 600;
     font-size: 15px;
-    color: var(--ink);
+    color: #e6f4e2;
   }
-  .topnav nav a:hover { background: rgba(0,0,0,0.07); }
-  .topnav nav a.game-link { color: var(--red); font-weight: 700; }
+  .topnav nav a:hover { background: rgba(0,255,65,0.15); }
+  .topnav nav a.game-link { color: var(--yellow); font-weight: 700; }
   .buy-btn {
     background: var(--red);
     color: #fff !important;
@@ -370,17 +394,23 @@
   .hero h1.headline {
     font-family: 'Bagel Fat One', sans-serif;
     font-size: clamp(48px, 7vw, 90px);
-    color: var(--ink);
+    color: #fff;
     line-height: 0.95;
     letter-spacing: -0.5px;
+    text-shadow: 0 0 30px rgba(255,199,44,0.35);
   }
   .hero .sub {
     font-size: clamp(16px, 1.5vw, 18px);
-    color: var(--ink);
+    color: #d5ecd8;
     line-height: 1.55;
     max-width: 520px;
     margin-top: 20px;
     font-weight: 500;
+  }
+  .hero-art .box-wrap {
+    filter:
+      drop-shadow(0 0 40px rgba(255,199,44,0.35))
+      drop-shadow(0 20px 30px rgba(0,0,0,0.5));
   }
   .cta-row { display: flex; gap: 14px; flex-wrap: wrap; margin-top: 26px; }
   .btn {
@@ -400,9 +430,9 @@
   .btn-primary { background: var(--red); color: #fff; box-shadow: 0 6px 0 var(--red-dark); }
   .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 0 var(--red-dark); }
   .btn-primary:active { transform: translateY(3px); box-shadow: 0 3px 0 var(--red-dark); }
-  .btn-ghost { background: #fff; color: var(--ink); box-shadow: 0 6px 0 #000; }
-  .btn-ghost:hover { transform: translateY(-2px); box-shadow: 0 8px 0 #000; }
-  .btn-ghost:active { transform: translateY(3px); box-shadow: 0 3px 0 #000; }
+  .btn-ghost { background: rgba(15,26,16,0.85); color: #fff; box-shadow: 0 6px 0 #00ff41; border-color: rgba(0,255,65,0.55); }
+  .btn-ghost:hover { transform: translateY(-2px); box-shadow: 0 8px 0 #00ff41; }
+  .btn-ghost:active { transform: translateY(3px); box-shadow: 0 3px 0 #00ff41; }
 
   .hero-art {
     position: relative;
@@ -437,11 +467,14 @@
   /* CA */
   .ca-strip {
     margin-top: 44px;
-    background: #fff;
-    border: 3px solid #000;
+    background: rgba(15,26,16,0.9);
+    border: 2px solid rgba(0,255,65,0.5);
     border-radius: 24px;
     padding: 22px 24px;
-    box-shadow: 0 8px 0 #000;
+    box-shadow:
+      0 0 32px rgba(0,255,65,0.2),
+      0 8px 0 rgba(0,0,0,0.5);
+    backdrop-filter: blur(4px);
   }
   .ca-label {
     display: flex;
@@ -449,17 +482,18 @@
     gap: 8px;
     font-family: 'Bagel Fat One', sans-serif;
     font-size: 16px;
-    color: var(--red);
+    color: #00ff41;
     letter-spacing: 2px;
     margin-bottom: 10px;
     text-transform: uppercase;
+    text-shadow: 0 0 8px rgba(0,255,65,0.5);
   }
   .ca-label::before {
     content: "";
     width: 10px; height: 10px;
     border-radius: 50%;
-    background: var(--red);
-    box-shadow: 0 0 10px var(--red);
+    background: #00ff41;
+    box-shadow: 0 0 12px #00ff41;
     animation: blink 1s steps(1,end) infinite;
   }
   @keyframes blink { 0%, 55% { opacity: 1; } 56%, 100% { opacity: 0.25; } }
@@ -469,12 +503,13 @@
     font-family: ui-monospace, Menlo, Consolas, monospace;
     font-size: clamp(14px, 2vw, 18px);
     padding: 14px 16px;
-    background: var(--cream);
-    border: 2px dashed rgba(0,0,0,0.35);
+    background: rgba(0,0,0,0.5);
+    border: 2px dashed rgba(0,255,65,0.4);
     border-radius: 14px;
-    color: var(--ink);
+    color: #00ff41;
     word-break: break-all;
     font-weight: 600;
+    text-shadow: 0 0 6px rgba(0,255,65,0.4);
   }
   #copy-btn {
     font-family: 'Fredoka', sans-serif;
@@ -496,19 +531,20 @@
   .section h2 {
     font-family: 'Bagel Fat One', sans-serif;
     font-size: clamp(34px, 5vw, 60px);
-    color: var(--ink);
+    color: #fff;
     margin-bottom: 20px;
     line-height: 0.95;
+    text-shadow: 0 0 20px rgba(255,199,44,0.25);
   }
   .section p {
     font-size: 17px;
-    color: var(--ink);
+    color: #d5ecd8;
     line-height: 1.65;
     max-width: 720px;
     margin-bottom: 12px;
     font-weight: 500;
   }
-  .section p b, .section li b { color: var(--red); font-weight: 700; }
+  .section p b, .section li b { color: var(--yellow); font-weight: 700; }
 
   .steps {
     counter-reset: step;
@@ -520,16 +556,18 @@
     gap: 14px;
   }
   .steps li {
-    background: #fff;
-    border: 3px solid #000;
+    background: rgba(15,26,16,0.9);
+    border: 2px solid rgba(0,255,65,0.3);
     border-radius: 20px;
     padding: 22px 22px 22px 70px;
     position: relative;
-    box-shadow: 0 6px 0 #000;
+    box-shadow: 0 6px 0 rgba(0,0,0,0.5);
     counter-increment: step;
     font-weight: 600;
     line-height: 1.5;
     font-size: 15px;
+    color: #d5ecd8;
+    backdrop-filter: blur(4px);
   }
   .steps li::before {
     content: counter(step);
@@ -573,12 +611,13 @@
   footer.site-foot {
     margin-top: 70px;
     padding: 24px 0 20px;
-    border-top: 3px dashed rgba(0,0,0,0.25);
+    border-top: 2px dashed rgba(0,255,65,0.25);
     text-align: center;
     font-size: 13px;
-    color: rgba(0,0,0,0.6);
+    color: rgba(230,244,226,0.55);
     line-height: 1.7;
   }
+  footer.site-foot i { color: #00ff41; font-style: normal; letter-spacing: 4px; font-family: ui-monospace, monospace; }
 
   /* =====================================================
      GAME (Happy Meal Builder)
@@ -587,28 +626,35 @@
     position: fixed;
     inset: 0;
     background:
-      radial-gradient(ellipse at 50% 30%, #FFE082 0%, var(--yellow) 55%, var(--yellow-dark) 100%);
+      radial-gradient(ellipse at 50% 20%, #0e1a10 0%, #050b06 55%, #000 100%);
     flex-direction: column;
     z-index: 10;
     overflow: hidden;
+    color: #e6f4e2;
   }
   body.view-game #game { display: flex; }
+  #game #game-rain {
+    position: absolute; inset: 0; z-index: 0; pointer-events: none;
+    opacity: 0.22;
+  }
+  #game > *:not(canvas) { position: relative; z-index: 2; }
   .game-top {
     display: flex;
     align-items: center;
     gap: 12px;
     padding: 12px 18px;
-    background: #fff;
-    border-bottom: 3px solid #000;
+    background: rgba(0,0,0,0.72);
+    border-bottom: 2px solid rgba(0,255,65,0.35);
     flex-wrap: wrap;
+    backdrop-filter: blur(6px);
   }
   .game-top .exit {
     padding: 10px 16px;
     border-radius: 999px;
-    background: #000;
+    background: var(--red);
     color: #fff;
     border: 2px solid #000;
-    box-shadow: 0 3px 0 #444;
+    box-shadow: 0 3px 0 var(--red-dark);
     font-family: 'Fredoka', sans-serif;
     font-weight: 700;
     font-size: 13px;
@@ -616,10 +662,11 @@
   }
   .game-top h1 {
     font-family: 'Bagel Fat One', sans-serif;
-    color: var(--red);
+    color: var(--yellow);
     font-size: 22px;
     letter-spacing: 1px;
     line-height: 1;
+    text-shadow: 0 0 14px rgba(255,199,44,0.55);
   }
   .game-brand {
     display: flex;
@@ -649,24 +696,26 @@
     flex-wrap: wrap;
   }
   .stat {
-    background: var(--cream);
-    border: 2px solid #000;
+    background: rgba(0,0,0,0.55);
+    border: 2px solid rgba(0,255,65,0.35);
     border-radius: 12px;
     padding: 6px 14px;
     font-weight: 700;
-    font-size: 12px;
-    letter-spacing: 1px;
-    color: var(--ink);
+    font-size: 11px;
+    letter-spacing: 2px;
+    color: #a8d8ab;
     text-transform: uppercase;
+    box-shadow: inset 0 0 12px rgba(0,255,65,0.08);
   }
   .stat b {
     font-family: ui-monospace, Menlo, monospace;
-    font-size: 20px;
-    color: var(--red);
+    font-size: 22px;
+    color: #00ff41;
     margin-left: 6px;
     letter-spacing: 0;
+    text-shadow: 0 0 8px rgba(0,255,65,0.7);
   }
-  .stat.warn b { color: #d81a1a; animation: pulse .5s ease-in-out infinite alternate; }
+  .stat.warn b { color: #ff5a5a; text-shadow: 0 0 10px rgba(255,90,90,0.7); animation: pulse .5s ease-in-out infinite alternate; }
   @keyframes pulse { to { transform: scale(1.08); } }
 
   .game-body {
@@ -686,27 +735,32 @@
   }
   .order-panel {
     grid-area: order;
-    background: #fff;
-    border: 3px solid #000;
+    background: rgba(15,26,16,0.85);
+    border: 2px solid rgba(0,255,65,0.35);
     border-radius: 20px;
     padding: 16px;
-    box-shadow: 0 5px 0 #000;
+    box-shadow:
+      0 0 20px rgba(0,255,65,0.12),
+      0 5px 0 rgba(0,0,0,0.5);
     overflow-y: auto;
+    backdrop-filter: blur(4px);
   }
   .order-panel .lbl {
     font-family: 'Bagel Fat One', sans-serif;
     font-size: 14px;
     letter-spacing: 3px;
-    color: var(--red);
+    color: #00ff41;
     text-transform: uppercase;
     margin-bottom: 2px;
+    text-shadow: 0 0 6px rgba(0,255,65,0.5);
   }
   .order-name {
     font-family: 'Bagel Fat One', sans-serif;
     font-size: 26px;
-    color: var(--ink);
+    color: var(--yellow);
     line-height: 1;
     margin: 4px 0 14px;
+    text-shadow: 0 0 12px rgba(255,199,44,0.4);
   }
   .need-list {
     display: grid;
@@ -714,8 +768,8 @@
     gap: 8px;
   }
   .need-item {
-    background: var(--cream);
-    border: 2px solid #000;
+    background: rgba(0,0,0,0.55);
+    border: 2px solid rgba(0,255,65,0.3);
     border-radius: 14px;
     padding: 8px;
     display: flex;
@@ -723,33 +777,50 @@
     align-items: center;
     gap: 4px;
     position: relative;
-    transition: opacity .3s ease;
+    transition: all .25s ease;
   }
-  .need-item.done { opacity: 0.35; background: #d8f5d8; }
+  .need-item.done {
+    background: rgba(0,255,65,0.14);
+    border-color: #00ff41;
+    box-shadow: 0 0 12px rgba(0,255,65,0.35);
+    opacity: 0.7;
+  }
   .need-item.done::after {
     content: "✓";
     position: absolute;
     top: 3px; right: 8px;
     font-size: 18px;
-    color: #2d8a2d;
+    color: #00ff41;
     font-weight: 700;
+    text-shadow: 0 0 6px rgba(0,255,65,0.7);
   }
   .need-item svg { width: 40px; height: 40px; }
-  .need-item span { font-size: 11px; font-weight: 700; letter-spacing: 0.5px; color: var(--ink); text-align: center; }
+  .need-item span { font-size: 11px; font-weight: 700; letter-spacing: 0.5px; color: #e6f4e2; text-align: center; }
 
   .box-panel {
     grid-area: box;
-    background: #fff;
-    border: 3px solid #000;
+    background: rgba(15,26,16,0.85);
+    border: 2px solid rgba(0,255,65,0.35);
     border-radius: 20px;
     padding: 18px;
-    box-shadow: 0 5px 0 #000;
+    box-shadow:
+      0 0 24px rgba(0,255,65,0.12),
+      0 5px 0 rgba(0,0,0,0.5);
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     position: relative;
     overflow: hidden;
+    backdrop-filter: blur(4px);
+  }
+  .box-panel .hm-svg {
+    filter:
+      drop-shadow(0 0 22px rgba(255,199,44,0.3))
+      drop-shadow(0 10px 20px rgba(0,0,0,0.55));
+  }
+  .box-hint {
+    color: rgba(230,244,226,0.6) !important;
   }
   .box-panel .hm-svg {
     width: min(300px, 60%);
@@ -822,11 +893,14 @@
 
   .shelf {
     grid-area: shelf;
-    background: #fff;
-    border: 3px solid #000;
+    background: rgba(15,26,16,0.85);
+    border: 2px solid rgba(0,255,65,0.35);
     border-radius: 20px;
     padding: 12px;
-    box-shadow: 0 5px 0 #000;
+    box-shadow:
+      0 0 20px rgba(0,255,65,0.12),
+      0 5px 0 rgba(0,0,0,0.5);
+    backdrop-filter: blur(4px);
   }
   .shelf .items-grid {
     display: grid;
@@ -836,7 +910,7 @@
   .shelf-item {
     all: unset;
     cursor: pointer;
-    background: var(--cream);
+    background: rgba(255,255,255,0.98);
     border: 3px solid #000;
     border-radius: 16px;
     padding: 10px 8px;
@@ -844,13 +918,13 @@
     flex-direction: column;
     align-items: center;
     gap: 4px;
-    box-shadow: 0 4px 0 #000;
+    box-shadow: 0 4px 0 rgba(0,255,65,0.4);
     transition: transform .1s ease, box-shadow .1s ease;
     text-align: center;
   }
-  .shelf-item:hover { transform: translateY(-3px); box-shadow: 0 7px 0 #000; }
-  .shelf-item:active { transform: translateY(2px); box-shadow: 0 2px 0 #000; }
-  .shelf-item.used { opacity: 0.3; pointer-events: none; }
+  .shelf-item:hover { transform: translateY(-3px); box-shadow: 0 7px 0 rgba(0,255,65,0.55); }
+  .shelf-item:active { transform: translateY(2px); box-shadow: 0 2px 0 rgba(0,255,65,0.4); }
+  .shelf-item.used { opacity: 0.3; pointer-events: none; filter: grayscale(0.5); }
   .shelf-item svg { width: 52px; height: 52px; }
   .shelf-item span { font-size: 12px; font-weight: 700; color: var(--ink); }
 
@@ -866,11 +940,14 @@
     padding: 20px;
   }
   .done-inner {
-    background: #fff;
-    border: 4px solid #000;
+    background: #0f1a10;
+    color: #fff;
+    border: 3px solid #00ff41;
     border-radius: 26px;
     padding: 30px 34px;
-    box-shadow: 0 10px 0 #000;
+    box-shadow:
+      0 0 40px rgba(0,255,65,0.35),
+      0 10px 0 rgba(0,0,0,0.6);
     text-align: center;
     max-width: 480px;
     width: 100%;
@@ -880,21 +957,25 @@
   .done-inner h2 {
     font-family: 'Bagel Fat One', sans-serif;
     font-size: 42px;
-    color: var(--red);
+    color: var(--yellow);
+    text-shadow: 0 0 16px rgba(255,199,44,0.5);
   }
   .done-time {
-    font-family: 'Bagel Fat One', sans-serif;
-    font-size: 60px;
-    color: var(--ink);
+    font-family: ui-monospace, Menlo, monospace;
+    font-size: 54px;
+    color: #00ff41;
     margin: 12px 0 4px;
     line-height: 1;
+    text-shadow: 0 0 14px rgba(0,255,65,0.7);
+    letter-spacing: 1px;
   }
-  .done-sub { font-weight: 600; color: rgba(0,0,0,0.6); margin-bottom: 20px; font-size: 14px; }
+  .done-sub { font-weight: 600; color: rgba(230,244,226,0.7); margin-bottom: 20px; font-size: 14px; letter-spacing: 1px; }
   .done-inner h3 {
     font-family: 'Bagel Fat One', sans-serif;
     font-size: 22px;
     color: var(--red);
     margin: 18px 0 10px;
+    letter-spacing: 1px;
   }
   #g-leaderboard {
     list-style: none;
@@ -905,8 +986,8 @@
     gap: 6px;
   }
   #g-leaderboard li {
-    background: var(--cream);
-    border: 2px solid #000;
+    background: rgba(0,0,0,0.4);
+    border: 2px solid rgba(0,255,65,0.3);
     border-radius: 12px;
     padding: 8px 14px;
     display: flex;
@@ -914,12 +995,15 @@
     font-weight: 700;
     font-family: ui-monospace, Menlo, monospace;
     font-size: 15px;
+    color: #d5ecd8;
   }
   #g-leaderboard li.you {
-    background: var(--yellow);
-    box-shadow: 0 3px 0 var(--yellow-dark);
+    background: rgba(255,199,44,0.18);
+    border-color: var(--yellow);
+    box-shadow: 0 0 14px rgba(255,199,44,0.35);
+    color: #fff;
   }
-  #g-leaderboard li .rank { color: var(--red); }
+  #g-leaderboard li .rank { color: var(--yellow); }
   .done-buttons { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
   .done-buttons .btn { padding: 12px 22px; font-size: 14px; }
 
@@ -1124,6 +1208,7 @@
      SITE (lore)
 ========================================================= -->
 <section id="site" class="view">
+  <canvas id="site-rain" class="rain-bg" aria-hidden="true"></canvas>
   <header class="topnav">
     <div class="topnav-inner">
       <a class="brand" href="#" data-goto="landing" aria-label="Home">
@@ -1232,6 +1317,7 @@
      GAME (Happy Meal Builder)
 ========================================================= -->
 <section id="game" class="view" aria-label="Happy Meal Builder">
+  <canvas id="game-rain" aria-hidden="true"></canvas>
   <div class="game-top">
     <button class="exit" type="button" data-goto="landing">← Menu</button>
     <div class="game-brand">
@@ -1296,13 +1382,14 @@ document.getElementById('ca-value').textContent = CONTRACT_ADDRESS;
 document.getElementById('x-link').href = X_URL;
 document.getElementById('x-link-menu').href = X_URL;
 
-/* Landing matrix rain (green code, McDonald's glyph highlights) */
-(function initMatrixRain() {
-  const canvas = document.getElementById('landing-rain');
+/* Matrix rain — reusable canvas animator, driven per canvas element */
+function attachMatrixRain(canvasId, opts) {
+  const canvas = document.getElementById(canvasId);
   if (!canvas) return;
   const ctx = canvas.getContext('2d');
   const glyphs = 'ﾊﾐﾋｰｳｼﾅﾓﾆｻﾜﾂｵﾘｱﾎﾃﾏｹﾒｴｶｷﾑﾕﾗｾﾈｽﾀﾇﾍMcDONALDSHAPPYMEAL$TMCD01234567890$';
-  const fontSize = 16;
+  const fontSize = (opts && opts.fontSize) || 16;
+  const fadeAlpha = (opts && opts.fadeAlpha) || 0.09;
   let cols = 0;
   let drops = [];
 
@@ -1316,7 +1403,7 @@ document.getElementById('x-link-menu').href = X_URL;
   resize();
 
   function draw() {
-    ctx.fillStyle = 'rgba(0, 8, 3, 0.09)';
+    ctx.fillStyle = 'rgba(0, 8, 3, ' + fadeAlpha + ')';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     ctx.font = fontSize + 'px ui-monospace, Menlo, monospace';
     for (let i = 0; i < cols; i++) {
@@ -1333,8 +1420,12 @@ document.getElementById('x-link-menu').href = X_URL;
       drops[i]++;
     }
   }
-  setInterval(draw, 45);
-})();
+  setInterval(draw, 50);
+}
+
+attachMatrixRain('landing-rain');
+attachMatrixRain('site-rain', { fadeAlpha: 0.12 });
+attachMatrixRain('game-rain', { fadeAlpha: 0.12 });
 
 /* Landing stock ticker */
 (function initTicker() {
