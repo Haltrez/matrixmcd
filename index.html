@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Tokenised McDonald's ($TMCD)</title>
-<meta name="description" content="Tokenised McDonald's. Hold $TMCD, earn real McDonald's stock. A memecoin that pays out in $MCD.">
+<meta name="description" content="Tokenised McDonald's. Hold $TMCD to become an employee and earn real McDonald's shares. A memecoin that pays out in $MCD.">
 <meta name="theme-color" content="#140a05">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -843,6 +843,10 @@
     -webkit-backdrop-filter: blur(6px);
     padding: 20px;
   }
+  /* Author CSS beats the UA [hidden]{display:none} rule at equal specificity,
+     so .game-done's own display:flex above would otherwise leave the modal
+     laid out (and blocking clicks) even while hidden is set. */
+  .game-done[hidden] { display: none; }
   .done-inner {
     background: var(--panel);
     color: var(--text);
@@ -1167,7 +1171,7 @@
       <img class="coin-logo" src="assets/logo.png" alt="Tokenised McDonald's coin">
       <div class="lovin">i'm lovin' it&nbsp;™</div>
       <h1>Tokenised <span class="accent">McDonald's</span></h1>
-      <p class="lede">Hold $TMCD. Earn real McDonald's stock. That is the whole idea.</p>
+      <p class="lede">Hold $TMCD. Become an employee. Earn real McDonald's shares.</p>
     </div>
     <div class="menu-pick">Pick where to go</div>
     <div class="menu">
@@ -1216,11 +1220,11 @@
   <div class="site-wrap">
     <section class="hero">
       <div>
-        <div class="pill">i'm lovin' it&nbsp;™ &nbsp;·&nbsp; the stock rewards memecoin</div>
+        <div class="pill">i'm lovin' it&nbsp;™ &nbsp;·&nbsp; the employee stock memecoin</div>
         <h1 class="headline">Tokenised <span class="red">McDonald's</span></h1>
         <p class="sub">
           A memecoin called Tokenised McDonald's. Ticker <b>$TMCD</b>.
-          Buy it. Hold it. Every holder earns real McDonald's stock, sent to their wallet.
+          Hold it, and you're on the payroll. Every employee earns real McDonald's shares, sent to their wallet.
         </p>
         <div class="cta-row">
           <a class="btn btn-primary" href="#howto">Get $TMCD</a>
@@ -1244,23 +1248,23 @@
     <section class="section" id="what">
       <h2>What is $TMCD?</h2>
       <p>Tokenised McDonald's is a memecoin. Its ticker is <b>$TMCD</b>.</p>
-      <p>The idea is simple. You hold the token. You earn real McDonald's stock. Payouts land in your wallet on a schedule.</p>
-      <p>It is silly. It is fun. And the reward is real.</p>
+      <p>Hold the token and you become a Tokenised McDonald's employee. Employees earn real McDonald's shares. Payouts land in your wallet on a schedule.</p>
+      <p>It is silly. It is fun. And the paycheck is real.</p>
     </section>
 
     <section class="section" id="how">
       <h2>How it works</h2>
       <ol class="steps">
         <li>Buy <b>$TMCD</b> on your DEX.</li>
-        <li>Hold it in your wallet.</li>
-        <li>Earn real <b>$MCD</b> stock, sent straight to you.</li>
+        <li>Hold it in your wallet. You're hired.</li>
+        <li>Earn real <b>$MCD</b> shares, sent straight to you, like any other employee.</li>
       </ol>
     </section>
 
     <section class="section" id="why">
       <h2>Why McDonald's</h2>
       <p>McDonald's is the biggest fast food chain in the world. Its stock has paid its holders for decades.</p>
-      <p>We wrapped that reward in a memecoin so anyone can hold a piece of it. Buy the token, share the stock.</p>
+      <p>We wrapped that reward in a memecoin so anyone can be on the payroll. Buy the token, become an employee, share the stock.</p>
     </section>
 
     <section class="section" id="howto">
@@ -1269,7 +1273,7 @@
         <li>Get a wallet. Any wallet.</li>
         <li>Copy the contract address at the top of this page.</li>
         <li>Swap for <b>$TMCD</b> on your DEX.</li>
-        <li>Hold. Earn stock. Repeat.</li>
+        <li>Hold. Earn shares. Repeat.</li>
       </ol>
     </section>
 
