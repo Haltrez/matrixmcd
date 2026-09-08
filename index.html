@@ -70,7 +70,7 @@
     justify-content: center;
     padding: 24px;
     z-index: 100;
-    overflow: hidden;
+    overflow-y: auto;    /* fallback: scroll rather than clip top+bottom when content is taller than the screen */
     color: var(--text);
   }
   .menu-wrap {
@@ -643,6 +643,7 @@
     gap: 14px;
     padding: 14px;
     min-height: 0;
+    overflow-y: auto;   /* scroll the body (not the whole view) when stacked mobile content is taller than the screen; game-top stays pinned */
   }
   @media (max-width: 820px) {
     .game-body { grid-template-columns: 1fr; grid-template-areas: "order" "box" "shelf"; }
@@ -656,6 +657,37 @@
     box-shadow: 0 10px 26px rgba(0,0,0,0.45);
     overflow-y: auto;
   }
+  .player-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 14px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--panel-line);
+  }
+  .player-lbl {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    color: rgba(242,232,216,0.55);
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+  #g-player-name {
+    flex: 1;
+    min-width: 0;
+    font-family: 'Fredoka', sans-serif;
+    font-weight: 700;
+    font-size: 14px;
+    color: var(--yellow);
+    background: rgba(255,255,255,0.05);
+    border: 1px solid var(--panel-line);
+    border-radius: 8px;
+    padding: 6px 10px;
+  }
+  #g-player-name:focus { outline: none; border-color: var(--yellow); }
+  #g-player-name::placeholder { color: rgba(242,232,216,0.35); font-weight: 500; }
+
   .order-panel .lbl {
     font-family: 'Bagel Fat One', sans-serif;
     font-size: 14px;
@@ -945,15 +977,19 @@
   }
 
   @media (max-width: 640px) {
-    .menu-brand .coin-logo { width: 118px; height: auto; }
-    .menu-brand .glow { width: 340px; height: 340px; top: -30px; }
-    .menu-brand h1 { font-size: 40px; }
-    .menu-brand .lede { font-size: 14px; padding: 0 8px; }
-    .menu-pick { font-size: 11px; padding: 8px 14px; letter-spacing: 2px; }
-    .menu-tile { padding: 22px 18px; }
-    .menu-tile .icon { font-size: 42px; }
-    .menu-tile .title { font-size: 26px; }
-    .menu-tile .sub { font-size: 12px; }
+    #landing { padding: 16px; }
+    .menu-brand { margin-bottom: 16px; gap: 4px; }
+    .menu-brand .coin-logo { width: 92px; height: auto; }
+    .menu-brand .glow { width: 300px; height: 300px; top: -20px; }
+    .menu-brand h1 { font-size: 32px; margin-top: 4px; }
+    .menu-brand .lede { font-size: 13px; padding: 0 8px; margin-top: 6px; }
+    .menu-pick { font-size: 10px; padding: 7px 14px; letter-spacing: 1.5px; margin: 14px auto 16px; }
+    .menu { gap: 12px; }
+    .menu-tile { padding: 16px 16px; gap: 4px; }
+    .menu-tile .icon { font-size: 32px; }
+    .menu-tile .title { font-size: 22px; }
+    .menu-tile .sub { font-size: 11px; }
+    .menu-foot { margin-top: 16px; }
 
     .topnav { margin-top: 8px; padding: 0 8px; }
     .topnav-inner { padding: 8px 10px 8px 12px; gap: 8px; border-radius: 22px; }
@@ -1015,8 +1051,8 @@
   }
 
   @media (max-width: 380px) {
-    .menu-brand .coin-logo { width: 100px; height: auto; }
-    .menu-brand h1 { font-size: 34px; }
+    .menu-brand .coin-logo { width: 78px; height: auto; }
+    .menu-brand h1 { font-size: 28px; }
     .hero h1.headline { font-size: 36px; }
     .hero-coin { width: 180px; }
     .shelf .items-grid { grid-template-columns: repeat(3, 1fr); }
@@ -1208,7 +1244,6 @@
       </a>
       <nav>
         <a href="#what">What Is It</a>
-        <a href="#how">How It Works</a>
         <a href="#howto">How To Buy</a>
         <a href="#community">Community</a>
         <a href="#" class="game-link" data-goto="game">🍟 Game</a>
@@ -1228,7 +1263,7 @@
         </p>
         <div class="cta-row">
           <a class="btn btn-primary" href="#howto">Get $TMCD</a>
-          <a class="btn btn-ghost"   href="#how">See How It Works</a>
+          <a class="btn btn-ghost"   href="#what">What Is $TMCD</a>
         </div>
       </div>
       <div class="hero-art">
@@ -1252,15 +1287,6 @@
       <p>It is silly. It is fun. And the paycheck is real.</p>
     </section>
 
-    <section class="section" id="how">
-      <h2>How it works</h2>
-      <ol class="steps">
-        <li>Buy <b>$TMCD</b> on your DEX.</li>
-        <li>Hold it in your wallet. You're hired.</li>
-        <li>Earn real <b>$MCD</b> shares, sent straight to you, like any other employee.</li>
-      </ol>
-    </section>
-
     <section class="section" id="why">
       <h2>Why McDonald's</h2>
       <p>McDonald's is the biggest fast food chain in the world. Its stock has paid its holders for decades.</p>
@@ -1271,9 +1297,9 @@
       <h2>How to buy</h2>
       <ol class="steps">
         <li>Get a wallet. Any wallet.</li>
-        <li>Copy the contract address at the top of this page.</li>
+        <li>Copy the contract address above.</li>
         <li>Swap for <b>$TMCD</b> on your DEX.</li>
-        <li>Hold. Earn shares. Repeat.</li>
+        <li>Hold. You're on the payroll. <b>$MCD</b> shares land in your wallet on a schedule.</li>
       </ol>
     </section>
 
@@ -1318,6 +1344,10 @@
 
   <div class="game-body">
     <div class="order-panel">
+      <label class="player-row" for="g-player-name">
+        <span class="player-lbl">Playing as</span>
+        <input id="g-player-name" type="text" maxlength="18" placeholder="New Employee" autocomplete="off">
+      </label>
       <div class="lbl">Order</div>
       <div class="order-name" id="g-order-name">Ready?</div>
       <div class="need-list" id="g-need"></div>
@@ -1409,13 +1439,6 @@ window.addEventListener('hashchange', () => {
   const h = location.hash.slice(1);
   if (h === '' || isView(h)) goto(h || 'landing');
 });
-
-// initial routing
-{
-  const h = location.hash.slice(1);
-  if (isView(h) && h !== 'landing') goto(h);
-  else if (h) goto('site', { scrollTo: h });
-}
 
 /* =========================================================
    AUDIO (loops mcd-beep.mp3 non-stop)
@@ -1518,33 +1541,59 @@ const Game = (() => {
 
   const KEY_SCORES = 'tmcd-happymeal-scores-v1';
   const KEY_SERVED = 'tmcd-happymeal-served-v1';
+  const KEY_NAME   = 'tmcd-happymeal-name-v1';
+  const DEFAULT_NAME = 'New Employee';
 
   const $ = (id) => document.getElementById(id);
   const el = {
-    shelf:     $('g-shelf'),
-    orderName: $('g-order-name'),
-    need:      $('g-need'),
-    box:       $('g-box'),
-    boxPanel:  $('g-box-panel'),
-    hint:      $('g-hint'),
-    time:      $('g-time'),
-    timeWrap:  $('g-time-wrap'),
-    best:      $('g-best'),
-    served:    $('g-served'),
-    done:      $('game-done'),
-    doneTime:  $('g-done-time'),
-    doneSub:   $('g-done-sub'),
-    board:     $('g-leaderboard'),
-    again:     $('g-again'),
+    shelf:      $('g-shelf'),
+    orderName:  $('g-order-name'),
+    need:       $('g-need'),
+    box:        $('g-box'),
+    boxPanel:   $('g-box-panel'),
+    hint:       $('g-hint'),
+    time:       $('g-time'),
+    timeWrap:   $('g-time-wrap'),
+    best:       $('g-best'),
+    served:     $('g-served'),
+    done:       $('game-done'),
+    doneTime:   $('g-done-time'),
+    doneSub:    $('g-done-sub'),
+    board:      $('g-leaderboard'),
+    again:      $('g-again'),
+    playerName: $('g-player-name'),
   };
 
   let state = null;
   let ticker = null;
 
+  function escapeHtml(str) {
+    return String(str).replace(/[&<>"']/g, (c) => ({
+      '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;',
+    }[c]));
+  }
+
   function svgItem(id, cls) {
     return `<svg class="${cls || ''}" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet"><use href="#item-${id}"/></svg>`;
   }
   function itemName(id) { return (ITEMS.find(i => i.id === id) || {}).name || id; }
+
+  function loadName() {
+    try { return (localStorage.getItem(KEY_NAME) || '').slice(0, 18); } catch { return ''; }
+  }
+  function saveName(name) {
+    try { localStorage.setItem(KEY_NAME, name.slice(0, 18)); } catch {}
+  }
+  function currentName() {
+    const typed = (el.playerName.value || '').trim();
+    return typed || DEFAULT_NAME;
+  }
+
+  // Pre-fill from the last saved name and persist on every edit, so it
+  // survives across rounds, replays, and future visits without ever
+  // needing an explicit "save" step.
+  el.playerName.value = loadName();
+  el.playerName.addEventListener('input', () => saveName(el.playerName.value.trim()));
 
   function loadScores() {
     try { return JSON.parse(localStorage.getItem(KEY_SCORES) || '[]'); } catch { return []; }
@@ -1693,6 +1742,7 @@ const Game = (() => {
     const scores = saveScore({
       time: total,
       recipe: state.order.name,
+      name: currentName(),
       when: Date.now(),
     });
     const you = scores.findIndex(s => s.time === total);
@@ -1700,8 +1750,9 @@ const Game = (() => {
     el.doneSub.textContent  = state.order.name;
     el.board.innerHTML = scores.slice(0, 5).map((s, i) => {
       const isYou = i === you;
+      const label = escapeHtml(s.name || DEFAULT_NAME);
       return `<li${isYou ? ' class="you"' : ''}>
-        <span><span class="rank">#${i+1}</span> &nbsp; ${s.recipe}</span>
+        <span><span class="rank">#${i+1}</span> &nbsp; ${label}</span>
         <span>${fmt(s.time)}</span>
       </li>`;
     }).join('') || '<li>No scores yet. Play a round.</li>';
@@ -1720,6 +1771,24 @@ const Game = (() => {
 
   return { start, stop };
 })();
+
+/* =========================================================
+   INITIAL ROUTING
+   Must run last: goto() calls Game.start()/stop() and
+   ensureAudio(), so this can't fire until every module above
+   (audio, copy-CA, Game) has finished defining itself. Running
+   it earlier throws "Cannot access 'Game' before initialization"
+   on any load that starts on a non-empty hash (a deep link, a
+   bookmark, or simply reloading while on #game/#howto/etc.),
+   which aborts the whole script and silently breaks the sound
+   toggle, the copy button, and the game for the rest of the
+   page's life.
+========================================================= */
+{
+  const h = location.hash.slice(1);
+  if (isView(h) && h !== 'landing') goto(h);
+  else if (h) goto('site', { scrollTo: h });
+}
 </script>
 </body>
 </html>
