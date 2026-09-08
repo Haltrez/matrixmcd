@@ -3,862 +3,1608 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>TOKENISED MATRIX ($MATRIX) — Hodl to Earn McDonald's</title>
-<meta name="description" content="Stuck in a tokenised matrix. Hold $MATRIX, earn McDonald's ($MCD) stock. The system is fries. The fries are the system.">
-<meta property="og:title" content="TOKENISED MATRIX — $MATRIX">
-<meta property="og:description" content="Stuck in a tokenised matrix. Hodl to earn McDonald's.">
-<meta name="theme-color" content="#000000">
+<title>$MATRIX — Stuck in a Tokenised Matrix. Hodl to Earn McDonald's.</title>
+<meta name="description" content="$MATRIX — the stock-rewards memecoin. Hold $MATRIX, earn $MCD stock rewards. Paired with McDonald's stock.">
+<meta name="theme-color" content="#FFC72C">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=VT323&family=Bebas+Neue&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23000'/%3E%3Ctext x='50%25' y='50%25' font-family='monospace' font-size='22' fill='%2300ff41' text-anchor='middle' dominant-baseline='central' font-weight='bold'%3EM%3C/text%3E%3C/svg%3E">
+<link href="https://fonts.googleapis.com/css2?family=Bagel+Fat+One&family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%23DA291C'/%3E%3Cpath fill='%23FFC72C' d='M6 27V12c0-3 2-5 4.5-5s3.5 2 4 4c.5-2 1.5-4 4-4s4.5 2 4.5 5v15h-4v-11c0-1.5-.8-2.3-1.7-2.3s-1.8 1-1.8 2.5V27h-3.5V13.7c0-1.5-.9-2.5-1.8-2.5s-1.7.8-1.7 2.3V27z'/%3E%3C/svg%3E">
 <style>
   :root {
-    --matrix: #00ff41;
-    --matrix-dim: #00b830;
-    --mcd-red: #DA291C;
-    --mcd-yellow: #FFC72C;
-    --bg: #000;
-    --panel: rgba(0, 15, 5, 0.72);
-    --panel-border: rgba(0, 255, 65, 0.35);
+    --yellow: #FFC72C;
+    --yellow-2: #FFD84D;
+    --yellow-dark: #E8B41C;
+    --red: #DA291C;
+    --red-2: #C41A0E;
+    --red-dark: #A0130A;
+    --black: #1a1a1a;
+    --ink: #201a15;
+    --cream: #FFF6E1;
+    --shadow-hard: 0 6px 0 #000;
+    --shadow-red: 0 6px 0 var(--red-dark);
+    --shadow-yellow: 0 6px 0 var(--yellow-dark);
+    --game-bg: #14100c;
   }
   * { box-sizing: border-box; }
   html, body {
     margin: 0;
     padding: 0;
-    background: var(--bg);
-    color: var(--matrix);
-    font-family: 'Space Mono', ui-monospace, Menlo, Consolas, monospace;
+    background: var(--yellow);
+    color: var(--ink);
+    font-family: 'Fredoka', system-ui, -apple-system, sans-serif;
+    font-weight: 500;
     min-height: 100vh;
     overflow-x: hidden;
-    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
   }
-  a { color: var(--mcd-yellow); text-decoration: none; }
-  a:hover { text-decoration: underline; }
+  body.view-game { background: var(--game-bg); color: #fff; overflow: hidden; }
+  body.view-landing { overflow: hidden; }
 
-  /* --- Backdrop layers --- */
-  #matrix-rain {
-    position: fixed;
-    inset: 0;
-    z-index: 0;
-    display: block;
-    background: #000;
-  }
-  .wojak-scenes {
-    position: fixed;
-    inset: 0;
-    z-index: 1;
-    pointer-events: none;
-    overflow: hidden;
-  }
-  .wojak-scene {
-    position: absolute;
-    width: 260px;
-    height: 200px;
-    opacity: 0.55;
-    filter: drop-shadow(0 0 8px rgba(0, 255, 65, 0.15));
-    animation: bob 3.4s ease-in-out infinite;
-  }
-  .wojak-scene svg { width: 100%; height: 100%; display: block; }
-  .wojak-scene.s1 { top: 4%;   left: 1%;   transform: rotate(-4deg); }
-  .wojak-scene.s2 { top: 8%;   right: 2%;  transform: rotate(3deg) scaleX(-1); animation-delay: -0.6s; }
-  .wojak-scene.s3 { top: 42%;  left: -20px; transform: rotate(-2deg); animation-delay: -1.2s; opacity: 0.42; }
-  .wojak-scene.s4 { top: 46%;  right: -10px; transform: rotate(4deg) scaleX(-1); animation-delay: -1.9s; opacity: 0.42; }
-  .wojak-scene.s5 { bottom: 3%; left: 3%;   transform: rotate(2deg); animation-delay: -2.4s; }
-  .wojak-scene.s6 { bottom: 5%; right: 5%;  transform: rotate(-3deg) scaleX(-1); animation-delay: -1.5s; }
-
-  @keyframes bob {
-    0%, 100% { translate: 0 0; }
-    50%      { translate: 0 -6px; }
-  }
-  /* fry animations, driven by SVG classes */
-  .fry {
-    transform-origin: center;
-    animation: fryFall 1.6s cubic-bezier(.4,0,.7,1) infinite;
-  }
-  .fry.d1 { animation-delay: -0.1s; }
-  .fry.d2 { animation-delay: -0.5s; }
-  .fry.d3 { animation-delay: -0.9s; }
-  .fry.d4 { animation-delay: -1.3s; }
-  @keyframes fryFall {
-    0%   { transform: translate(0,   -8px) rotate(-10deg); opacity: 0; }
-    10%  { opacity: 1; }
-    70%  { transform: translate(2px, 22px) rotate(35deg); opacity: 1; }
-    100% { transform: translate(4px, 34px) rotate(60deg); opacity: 0; }
-  }
-  /* Flush swirl */
-  .swirl {
-    transform-origin: 145px 132px;
-    animation: swirl 1.6s linear infinite;
-  }
-  @keyframes swirl {
-    0%   { transform: rotate(0deg) scale(1, 1); }
-    50%  { transform: rotate(180deg) scale(0.8, 1); }
-    100% { transform: rotate(360deg) scale(1, 1); }
-  }
-  /* Poop bubble */
-  .plop {
-    animation: plop 2.2s ease-in-out infinite;
-    transform-origin: center;
-  }
-  @keyframes plop {
-    0%, 100% { transform: translateY(0); opacity: 0.8; }
-    50%      { transform: translateY(-2px); opacity: 1; }
-  }
-
-  /* --- Top bar --- */
-  .top-bar {
-    position: relative;
-    z-index: 4;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 18px 28px;
-    border-bottom: 1px solid var(--panel-border);
-    background: linear-gradient(180deg, rgba(0,0,0,0.85), rgba(0,0,0,0.35));
-    backdrop-filter: blur(4px);
-  }
-  .logo {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    font-family: 'Bebas Neue', sans-serif;
-    letter-spacing: 2px;
-    font-size: 28px;
-  }
-  .logo .m-arch {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 40px;
-    height: 40px;
-    background: var(--mcd-yellow);
-    color: var(--mcd-red);
-    border-radius: 6px;
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 34px;
-    font-weight: 900;
-    box-shadow: 0 0 12px rgba(255, 199, 44, 0.65), inset 0 0 0 2px #000;
-    text-shadow: 0 1px 0 rgba(0,0,0,0.15);
+  h1, h2, h3, .display {
+    font-family: 'Bagel Fat One', 'Fredoka', system-ui, sans-serif;
+    font-weight: 400;
+    letter-spacing: 0.5px;
     line-height: 1;
-    padding-top: 2px;
-  }
-  .logo .logo-text {
-    background: linear-gradient(180deg, var(--matrix), var(--matrix-dim));
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-    text-shadow: 0 0 12px rgba(0, 255, 65, 0.4);
-  }
-  .x-icon {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 42px;
-    height: 42px;
-    border: 1px solid var(--panel-border);
-    border-radius: 8px;
-    background: rgba(0, 0, 0, 0.55);
-    transition: transform .15s ease, box-shadow .15s ease, background .15s ease;
-  }
-  .x-icon svg {
-    width: 20px;
-    height: 20px;
-    fill: #fff;
-  }
-  .x-icon:hover {
-    transform: translateY(-1px);
-    background: #fff;
-    box-shadow: 0 0 14px rgba(255, 255, 255, 0.5);
-  }
-  .x-icon:hover svg { fill: #000; }
-
-  /* --- Main content --- */
-  main {
-    position: relative;
-    z-index: 3;
-    max-width: 1080px;
-    margin: 0 auto;
-    padding: 44px 24px 120px;
-  }
-
-  .hero { text-align: center; padding: 24px 0 8px; }
-  .mega-title {
-    font-family: 'Bebas Neue', sans-serif;
-    line-height: 0.9;
-    letter-spacing: 4px;
     margin: 0;
   }
-  .mega-title .tokenised {
-    display: block;
-    font-size: clamp(28px, 5.5vw, 62px);
-    color: var(--mcd-yellow);
-    text-shadow: 0 0 18px rgba(255, 199, 44, 0.4);
-  }
-  .mega-title .matrix {
-    display: block;
-    font-family: 'VT323', ui-monospace, monospace;
-    font-size: clamp(72px, 15vw, 190px);
-    letter-spacing: 6px;
-    color: var(--matrix);
-    text-shadow:
-      0 0 8px rgba(0, 255, 65, 0.9),
-      0 0 24px rgba(0, 255, 65, 0.6),
-      0 0 46px rgba(0, 255, 65, 0.3);
-    animation: flicker 5s infinite steps(1,end);
-  }
-  @keyframes flicker {
-    0%, 92%, 100% { opacity: 1; }
-    93% { opacity: 0.7; }
-    94% { opacity: 1; }
-    96% { opacity: 0.4; }
-    97% { opacity: 1; }
-  }
-  .tagline {
-    margin: 18px auto 26px;
-    font-size: clamp(14px, 2vw, 20px);
-    letter-spacing: 2px;
-    color: #cfffd6;
-    max-width: 760px;
-  }
-  .tagline .hi {
-    color: var(--mcd-yellow);
-    background: linear-gradient(90deg, transparent, rgba(255,199,44,0.12), transparent);
-    padding: 0 6px;
-  }
+  .red { color: var(--red); }
+  .yellow { color: var(--yellow); }
+  a { color: inherit; text-decoration: none; }
 
-  .ticker-row {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 18px;
-    margin: 8px 0 34px;
-    flex-wrap: wrap;
-  }
-  .ticker-card {
-    min-width: 200px;
-    padding: 14px 22px;
-    background: var(--panel);
-    border: 1px solid var(--panel-border);
-    border-radius: 10px;
-    text-align: left;
-    box-shadow: 0 0 22px rgba(0, 255, 65, 0.15) inset;
-  }
-  .ticker-card .label {
-    font-size: 11px;
-    letter-spacing: 3px;
-    color: var(--matrix-dim);
-    margin-bottom: 4px;
-  }
-  .ticker-card .value {
-    font-family: 'VT323', ui-monospace, monospace;
-    font-size: 40px;
-    color: var(--matrix);
-    letter-spacing: 2px;
-    line-height: 1;
-  }
-  .ticker-card.mcd .value { color: var(--mcd-yellow); }
-  .ticker-card.mcd { border-color: rgba(255, 199, 44, 0.45); }
-  .ticker-row .pair {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 42px;
-    color: var(--mcd-red);
-    text-shadow: 0 0 12px rgba(218, 41, 28, 0.7);
-    padding: 0 4px;
-  }
+  /* ============ VIEW SWITCHER ============ */
+  .view { display: none; }
+  body.view-landing #landing,
+  body.view-site    #site,
+  body.view-game    #game { display: block; }
 
-  /* --- CA section --- */
-  .ca-section {
-    margin: 10px auto 40px;
+  /* =====================================================
+     LANDING — split hero (VIEW SITE | PLAY GAME)
+  ===================================================== */
+  #landing {
+    position: fixed;
+    inset: 0;
     display: flex;
-    justify-content: center;
+    z-index: 100;
   }
-  .ca-box {
-    width: 100%;
-    max-width: 760px;
-    background: linear-gradient(135deg, rgba(0, 25, 8, 0.85), rgba(15, 0, 0, 0.85));
-    border: 2px solid var(--matrix);
-    border-radius: 14px;
-    padding: 22px 24px;
-    box-shadow:
-      0 0 24px rgba(0, 255, 65, 0.25),
-      inset 0 0 20px rgba(0, 255, 65, 0.08);
+  .split {
+    flex: 1;
     position: relative;
     overflow: hidden;
+    cursor: pointer;
+    transition: flex-grow .5s cubic-bezier(.65,.05,.36,1);
   }
-  .ca-box::before {
-    content: "";
+  .split:hover { flex-grow: 1.35; }
+  .split-site {
+    background: radial-gradient(ellipse at 50% 40%, #FFE082 0%, var(--yellow) 55%, var(--yellow-dark) 100%);
+    color: var(--ink);
+  }
+  .split-game {
+    background: radial-gradient(ellipse at 50% 45%, #3a1a0a 0%, #1a0808 60%, #060202 100%);
+    color: #fff;
+  }
+  .split-bg {
     position: absolute;
     inset: 0;
-    background:
-      repeating-linear-gradient(0deg, transparent 0 3px, rgba(0,255,65,0.05) 3px 4px);
     pointer-events: none;
+    opacity: 0.35;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
-  .ca-label {
-    font-size: 11px;
-    letter-spacing: 4px;
-    color: var(--matrix-dim);
-    margin-bottom: 10px;
+  .split-site .split-bg svg { width: 90%; max-width: 700px; opacity: 0.55; }
+  .split-game .split-bg {
+    opacity: 1;
+    background:
+      radial-gradient(ellipse at 30% 20%, rgba(218,41,28,.25), transparent 60%),
+      radial-gradient(ellipse at 80% 80%, rgba(255,199,44,.15), transparent 60%);
+  }
+  .split-inner {
+    position: relative;
+    z-index: 2;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 40px 24px;
+    gap: 14px;
+  }
+  .split .tag {
+    display: inline-block;
+    padding: 8px 18px;
+    border-radius: 999px;
+    background: var(--red);
+    color: #fff;
+    font-weight: 700;
+    letter-spacing: 3px;
+    font-size: 12px;
+    box-shadow: 0 3px 0 var(--red-dark);
+  }
+  .split-game .tag { background: #000; box-shadow: 0 3px 0 #333; }
+  .split .huge {
+    font-family: 'Bagel Fat One', sans-serif;
+    font-size: clamp(72px, 12vw, 190px);
+    line-height: 0.88;
+    letter-spacing: -1px;
+  }
+  .split-site .huge .l1 { color: var(--ink); }
+  .split-site .huge .l2 { color: var(--red); }
+  .split-game .huge .l1 { color: #fff; text-shadow: 0 0 24px rgba(255,199,44,0.4); }
+  .split-game .huge .l2 {
+    color: var(--yellow);
+    text-shadow: 0 0 24px rgba(255,199,44,0.7), 0 0 40px rgba(255,199,44,0.35);
+  }
+  .split .sub {
+    font-size: clamp(14px, 1.6vw, 18px);
+    font-weight: 500;
+    opacity: 0.85;
+    max-width: 380px;
+  }
+  .split-game .sub { color: #f7e6c8; }
+  .split .go {
+    margin-top: 12px;
+    font-family: 'Fredoka', sans-serif;
+    font-weight: 700;
+    font-size: 18px;
+    padding: 16px 32px;
+    border-radius: 999px;
+    border: 3px solid #000;
+    cursor: pointer;
+    letter-spacing: 0.5px;
+    transition: transform .12s ease, box-shadow .12s ease;
+  }
+  .split-site .go {
+    background: var(--red);
+    color: #fff;
+    box-shadow: 0 6px 0 var(--red-dark);
+  }
+  .split-game .go {
+    background: var(--yellow);
+    color: #000;
+    box-shadow: 0 6px 0 var(--yellow-dark);
+  }
+  .split .go:hover { transform: translateY(-2px); box-shadow: 0 8px 0 #000; }
+  .split .go:active { transform: translateY(3px); box-shadow: 0 3px 0 #000; }
+  .split-divider {
+    position: absolute;
+    top: 0; bottom: 0;
+    left: 50%;
+    width: 4px;
+    background: #000;
+    transform: translateX(-50%);
+    pointer-events: none;
+    z-index: 3;
+  }
+  @media (max-width: 720px) {
+    #landing { flex-direction: column; }
+    .split-divider { top: 50%; left: 0; right: 0; width: auto; height: 4px; bottom: auto; transform: translateY(-50%); }
+    .split:hover { flex-grow: 1.15; }
+  }
+
+  /* Warmup fry rain in game side */
+  .fry-rain {
+    position: absolute; inset: 0; pointer-events: none; overflow: hidden;
+  }
+  .fry-rain span {
+    position: absolute;
+    top: -30px;
+    width: 6px; height: 26px;
+    background: linear-gradient(180deg, #FFE082 0%, #FFC72C 100%);
+    border: 1.5px solid #b98a1c;
+    border-radius: 2px;
+    animation: fry-fall linear infinite;
+  }
+  @keyframes fry-fall {
+    to { transform: translateY(110vh) rotate(360deg); }
+  }
+
+  /* =====================================================
+     SITE — top nav
+  ===================================================== */
+  #site { min-height: 100vh; }
+  .topnav {
+    position: sticky;
+    top: 14px;
+    z-index: 20;
+    margin: 14px auto 0;
+    max-width: 1240px;
+    padding: 0 16px;
+  }
+  .topnav-inner {
+    background: #fff;
+    border: 3px solid #000;
+    border-radius: 999px;
+    padding: 10px 14px 10px 18px;
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    box-shadow: 0 6px 0 #000;
+  }
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: 'Bagel Fat One', sans-serif;
+    font-size: 24px;
+    color: var(--red);
+    padding-right: 8px;
+  }
+  .brand svg { width: 36px; height: 36px; display: block; }
+  .brand small { color: var(--ink); font-family: 'Fredoka', sans-serif; font-weight: 700; font-size: 11px; letter-spacing: 2px; }
+  .topnav nav {
+    display: flex;
+    gap: 6px;
+    flex: 1;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  .topnav nav a {
+    padding: 8px 14px;
+    border-radius: 999px;
+    font-weight: 600;
+    font-size: 15px;
+    color: var(--ink);
+    transition: background .15s ease;
+  }
+  .topnav nav a:hover { background: rgba(0,0,0,0.07); }
+  .topnav nav a.game-link { color: var(--red); font-weight: 700; }
+  .topnav nav a.game-link::before { content: "🎮 "; }
+  .buy-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--red);
+    color: #fff !important;
+    padding: 12px 22px;
+    border-radius: 999px;
+    border: 2px solid #000;
+    font-weight: 700;
+    font-size: 15px;
+    box-shadow: 0 4px 0 var(--red-dark);
+    transition: transform .12s ease, box-shadow .12s ease;
+  }
+  .buy-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 0 var(--red-dark); }
+  .buy-btn:active { transform: translateY(2px); box-shadow: 0 2px 0 var(--red-dark); }
+  .search {
     display: flex;
     align-items: center;
     gap: 8px;
+    background: rgba(0,0,0,0.05);
+    border-radius: 999px;
+    padding: 8px 14px;
+    font-size: 14px;
+    color: #6a6a6a;
+  }
+  @media (max-width: 900px) {
+    .topnav nav { display: none; }
+    .search { display: none; }
+  }
+
+  /* =====================================================
+     SITE — hero
+  ===================================================== */
+  .site-wrap { max-width: 1240px; margin: 0 auto; padding: 40px 20px 60px; }
+  .hero { display: grid; grid-template-columns: 1.1fr 1fr; gap: 40px; align-items: center; margin-top: 20px; }
+  @media (max-width: 900px) { .hero { grid-template-columns: 1fr; gap: 20px; } }
+
+  .pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--red);
+    color: #fff;
+    font-weight: 700;
+    font-size: 13px;
+    letter-spacing: 2px;
+    padding: 10px 18px;
+    border-radius: 999px;
+    border: 2px solid #000;
+    box-shadow: 0 4px 0 var(--red-dark);
+    margin-bottom: 24px;
+  }
+  .hero h1.headline {
+    font-family: 'Bagel Fat One', sans-serif;
+    font-size: clamp(52px, 8vw, 110px);
+    line-height: 0.92;
+    color: var(--ink);
+    letter-spacing: -1px;
+  }
+  .hero .sub {
+    font-size: clamp(15px, 1.5vw, 18px);
+    color: var(--ink);
+    line-height: 1.55;
+    max-width: 520px;
+    margin-top: 22px;
+    font-weight: 500;
+  }
+  .hero .sub b { color: var(--red); font-weight: 700; }
+  .cta-row { display: flex; gap: 14px; flex-wrap: wrap; margin-top: 28px; }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 16px 26px;
+    border-radius: 999px;
+    border: 3px solid #000;
+    font-family: 'Fredoka', sans-serif;
+    font-weight: 700;
+    font-size: 16px;
+    letter-spacing: 0.3px;
+    cursor: pointer;
+    transition: transform .12s ease, box-shadow .12s ease;
+  }
+  .btn-primary { background: var(--red); color: #fff; box-shadow: 0 6px 0 var(--red-dark); }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 0 var(--red-dark); }
+  .btn-primary:active { transform: translateY(3px); box-shadow: 0 3px 0 var(--red-dark); }
+  .btn-ghost { background: #fff; color: var(--ink); box-shadow: 0 6px 0 #000; }
+  .btn-ghost:hover { transform: translateY(-2px); box-shadow: 0 8px 0 #000; }
+  .btn-ghost:active { transform: translateY(3px); box-shadow: 0 3px 0 #000; }
+
+  .bullets {
+    list-style: none;
+    padding: 0;
+    margin: 34px 0 0;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .bullets li {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-weight: 600;
+    font-size: 16px;
+  }
+  .bullets .b-ico {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    background: #fff;
+    border: 2px solid #000;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 3px 0 #000;
+    font-size: 18px;
+  }
+
+  /* Hero right: arches + falling fries */
+  .hero-art {
+    position: relative;
+    height: 520px;
+  }
+  @media (max-width: 900px) { .hero-art { height: 380px; } }
+  .hero-art .arches {
+    position: absolute;
+    right: -8%;
+    bottom: -20px;
+    width: 92%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+  }
+  .hero-art .arches svg { width: 100%; height: 100%; filter: drop-shadow(0 20px 30px rgba(0,0,0,0.15)); }
+  .hero-art .cup {
+    position: absolute;
+    left: 30%;
+    bottom: -20px;
+    width: 260px;
+    height: 300px;
+    z-index: 2;
+    filter: drop-shadow(0 20px 30px rgba(0,0,0,0.25));
+  }
+  .hero-art .cup svg { width: 100%; height: 100%; }
+  .hero-fries {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    overflow: hidden;
+  }
+  .hero-fries span {
+    position: absolute;
+    top: -30px;
+    width: 8px;
+    height: 34px;
+    background: linear-gradient(180deg, #FFE082 0%, #FFC72C 60%, #E8B41C 100%);
+    border: 2px solid #8a5e15;
+    border-radius: 3px;
+    box-shadow: inset -1px 0 0 rgba(0,0,0,0.15);
+    animation: hero-fry-fall linear infinite;
+  }
+  @keyframes hero-fry-fall {
+    from { transform: translateY(-40px) rotate(0deg); opacity: 0; }
+    10%  { opacity: 1; }
+    to   { transform: translateY(560px) rotate(720deg); opacity: 0.5; }
+  }
+
+  /* =====================================================
+     SITE — CA + ticker cards
+  ===================================================== */
+  .ca-strip {
+    margin-top: 48px;
+    background: #fff;
+    border: 3px solid #000;
+    border-radius: 24px;
+    padding: 22px 24px;
+    box-shadow: 0 8px 0 #000;
+  }
+  .ca-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'Bagel Fat One', sans-serif;
+    font-size: 18px;
+    color: var(--red);
+    letter-spacing: 2px;
+    margin-bottom: 8px;
   }
   .ca-label::before {
     content: "";
-    display: inline-block;
-    width: 8px;
-    height: 8px;
-    background: var(--mcd-red);
+    width: 10px; height: 10px;
     border-radius: 50%;
-    box-shadow: 0 0 8px var(--mcd-red);
+    background: var(--red);
+    box-shadow: 0 0 10px var(--red);
     animation: blink 1s steps(1,end) infinite;
   }
-  @keyframes blink {
-    0%, 55% { opacity: 1; }
-    56%, 100% { opacity: 0.2; }
-  }
-  .ca-row {
-    display: flex;
-    gap: 12px;
-    align-items: stretch;
-    flex-wrap: wrap;
-  }
+  @keyframes blink { 0%, 55% { opacity: 1; } 56%, 100% { opacity: 0.25; } }
+  .ca-row { display: flex; gap: 14px; flex-wrap: wrap; align-items: center; }
   #ca-value {
     flex: 1 1 320px;
-    font-family: 'VT323', ui-monospace, monospace;
-    font-size: clamp(20px, 3vw, 28px);
-    color: var(--matrix);
-    background: rgba(0, 0, 0, 0.55);
-    padding: 12px 14px;
-    border-radius: 8px;
-    border: 1px dashed rgba(0, 255, 65, 0.4);
+    font-family: ui-monospace, Menlo, Consolas, monospace;
+    font-size: clamp(15px, 2vw, 20px);
+    padding: 14px 16px;
+    background: #FFF6E1;
+    border: 2px dashed rgba(0,0,0,0.35);
+    border-radius: 14px;
+    color: var(--ink);
     word-break: break-all;
-    letter-spacing: 1px;
-    text-shadow: 0 0 8px rgba(0, 255, 65, 0.4);
+    font-weight: 600;
   }
   #copy-btn {
-    font-family: 'Bebas Neue', sans-serif;
-    letter-spacing: 3px;
-    font-size: 18px;
-    padding: 10px 20px;
-    background: var(--mcd-yellow);
+    font-family: 'Fredoka', sans-serif;
+    font-weight: 700;
+    font-size: 15px;
+    padding: 14px 22px;
+    border-radius: 999px;
+    border: 3px solid #000;
+    background: var(--yellow);
     color: #000;
-    border: 2px solid #000;
-    border-radius: 8px;
     cursor: pointer;
-    transition: transform .1s ease, box-shadow .15s ease, background .15s ease;
-    box-shadow: 0 0 14px rgba(255, 199, 44, 0.55);
-    align-self: center;
+    box-shadow: 0 5px 0 var(--yellow-dark);
+    transition: transform .12s ease, box-shadow .12s ease;
   }
-  #copy-btn:hover { transform: translateY(-1px); background: #fff; }
-  #copy-btn:active { transform: translateY(1px); }
-  #copy-btn.ok { background: var(--matrix); color: #000; box-shadow: 0 0 14px rgba(0, 255, 65, 0.6); }
+  #copy-btn:hover { transform: translateY(-2px); box-shadow: 0 7px 0 var(--yellow-dark); }
+  #copy-btn.ok { background: #64d67a; box-shadow: 0 5px 0 #3fa050; color: #000; }
 
-  /* --- Lore cards --- */
-  .lore {
+  .tickers {
+    margin-top: 22px;
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-    gap: 18px;
-    margin: 20px 0 44px;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 14px;
   }
+  .tcard {
+    background: #fff;
+    border: 3px solid #000;
+    border-radius: 20px;
+    padding: 18px 20px;
+    box-shadow: 0 6px 0 #000;
+  }
+  .tcard b {
+    display: block;
+    font-family: 'Bagel Fat One', sans-serif;
+    font-weight: 400;
+    letter-spacing: 2px;
+    color: var(--red);
+    font-size: 13px;
+    margin-bottom: 4px;
+  }
+  .tcard span {
+    font-family: 'Bagel Fat One', sans-serif;
+    font-size: 34px;
+    color: var(--ink);
+  }
+  .tcard.mcd span { color: var(--red); }
+
+  /* =====================================================
+     SITE — sections
+  ===================================================== */
+  .section { margin-top: 80px; }
+  .section h2 {
+    font-family: 'Bagel Fat One', sans-serif;
+    font-size: clamp(38px, 6vw, 74px);
+    color: var(--ink);
+    margin-bottom: 24px;
+    line-height: 0.95;
+  }
+  .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 18px; }
   .lore-card {
-    background: var(--panel);
-    border: 1px solid var(--panel-border);
-    border-radius: 12px;
-    padding: 20px 22px;
+    background: #fff;
+    border: 3px solid #000;
+    border-radius: 24px;
+    padding: 24px;
+    box-shadow: 0 6px 0 #000;
     position: relative;
     overflow: hidden;
   }
-  .lore-card::after {
-    content: "";
-    position: absolute;
-    top: -40%;
-    right: -30%;
-    width: 220px;
-    height: 220px;
-    background: radial-gradient(circle, rgba(255,199,44,0.08), transparent 60%);
-    pointer-events: none;
-  }
   .lore-card h3 {
-    font-family: 'Bebas Neue', sans-serif;
-    letter-spacing: 3px;
-    color: var(--mcd-yellow);
-    margin: 0 0 10px;
-    font-size: 22px;
-  }
-  .lore-card p, .lore-card li {
-    color: #d6ffde;
-    line-height: 1.55;
-    font-size: 15px;
-  }
-  .lore-card b { color: var(--mcd-yellow); }
-  .lore-card ul {
-    margin: 6px 0 0;
-    padding-left: 20px;
-  }
-
-  /* --- How to enter --- */
-  .how {
-    background: var(--panel);
-    border: 1px solid var(--panel-border);
-    border-radius: 12px;
-    padding: 22px 26px;
-    margin: 0 auto 44px;
-    max-width: 760px;
-  }
-  .how h3 {
-    font-family: 'Bebas Neue', sans-serif;
-    letter-spacing: 3px;
-    color: var(--matrix);
-    margin: 0 0 12px;
+    font-family: 'Bagel Fat One', sans-serif;
     font-size: 24px;
-  }
-  .how ol {
-    margin: 0;
-    padding-left: 24px;
-    color: #d6ffde;
-    line-height: 1.7;
-  }
-  .how ol li::marker {
-    color: var(--mcd-yellow);
-    font-weight: bold;
-  }
-
-  footer {
-    text-align: center;
-    color: rgba(0, 255, 65, 0.55);
-    font-size: 12px;
+    color: var(--red);
+    margin-bottom: 12px;
     letter-spacing: 1px;
-    line-height: 1.7;
-    padding-top: 20px;
-    border-top: 1px dashed rgba(0, 255, 65, 0.25);
   }
-  footer .disclaimer { color: rgba(255, 255, 255, 0.35); }
+  .lore-card p, .lore-card li { color: var(--ink); line-height: 1.55; font-weight: 500; }
+  .lore-card p + p { margin-top: 10px; }
+  .lore-card .emoji {
+    position: absolute;
+    top: -14px; right: -14px;
+    font-size: 80px;
+    opacity: 0.12;
+    transform: rotate(15deg);
+  }
 
-  /* --- Sound toggle --- */
+  .howto-list {
+    counter-reset: step;
+    padding: 0;
+    list-style: none;
+    margin: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 14px;
+  }
+  .howto-list li {
+    background: #fff;
+    border: 3px solid #000;
+    border-radius: 20px;
+    padding: 22px 22px 22px 68px;
+    position: relative;
+    box-shadow: 0 6px 0 #000;
+    counter-increment: step;
+    font-weight: 600;
+    line-height: 1.5;
+  }
+  .howto-list li::before {
+    content: counter(step);
+    position: absolute;
+    left: 14px; top: 14px;
+    width: 40px; height: 40px;
+    border-radius: 50%;
+    background: var(--red);
+    color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Bagel Fat One', sans-serif;
+    font-size: 22px;
+    border: 3px solid #000;
+    box-shadow: 0 3px 0 var(--red-dark);
+  }
+  .howto-list li b { color: var(--red); }
+
+  .community-row {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .x-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: #000;
+    color: #fff !important;
+    padding: 16px 24px;
+    border-radius: 999px;
+    border: 3px solid #000;
+    font-weight: 700;
+    font-size: 16px;
+    box-shadow: 0 6px 0 #333;
+    transition: transform .12s ease, box-shadow .12s ease;
+  }
+  .x-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 0 #333; }
+  .x-btn svg { width: 20px; height: 20px; fill: #fff; }
+
+  footer.site-foot {
+    margin-top: 80px;
+    padding: 30px 0 20px;
+    border-top: 3px dashed rgba(0,0,0,0.2);
+    text-align: center;
+    font-size: 13px;
+    color: #665;
+    line-height: 1.7;
+  }
+  footer.site-foot .disc { color: #998; font-size: 11px; }
+
+  /* =====================================================
+     GAME
+  ===================================================== */
+  #game {
+    position: fixed;
+    inset: 0;
+    background: linear-gradient(180deg, #1a1108 0%, #0a0503 100%);
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    z-index: 10;
+    overflow: hidden;
+  }
+  .game-top {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 18px;
+    background: rgba(0,0,0,0.55);
+    border-bottom: 2px solid rgba(255,199,44,0.35);
+    backdrop-filter: blur(6px);
+    flex-wrap: wrap;
+  }
+  .game-top .exit {
+    padding: 10px 16px;
+    border-radius: 999px;
+    background: var(--red);
+    color: #fff;
+    border: 2px solid #000;
+    box-shadow: 0 3px 0 var(--red-dark);
+    font-family: 'Fredoka', sans-serif;
+    font-weight: 700;
+    font-size: 14px;
+    cursor: pointer;
+  }
+  .game-top h1 {
+    font-family: 'Bagel Fat One', sans-serif;
+    color: var(--yellow);
+    font-size: 24px;
+    letter-spacing: 2px;
+    text-shadow: 0 0 20px rgba(255,199,44,0.5);
+  }
+  .game-stats {
+    margin-left: auto;
+    display: flex;
+    gap: 18px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  .stat {
+    background: rgba(255,255,255,0.06);
+    border: 2px solid rgba(255,199,44,0.3);
+    border-radius: 999px;
+    padding: 8px 16px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    font-size: 13px;
+  }
+  .stat b {
+    font-family: 'Bagel Fat One', sans-serif;
+    font-size: 22px;
+    color: var(--yellow);
+    margin-left: 6px;
+  }
+  .stat.time.warn b { color: #ff6a6a; animation: pulse .5s ease-in-out infinite alternate; }
+  @keyframes pulse { to { transform: scale(1.12); } }
+
+  .game-body {
+    flex: 1;
+    display: grid;
+    grid-template-columns: 320px 1fr;
+    grid-template-rows: 1fr auto;
+    grid-template-areas:
+      "order stack"
+      "tray  tray";
+    gap: 14px;
+    padding: 14px;
+    min-height: 0;
+  }
+  @media (max-width: 900px) {
+    .game-body { grid-template-columns: 1fr; grid-template-areas: "order" "stack" "tray"; }
+    .order-panel { max-height: 40vh; }
+  }
+  .order-panel {
+    grid-area: order;
+    background: rgba(255,255,255,0.05);
+    border: 2px solid rgba(255,199,44,0.35);
+    border-radius: 18px;
+    padding: 16px;
+    overflow-y: auto;
+  }
+  .order-panel h3 {
+    font-family: 'Bagel Fat One', sans-serif;
+    color: var(--yellow);
+    font-size: 20px;
+    letter-spacing: 2px;
+    margin-bottom: 6px;
+  }
+  .order-name {
+    font-family: 'Bagel Fat One', sans-serif;
+    color: #fff;
+    font-size: 26px;
+    letter-spacing: 1px;
+    margin: 6px 0 12px;
+  }
+  #order-stack {
+    display: flex;
+    flex-direction: column-reverse;
+    align-items: center;
+    gap: 2px;
+    background: rgba(0,0,0,0.35);
+    border-radius: 12px;
+    padding: 12px;
+  }
+  #order-stack .ing { width: 160px; height: auto; display: block; opacity: 0.9; }
+  .order-hint {
+    margin-top: 12px;
+    font-size: 12px;
+    color: #d6c9a8;
+    line-height: 1.5;
+  }
+
+  .stack-panel {
+    grid-area: stack;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    padding: 20px;
+    background:
+      radial-gradient(ellipse at 50% 100%, rgba(255,199,44,0.15), transparent 60%),
+      rgba(0,0,0,0.25);
+    border: 2px dashed rgba(255,199,44,0.25);
+    border-radius: 18px;
+    position: relative;
+    overflow: hidden;
+  }
+  .plate {
+    width: min(320px, 80%);
+    height: 24px;
+    background: linear-gradient(180deg, #eee, #aaa);
+    border: 2px solid #333;
+    border-radius: 50%;
+    box-shadow: 0 12px 24px rgba(0,0,0,0.6);
+    position: absolute;
+    bottom: 20px;
+    z-index: 1;
+  }
+  #player-stack {
+    display: flex;
+    flex-direction: column-reverse;
+    align-items: center;
+    gap: -6px;
+    z-index: 2;
+    padding-bottom: 30px;
+    min-height: 100px;
+  }
+  #player-stack .ing {
+    width: min(300px, 78%);
+    height: auto;
+    display: block;
+    margin-top: -8px;
+    animation: dropIn .35s cubic-bezier(.34, 1.56, .64, 1);
+  }
+  @keyframes dropIn {
+    0%   { transform: translateY(-140px) rotate(-6deg); opacity: 0; }
+    70%  { opacity: 1; }
+    100% { transform: translateY(0) rotate(0deg); opacity: 1; }
+  }
+  #player-stack.shake { animation: shake .4s; }
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    20%      { transform: translateX(-10px); }
+    40%      { transform: translateX(10px); }
+    60%      { transform: translateX(-6px); }
+    80%      { transform: translateX(6px); }
+  }
+  .stack-empty {
+    color: #7f7263;
+    font-weight: 600;
+    font-size: 14px;
+    position: absolute;
+    bottom: 55px;
+    z-index: 3;
+    letter-spacing: 1px;
+  }
+
+  .tray {
+    grid-area: tray;
+    background: rgba(255,255,255,0.05);
+    border: 2px solid rgba(255,199,44,0.35);
+    border-radius: 18px;
+    padding: 12px;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 12px;
+    align-items: center;
+  }
+  .ings {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .ing-btn {
+    background: #fff;
+    border: 3px solid #000;
+    border-radius: 16px;
+    padding: 10px 12px 8px;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    min-width: 92px;
+    box-shadow: 0 4px 0 #000;
+    transition: transform .1s ease, box-shadow .1s ease;
+  }
+  .ing-btn:hover { transform: translateY(-3px); box-shadow: 0 6px 0 #000; }
+  .ing-btn:active { transform: translateY(2px); box-shadow: 0 2px 0 #000; }
+  .ing-btn svg { width: 68px; height: 32px; display: block; }
+  .ing-btn span {
+    font-size: 11px;
+    letter-spacing: 1px;
+    color: var(--ink);
+    font-weight: 700;
+    text-transform: uppercase;
+  }
+  .actions {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .action-btn {
+    padding: 10px 20px;
+    border-radius: 12px;
+    border: 3px solid #000;
+    font-family: 'Fredoka', sans-serif;
+    font-weight: 700;
+    font-size: 14px;
+    letter-spacing: 1px;
+    cursor: pointer;
+    min-width: 130px;
+  }
+  .action-btn.serve {
+    background: var(--yellow); color: #000; box-shadow: 0 4px 0 var(--yellow-dark);
+  }
+  .action-btn.undo {
+    background: #fff; color: #000; box-shadow: 0 4px 0 #333;
+  }
+  .action-btn.trash {
+    background: var(--red); color: #fff; box-shadow: 0 4px 0 var(--red-dark);
+  }
+  .action-btn:hover { transform: translateY(-2px); }
+  .action-btn:active { transform: translateY(2px); box-shadow: 0 1px 0 #000; }
+
+  .floater {
+    position: absolute;
+    font-family: 'Bagel Fat One', sans-serif;
+    font-size: 44px;
+    color: var(--yellow);
+    text-shadow: 0 2px 12px rgba(0,0,0,0.8);
+    pointer-events: none;
+    animation: floater 1.1s ease-out forwards;
+    z-index: 10;
+  }
+  .floater.bad { color: #ff6a6a; }
+  @keyframes floater {
+    0%   { transform: translate(-50%, 0) scale(0.5); opacity: 0; }
+    30%  { transform: translate(-50%, -20px) scale(1.15); opacity: 1; }
+    100% { transform: translate(-50%, -140px) scale(1); opacity: 0; }
+  }
+
+  .game-over {
+    position: absolute;
+    inset: 0;
+    z-index: 20;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0,0,0,0.75);
+    backdrop-filter: blur(8px);
+  }
+  .go-inner {
+    background: var(--yellow);
+    color: #000;
+    padding: 40px 44px;
+    border-radius: 24px;
+    border: 4px solid #000;
+    box-shadow: 0 10px 0 #000;
+    text-align: center;
+    max-width: 90vw;
+  }
+  .go-inner h2 {
+    font-family: 'Bagel Fat One', sans-serif;
+    font-size: 60px;
+    color: var(--red);
+    line-height: 1;
+    margin-bottom: 8px;
+  }
+  .go-inner p { font-size: 18px; font-weight: 600; margin: 10px 0 20px; }
+  .go-inner .final-score {
+    font-family: 'Bagel Fat One', sans-serif;
+    font-size: 72px;
+    color: var(--ink);
+    line-height: 1;
+    margin: 10px 0 20px;
+  }
+  .go-buttons { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+
+  /* =====================================================
+     Sound toggle (global)
+  ===================================================== */
   #sound-toggle {
     position: fixed;
     right: 18px;
     bottom: 18px;
-    z-index: 50;
-    font-family: 'Bebas Neue', sans-serif;
-    letter-spacing: 2px;
-    font-size: 14px;
-    padding: 10px 14px;
-    border-radius: 999px;
-    border: 2px solid #000;
-    background: var(--mcd-red);
-    color: #fff;
-    cursor: pointer;
-    box-shadow: 0 4px 18px rgba(218, 41, 28, 0.55);
-    transition: transform .1s ease, box-shadow .15s ease;
-  }
-  #sound-toggle:hover { transform: translateY(-1px); }
-  #sound-toggle.sound-on {
-    background: var(--matrix);
-    color: #000;
-    box-shadow: 0 4px 18px rgba(0, 255, 65, 0.55);
-  }
-
-  /* --- Splash gate (required for audio autoplay) --- */
-  #splash {
-    position: fixed;
-    inset: 0;
     z-index: 200;
-    background: radial-gradient(ellipse at center, rgba(0, 40, 15, 0.98), #000 70%);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
-    transition: opacity .7s ease;
-  }
-  #splash.hide { opacity: 0; pointer-events: none; }
-  .splash-inner {
-    text-align: center;
-    max-width: 520px;
-    padding: 32px 28px;
-    border: 1px solid var(--panel-border);
-    border-radius: 14px;
-    background: rgba(0, 0, 0, 0.7);
-    box-shadow: 0 0 40px rgba(0, 255, 65, 0.25);
-  }
-  .splash-inner h2 {
-    font-family: 'VT323', ui-monospace, monospace;
-    font-size: 44px;
-    letter-spacing: 4px;
-    color: var(--matrix);
-    margin: 0 0 12px;
-    text-shadow: 0 0 12px rgba(0, 255, 65, 0.6);
-  }
-  .splash-inner p {
-    color: #cfffd6;
-    margin: 0 0 22px;
+    background: var(--red);
+    color: #fff;
+    border: 3px solid #000;
+    border-radius: 999px;
+    font-family: 'Fredoka', sans-serif;
+    font-weight: 700;
+    padding: 10px 16px;
     font-size: 14px;
     letter-spacing: 1px;
-    line-height: 1.6;
-  }
-  #enter-btn {
-    font-family: 'Bebas Neue', sans-serif;
-    letter-spacing: 4px;
-    font-size: 22px;
-    padding: 14px 30px;
-    background: var(--mcd-yellow);
-    color: #000;
-    border: 2px solid #000;
-    border-radius: 10px;
+    box-shadow: 0 4px 0 var(--red-dark);
     cursor: pointer;
-    box-shadow: 0 0 24px rgba(255, 199, 44, 0.6);
-    transition: transform .1s ease, box-shadow .15s ease, background .15s ease;
+    transition: transform .12s ease;
   }
-  #enter-btn:hover { transform: translateY(-1px); background: #fff; }
-  .splash-inner small {
-    display: block;
-    margin-top: 14px;
-    color: rgba(255,255,255,0.5);
-    font-size: 11px;
-    letter-spacing: 2px;
-  }
-
-  @media (max-width: 620px) {
-    .top-bar { padding: 12px 16px; }
-    .logo { font-size: 22px; }
-    .logo .m-arch { width: 34px; height: 34px; font-size: 28px; }
-    .wojak-scene { width: 200px; height: 150px; opacity: 0.42; }
-    main { padding: 30px 14px 100px; }
-    .ca-box { padding: 18px 16px; }
-  }
+  #sound-toggle:hover { transform: translateY(-2px); }
+  #sound-toggle.on { background: var(--yellow); color: #000; box-shadow: 0 4px 0 var(--yellow-dark); }
 </style>
 </head>
-<body>
+<body class="view-landing">
 
-<!-- ===== SPLASH GATE (needed so browsers allow the beeping audio) ===== -->
-<div id="splash" role="dialog" aria-label="Enter the Matrix">
-  <div class="splash-inner">
-    <h2>THE TOKENISED MATRIX</h2>
-    <p>You are inside. The fries are falling. Click below to unmute the system.</p>
-    <button id="enter-btn" type="button">ENTER THE MATRIX</button>
-    <small>SOUND ON — YOU HAVE BEEN WARNED</small>
-  </div>
-</div>
+<!-- =========================================================
+     GLOBAL SVG SYMBOLS (arches, ingredients, x-logo)
+========================================================= -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <!-- McDonald's arches (stylized) -->
+    <symbol id="mcd-arches" viewBox="0 0 220 170">
+      <g>
+        <path fill="#FFC72C" stroke="#B78108" stroke-width="3" stroke-linejoin="round" d="
+          M14,162 L14,58
+          C14,26 40,10 65,10
+          C88,10 102,26 110,50
+          C118,26 132,10 155,10
+          C180,10 206,26 206,58
+          L206,162
+          L168,162
+          L168,68
+          C168,54 160,46 152,46
+          C142,46 132,55 132,72
+          L132,162
+          L88,162
+          L88,72
+          C88,55 78,46 68,46
+          C60,46 52,54 52,68
+          L52,162 Z"/>
+      </g>
+    </symbol>
 
-<!-- ===== BACKDROP: matrix rain ===== -->
-<canvas id="matrix-rain" aria-hidden="true"></canvas>
+    <!-- Fry cup -->
+    <symbol id="fry-cup" viewBox="0 0 200 260">
+      <!-- fries poking out -->
+      <g>
+        <rect x="60"  y="10"  width="7" height="120" fill="#FFE082" stroke="#8a5e15" stroke-width="2" rx="1.5"/>
+        <rect x="72"  y="0"   width="7" height="130" fill="#FFC72C" stroke="#8a5e15" stroke-width="2" rx="1.5"/>
+        <rect x="84"  y="14"  width="7" height="116" fill="#FFE082" stroke="#8a5e15" stroke-width="2" rx="1.5"/>
+        <rect x="96"  y="4"   width="7" height="126" fill="#FFC72C" stroke="#8a5e15" stroke-width="2" rx="1.5"/>
+        <rect x="108" y="18"  width="7" height="112" fill="#FFE082" stroke="#8a5e15" stroke-width="2" rx="1.5"/>
+        <rect x="120" y="8"   width="7" height="122" fill="#FFC72C" stroke="#8a5e15" stroke-width="2" rx="1.5"/>
+        <rect x="132" y="20"  width="7" height="110" fill="#FFE082" stroke="#8a5e15" stroke-width="2" rx="1.5"/>
+      </g>
+      <!-- red cup with M -->
+      <path d="M28,110 L172,110 L156,250 Q100,262 44,250 Z" fill="#DA291C" stroke="#000" stroke-width="4" stroke-linejoin="round"/>
+      <path d="M28,110 L172,110 L169,132 L31,132 Z" fill="#B01810"/>
+      <text x="100" y="200" text-anchor="middle" fill="#FFC72C" font-family="Bagel Fat One, sans-serif" font-size="64" font-weight="700">M</text>
+    </symbol>
 
-<!-- ===== BACKDROP: wojaks flushing fries ===== -->
-<div class="wojak-scenes" aria-hidden="true">
-  <!-- Six scattered scenes; SVG defined once, cloned via <use> -->
-  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
-    <defs>
-      <symbol id="wojak-scene" viewBox="0 0 200 150">
-        <!-- Floor tiles -->
-        <rect x="0" y="140" width="200" height="10" fill="rgba(0,255,65,0.08)"/>
-        <line x1="0" y1="140" x2="200" y2="140" stroke="rgba(0,255,65,0.35)" stroke-width="0.5"/>
+    <!-- X (Twitter) logo -->
+    <symbol id="x-logo" viewBox="0 0 24 24">
+      <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+    </symbol>
 
-        <!-- Wojak body -->
-        <path d="M40 138 Q40 108 60 108 L82 108 Q102 108 102 138 Z" fill="#efefef" stroke="#000" stroke-width="1.8"/>
-        <!-- Wojak head -->
-        <circle cx="71" cy="92" r="20" fill="#f4c9a0" stroke="#000" stroke-width="1.8"/>
-        <!-- Eyes (defeated) -->
-        <ellipse cx="63" cy="90" rx="1.6" ry="2.6" fill="#000"/>
-        <ellipse cx="79" cy="90" rx="1.6" ry="2.6" fill="#000"/>
-        <!-- Brows (worried) -->
-        <path d="M58 84 L67 86" stroke="#000" stroke-width="1.4" stroke-linecap="round"/>
-        <path d="M75 86 L84 84" stroke="#000" stroke-width="1.4" stroke-linecap="round"/>
-        <!-- Mouth (frown) -->
-        <path d="M62 101 Q71 96 80 101" fill="none" stroke="#000" stroke-width="1.5" stroke-linecap="round"/>
-        <!-- Tears -->
-        <path d="M60 94 L59 104" stroke="#3bf" stroke-width="1.8" stroke-linecap="round"/>
-        <path d="M82 94 L83 104" stroke="#3bf" stroke-width="1.8" stroke-linecap="round"/>
-        <!-- Arm holding fries -->
-        <path d="M96 116 L112 106" stroke="#f4c9a0" stroke-width="5" stroke-linecap="round"/>
+    <!-- Ingredients -->
+    <symbol id="ing-bun-bot" viewBox="0 0 200 44">
+      <ellipse cx="100" cy="24" rx="94" ry="18" fill="#e0a458" stroke="#7a4d18" stroke-width="3"/>
+      <path d="M8,26 Q100,50 192,26 L192,32 Q100,52 8,32 Z" fill="#b17d34"/>
+    </symbol>
+    <symbol id="ing-bun-top" viewBox="0 0 200 60">
+      <path d="M6,54 Q6,10 100,6 Q194,10 194,54 Z" fill="#eab364" stroke="#7a4d18" stroke-width="3"/>
+      <ellipse cx="100" cy="54" rx="94" ry="4" fill="#c78e3f"/>
+      <ellipse cx="60"  cy="32" rx="4" ry="2.4" fill="#fff5db" transform="rotate(-25 60 32)"/>
+      <ellipse cx="100" cy="24" rx="4" ry="2.4" fill="#fff5db"/>
+      <ellipse cx="140" cy="34" rx="4" ry="2.4" fill="#fff5db" transform="rotate(20 140 34)"/>
+      <ellipse cx="80"  cy="42" rx="4" ry="2.4" fill="#fff5db"/>
+      <ellipse cx="120" cy="42" rx="4" ry="2.4" fill="#fff5db" transform="rotate(-10 120 42)"/>
+    </symbol>
+    <symbol id="ing-patty" viewBox="0 0 200 32">
+      <ellipse cx="100" cy="17" rx="96" ry="14" fill="#4a2612" stroke="#2a1608" stroke-width="3"/>
+      <ellipse cx="100" cy="13" rx="90" ry="8"  fill="#6a3618"/>
+      <ellipse cx="70"  cy="10" rx="8" ry="2" fill="#8a4a20" opacity="0.7"/>
+      <ellipse cx="130" cy="14" rx="6" ry="1.6" fill="#3a1c0a" opacity="0.7"/>
+    </symbol>
+    <symbol id="ing-cheese" viewBox="0 0 200 30">
+      <rect x="6" y="4" width="188" height="14" fill="#f2c14a" stroke="#a67810" stroke-width="2.5"/>
+      <path d="M6,18 L6,22 L20,26 L34,20 L48,26 L62,20 L76,26 L90,20 L104,26 L118,20 L132,26 L146,20 L160,26 L174,20 L188,26 L194,22 L194,18 Z"
+            fill="#e8a935" stroke="#a67810" stroke-width="2.5" stroke-linejoin="round"/>
+      <rect x="6" y="4" width="188" height="4" fill="#f5d270"/>
+    </symbol>
+    <symbol id="ing-lettuce" viewBox="0 0 200 26">
+      <path d="M4,15 Q14,3 24,15 Q34,3 44,15 Q54,3 64,15 Q74,3 84,15 Q94,3 104,15 Q114,3 124,15 Q134,3 144,15 Q154,3 164,15 Q174,3 184,15 Q194,3 196,15 Q186,25 176,17 Q166,25 156,17 Q146,25 136,17 Q126,25 116,17 Q106,25 96,17 Q86,25 76,17 Q66,25 56,17 Q46,25 36,17 Q26,25 16,17 Q6,25 4,15 Z"
+            fill="#5abd3e" stroke="#2f7a1c" stroke-width="2"/>
+      <path d="M4,15 Q14,8 24,15 Q34,8 44,15 Q54,8 64,15 Q74,8 84,15 Q94,8 104,15 Q114,8 124,15 Q134,8 144,15 Q154,8 164,15 Q174,8 184,15 Q194,8 196,15"
+            stroke="#7cd15a" stroke-width="2" fill="none"/>
+    </symbol>
+    <symbol id="ing-tomato" viewBox="0 0 200 18">
+      <ellipse cx="100" cy="9" rx="92" ry="7" fill="#e04328" stroke="#8a1c0d" stroke-width="2.5"/>
+      <ellipse cx="100" cy="6" rx="88" ry="3.5" fill="#f56750"/>
+      <circle cx="55"  cy="9" r="1.4" fill="#fff8a0"/>
+      <circle cx="100" cy="10" r="1.4" fill="#fff8a0"/>
+      <circle cx="145" cy="8" r="1.4" fill="#fff8a0"/>
+    </symbol>
+    <symbol id="ing-pickle" viewBox="0 0 200 18">
+      <ellipse cx="40"  cy="9" rx="20" ry="7" fill="#7cba3e" stroke="#3a6a1e" stroke-width="2"/>
+      <ellipse cx="100" cy="9" rx="20" ry="7" fill="#7cba3e" stroke="#3a6a1e" stroke-width="2"/>
+      <ellipse cx="160" cy="9" rx="20" ry="7" fill="#7cba3e" stroke="#3a6a1e" stroke-width="2"/>
+      <ellipse cx="40"  cy="9" rx="12" ry="3" fill="#a3d367"/>
+      <ellipse cx="100" cy="9" rx="12" ry="3" fill="#a3d367"/>
+      <ellipse cx="160" cy="9" rx="12" ry="3" fill="#a3d367"/>
+    </symbol>
+    <symbol id="ing-sauce" viewBox="0 0 200 18">
+      <path d="M8,10 Q28,-2 48,10 Q68,22 88,10 Q108,-2 128,10 Q148,22 168,10 Q188,-2 194,10"
+            fill="none" stroke="#c8151c" stroke-width="8" stroke-linecap="round"/>
+      <path d="M8,10 Q28,3 48,10 Q68,17 88,10 Q108,3 128,10 Q148,17 168,10 Q188,3 194,10"
+            fill="none" stroke="#ff5a5a" stroke-width="2" stroke-linecap="round" opacity="0.6"/>
+    </symbol>
+  </defs>
+</svg>
 
-        <!-- Fries cup (McDonald's) tilted over the bowl -->
-        <g transform="translate(107 96) rotate(35)">
-          <path d="M0 0 L22 0 L18 24 L4 24 Z" fill="#DA291C" stroke="#000" stroke-width="1.5"/>
-          <path d="M2 6 L20 6" stroke="#FFC72C" stroke-width="2"/>
-          <text x="8.5" y="17" fill="#FFC72C" font-family="Bebas Neue, sans-serif" font-size="10" font-weight="700">M</text>
-        </g>
-
-        <!-- Falling fries -->
-        <g>
-          <rect class="fry d1" x="128" y="118" width="2.4" height="12" fill="#FFC72C" stroke="#c99500" stroke-width="0.4"/>
-          <rect class="fry d2" x="132" y="118" width="2.4" height="10" fill="#FFC72C" stroke="#c99500" stroke-width="0.4"/>
-          <rect class="fry d3" x="126" y="118" width="2.4" height="13" fill="#FFC72C" stroke="#c99500" stroke-width="0.4"/>
-          <rect class="fry d4" x="134" y="118" width="2.4" height="11" fill="#FFC72C" stroke="#c99500" stroke-width="0.4"/>
-        </g>
-
-        <!-- Toilet tank -->
-        <rect x="162" y="88" width="22" height="32" fill="#eef2f5" stroke="#000" stroke-width="1.6" rx="2"/>
-        <rect x="157" y="97" width="8" height="3.5" fill="#888" stroke="#000" stroke-width="0.8"/>
-        <!-- Toilet bowl -->
-        <ellipse cx="150" cy="132" rx="30" ry="7" fill="#eef2f5" stroke="#000" stroke-width="1.6"/>
-        <path d="M120 132 Q120 146 150 146 Q180 146 180 132" fill="#eef2f5" stroke="#000" stroke-width="1.6"/>
-        <!-- Water + swirl -->
-        <ellipse cx="150" cy="132" rx="24" ry="4.5" fill="#8ecff5"/>
-        <ellipse class="swirl" cx="150" cy="132" rx="16" ry="3" fill="#4aa8e6" opacity="0.85"/>
-        <!-- "Poop" hint -->
-        <g class="plop" transform="translate(150 130)">
-          <ellipse cx="0" cy="0" rx="6" ry="3" fill="#6b3a13"/>
-          <ellipse cx="-1" cy="-2" rx="4" ry="2.2" fill="#7a4418"/>
-          <ellipse cx="0" cy="-4" rx="2.4" ry="1.4" fill="#8a4e1c"/>
-        </g>
-      </symbol>
-    </defs>
-  </svg>
-
-  <div class="wojak-scene s1"><svg><use href="#wojak-scene"/></svg></div>
-  <div class="wojak-scene s2"><svg><use href="#wojak-scene"/></svg></div>
-  <div class="wojak-scene s3"><svg><use href="#wojak-scene"/></svg></div>
-  <div class="wojak-scene s4"><svg><use href="#wojak-scene"/></svg></div>
-  <div class="wojak-scene s5"><svg><use href="#wojak-scene"/></svg></div>
-  <div class="wojak-scene s6"><svg><use href="#wojak-scene"/></svg></div>
-</div>
-
-<!-- ===== TOP BAR ===== -->
-<header class="top-bar">
-  <div class="logo">
-    <span class="m-arch" aria-hidden="true">M</span>
-    <span class="logo-text">TOKENISED&nbsp;MATRIX</span>
-  </div>
-  <a id="x-link" class="x-icon" href="#" target="_blank" rel="noopener noreferrer" title="Open on X" aria-label="Open on X">
-    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
-  </a>
-</header>
-
-<!-- ===== MAIN ===== -->
-<main>
-  <section class="hero">
-    <h1 class="mega-title">
-      <span class="tokenised">TOKENISED</span>
-      <span class="matrix">MATRIX</span>
-    </h1>
-    <p class="tagline">STUCK IN A TOKENISED MATRIX. <span class="hi">HODL TO EARN MCDONALD'S.</span></p>
-
-    <div class="ticker-row">
-      <div class="ticker-card">
-        <div class="label">TICKER</div>
-        <div class="value">$MATRIX</div>
-      </div>
-      <span class="pair" aria-hidden="true">×</span>
-      <div class="ticker-card mcd">
-        <div class="label">PAIRED WITH</div>
-        <div class="value">$MCD</div>
-      </div>
+<!-- =========================================================
+     LANDING (split VIEW SITE | PLAY GAME)
+========================================================= -->
+<section id="landing" class="view">
+  <div class="split split-site" data-goto="site" tabindex="0" role="button" aria-label="Enter site">
+    <div class="split-bg" aria-hidden="true">
+      <svg><use href="#mcd-arches"/></svg>
     </div>
-  </section>
+    <div class="split-inner">
+      <div class="tag">$MATRIX</div>
+      <div class="huge display">
+        <span class="l1">VIEW</span><br>
+        <span class="l2">SITE</span>
+      </div>
+      <p class="sub">The thesis, the CA, and the fry cult.</p>
+      <button class="go" data-goto="site">🍟 Enter The Matrix</button>
+    </div>
+  </div>
+  <div class="split-divider"></div>
+  <div class="split split-game" data-goto="game" tabindex="0" role="button" aria-label="Play game">
+    <div class="split-bg" aria-hidden="true">
+      <div class="fry-rain" id="fry-rain-game"></div>
+    </div>
+    <div class="split-inner">
+      <div class="tag">MCDONALD'S AFTER DARK</div>
+      <div class="huge display">
+        <span class="l1">PLAY</span><br>
+        <span class="l2">GAME</span>
+      </div>
+      <p class="sub">Stack the burger. Beat the fry vortex.</p>
+      <button class="go" data-goto="game">🎮 Start Playing</button>
+    </div>
+  </div>
+</section>
 
-  <!-- CONTRACT ADDRESS: edit the CONTRACT_ADDRESS constant at the bottom of this file. -->
-  <section class="ca-section">
-    <div class="ca-box">
+<!-- =========================================================
+     SITE
+========================================================= -->
+<section id="site" class="view">
+  <header class="topnav">
+    <div class="topnav-inner">
+      <a class="brand" href="#" data-goto="landing" aria-label="Home">
+        <svg><use href="#mcd-arches"/></svg>
+        <span>$MATRIX</span>
+      </a>
+      <nav>
+        <a href="#thesis">Thesis</a>
+        <a href="#howto">How To Buy</a>
+        <a href="#community">Community</a>
+        <a href="#" class="game-link" data-goto="game">Game</a>
+      </nav>
+      <div class="search" aria-hidden="true">🔎 Craving fries?</div>
+      <a class="buy-btn" href="#howto">Buy $MATRIX</a>
+    </div>
+  </header>
+
+  <div class="site-wrap">
+    <section class="hero">
+      <div>
+        <div class="pill">🍟 THE STOCK-REWARDS MEMECOIN</div>
+        <h1 class="headline">Stuck In The <span class="red">Matrix</span></h1>
+        <p class="sub">
+          Hold <b>$MATRIX</b>. Earn real <b>$MCD</b> stock rewards.
+          Every candle is a fry. Every fry is a bag. The bag is the system.
+        </p>
+        <div class="cta-row">
+          <a class="btn btn-primary" href="#howto">🍟 Get $MATRIX</a>
+          <a class="btn btn-ghost"   href="#thesis">See How It Works</a>
+        </div>
+        <ul class="bullets">
+          <li><span class="b-ico">🎖</span> Earn real <b>$MCD stock rewards</b></li>
+          <li><span class="b-ico">🍟</span> Hold your fries — the longer, the deeper</li>
+          <li><span class="b-ico">🔁</span> Paired 1:1 with the <b>$MCD</b> ticker</li>
+        </ul>
+      </div>
+      <div class="hero-art">
+        <div class="arches"><svg><use href="#mcd-arches"/></svg></div>
+        <div class="cup"><svg><use href="#fry-cup"/></svg></div>
+        <div class="hero-fries" id="hero-fries"></div>
+      </div>
+    </section>
+
+    <!-- CA — edit CONTRACT_ADDRESS at the bottom of this file -->
+    <section class="ca-strip" id="ca">
       <div class="ca-label">CONTRACT ADDRESS</div>
       <div class="ca-row">
         <code id="ca-value">COMING SOON — PASTE CA HERE</code>
         <button id="copy-btn" type="button">COPY</button>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <section class="lore">
-    <div class="lore-card">
-      <h3>THE LORE</h3>
-      <p>You wake up. Neo was right. The Matrix is real, and it runs on <b>McNuggets</b>.</p>
-      <p>Every green candle is a Big Mac. Every red candle is a broken ice-cream machine. Every wojak in the walls is flushing his fries so the system keeps ticking.</p>
-      <p>You cannot escape. But you can <b>HODL</b>.</p>
-    </div>
-    <div class="lore-card">
-      <h3>THE MECHANIC</h3>
-      <ul>
-        <li>Ticker: <b>$MATRIX</b></li>
-        <li>Paired with <b>$MCD</b> (McDonald's stock)</li>
-        <li>Every holder earns real <b>McDonald's stock rewards</b></li>
-        <li>The longer you hold, the deeper you go</li>
-      </ul>
-    </div>
-    <div class="lore-card">
-      <h3>THE PILLS</h3>
-      <p>The red pill is a <b>McRib</b>. The blue pill is a <b>Filet-O-Fish</b>. Both taste the same after enough candles.</p>
-      <p>Choose one. Or better — <b>choose the fries</b>.</p>
-    </div>
-  </section>
+    <section class="tickers">
+      <div class="tcard"><b>TICKER</b><span>$MATRIX</span></div>
+      <div class="tcard mcd"><b>PAIRED WITH</b><span>$MCD</span></div>
+      <div class="tcard"><b>REWARD</b><span>McDonald's Stock</span></div>
+    </section>
 
-  <section class="how" id="how">
-    <h3>HOW TO ENTER THE MATRIX</h3>
-    <ol>
-      <li>Get a wallet.</li>
-      <li>Copy the <b>CA</b> above.</li>
-      <li>Swap for <b>$MATRIX</b> on the DEX pair with <b>$MCD</b>.</li>
-      <li>Hold. The Matrix streams <b>McDonald's stock rewards</b> to every holder.</li>
-      <li>Beep. Beep. Beep. You are one of us now.</li>
-    </ol>
-  </section>
+    <section class="section" id="thesis">
+      <h2>The <span class="red">Thesis</span></h2>
+      <div class="grid-3">
+        <div class="lore-card">
+          <div class="emoji">🕶</div>
+          <h3>THE MATRIX IS FRIES</h3>
+          <p>You wake up. Neo was right. The Matrix is real, and it runs on <b>McNuggets</b>.</p>
+          <p>Every green candle is a Big Mac. Every red candle is a broken ice-cream machine. You cannot escape. You can only <b>HODL</b>.</p>
+        </div>
+        <div class="lore-card">
+          <div class="emoji">🍟</div>
+          <h3>THE MECHANIC</h3>
+          <p>Buy <b>$MATRIX</b>. It's paired with the <b>$MCD</b> ticker. Every holder earns real McDonald's stock rewards, streamed to the wallet.</p>
+          <p>The bag is the system. The system is the bag.</p>
+        </div>
+        <div class="lore-card">
+          <div class="emoji">💊</div>
+          <h3>THE PILLS</h3>
+          <p>The red pill is a <b>McRib</b>. The blue pill is a <b>Filet-O-Fish</b>. Both taste the same after enough candles.</p>
+          <p>Choose one. Or better — <b>choose the fries</b>.</p>
+        </div>
+      </div>
+    </section>
 
-  <footer>
-    <p>$MATRIX is a memecoin. This site is satire. Nothing here is financial advice.</p>
-    <p class="disclaimer">Not affiliated with, endorsed by, or associated with McDonald's Corporation or Warner Bros. Meme use only.</p>
-  </footer>
-</main>
+    <section class="section" id="howto">
+      <h2>How To <span class="red">Buy</span></h2>
+      <ol class="howto-list">
+        <li>Get a <b>wallet</b>. Any wallet. Even a paper one, but preferably not.</li>
+        <li>Copy the <b>CA</b> from the box above.</li>
+        <li>Swap for <b>$MATRIX</b> on the DEX pair with <b>$MCD</b>.</li>
+        <li>Hold. The Matrix streams <b>$MCD stock rewards</b> to holders. Beep beep.</li>
+      </ol>
+    </section>
+
+    <section class="section" id="community">
+      <h2>Join The <span class="red">Fry Cult</span></h2>
+      <div class="community-row">
+        <a class="x-btn" id="x-link" href="#" target="_blank" rel="noopener noreferrer">
+          <svg><use href="#x-logo"/></svg>
+          Follow on X
+        </a>
+        <a class="btn btn-ghost" href="#" data-goto="game">🎮 Play Burger Matrix</a>
+      </div>
+    </section>
+
+    <footer class="site-foot">
+      <p>$MATRIX is a memecoin. This site is satire. Nothing here is financial advice.</p>
+      <p class="disc">Not affiliated with, endorsed by, or associated with McDonald's Corporation or Warner Bros. Meme use only.</p>
+    </footer>
+  </div>
+</section>
+
+<!-- =========================================================
+     GAME — Burger Matrix
+========================================================= -->
+<section id="game" class="view" aria-label="Burger Matrix Game">
+  <div class="game-top">
+    <button class="exit" data-goto="landing">← EXIT</button>
+    <h1>BURGER MATRIX</h1>
+    <div class="game-stats">
+      <div class="stat">SCORE <b id="g-score">0</b></div>
+      <div class="stat time" id="g-time-wrap">TIME <b id="g-time">90</b></div>
+      <div class="stat">COMBO <b id="g-combo">×1</b></div>
+    </div>
+  </div>
+  <div class="game-body">
+    <div class="order-panel">
+      <h3>NEXT ORDER</h3>
+      <div class="order-name" id="g-order-name">—</div>
+      <div id="order-stack" aria-hidden="true"></div>
+      <div class="order-hint">
+        Tap ingredients in the exact order shown (bottom → top).<br>
+        Hit <b>SERVE</b> when done. Speed = combo.
+      </div>
+    </div>
+    <div class="stack-panel">
+      <div id="player-stack"></div>
+      <div class="plate"></div>
+      <div class="stack-empty" id="stack-empty">TAP AN INGREDIENT TO START</div>
+    </div>
+    <div class="tray">
+      <div class="ings" id="ings"></div>
+      <div class="actions">
+        <button class="action-btn serve" id="g-serve">SERVE 🍔</button>
+        <button class="action-btn undo"  id="g-undo">UNDO</button>
+        <button class="action-btn trash" id="g-trash">TRASH</button>
+      </div>
+    </div>
+  </div>
+  <div class="game-over" id="game-over" hidden>
+    <div class="go-inner">
+      <h2>TIME'S UP</h2>
+      <p>Burgers served: <b id="g-served">0</b></p>
+      <div class="final-score" id="g-final">0</div>
+      <div class="go-buttons">
+        <button class="btn btn-primary" id="g-again">PLAY AGAIN</button>
+        <button class="btn btn-ghost"   data-goto="site">← RETURN TO SITE</button>
+      </div>
+    </div>
+  </div>
+</section>
 
 <button id="sound-toggle" type="button" aria-label="Toggle sound">🔇 SOUND OFF</button>
 
 <script>
-  // ============================================================
-  //  EDIT THESE ONCE THE TOKEN LAUNCHES
-  // ============================================================
-  const CONTRACT_ADDRESS = "COMING SOON — PASTE CA HERE";
-  const X_URL            = "https://x.com/";   // <-- put your X (Twitter) profile URL here
-  // ============================================================
+/* =========================================================
+   CONFIG — edit these once the token launches
+========================================================= */
+const CONTRACT_ADDRESS = "COMING SOON — PASTE CA HERE";
+const X_URL            = "https://x.com/";  // set your X profile URL here
+const AUDIO_URL        = "sounds/mcd-beep.mp3";  // loops non-stop after entry
 
-  // Wire the CA + X link
-  document.getElementById('ca-value').textContent = CONTRACT_ADDRESS;
-  document.getElementById('x-link').href = X_URL;
+document.getElementById('ca-value').textContent = CONTRACT_ADDRESS;
+document.getElementById('x-link').href = X_URL;
 
-  // -------- Matrix rain --------
-  (() => {
-    const canvas = document.getElementById('matrix-rain');
-    const ctx = canvas.getContext('2d');
-    const glyphs = 'ﾊﾐﾋｰｳｼﾅﾓﾆｻﾜﾂｵﾘｱﾎﾃﾏｹﾒｴｶｷﾑﾕﾗｾﾈｽﾀﾇﾍMcDONALDSMATRIX01ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789#$%*';
-    const fontSize = 16;
-    let cols = 0;
-    let drops = [];
+/* =========================================================
+   VIEW ROUTER — landing / site / game
+========================================================= */
+const validViews = ['landing', 'site', 'game'];
+function goto(view) {
+  if (!validViews.includes(view)) view = 'landing';
+  document.body.classList.remove('view-landing', 'view-site', 'view-game');
+  document.body.classList.add('view-' + view);
+  if (view === 'landing') history.replaceState(null, '', '#');
+  else                    history.replaceState(null, '', '#' + view);
+  if (view === 'game') Game.start(); else Game.stop();
+  window.scrollTo(0, 0);
+  ensureAudio();  // first user click into any view unlocks audio
+}
+document.body.addEventListener('click', (e) => {
+  const el = e.target.closest('[data-goto]');
+  if (!el) return;
+  e.preventDefault();
+  goto(el.getAttribute('data-goto'));
+});
+document.body.addEventListener('keydown', (e) => {
+  if ((e.key === 'Enter' || e.key === ' ') && e.target.dataset.goto) {
+    e.preventDefault();
+    goto(e.target.dataset.goto);
+  }
+});
+window.addEventListener('hashchange', () => {
+  const v = location.hash.slice(1) || 'landing';
+  goto(v);
+});
+// initial view
+{
+  const h = location.hash.slice(1);
+  if (validViews.includes(h) && h !== 'landing') goto(h);
+}
 
-    function resize() {
-      canvas.width  = window.innerWidth;
-      canvas.height = window.innerHeight;
-      cols = Math.floor(canvas.width / fontSize);
-      drops = Array(cols).fill(0).map(() => Math.random() * -canvas.height / fontSize);
-    }
-    window.addEventListener('resize', resize);
-    resize();
+/* =========================================================
+   AUDIO — loop mcd-beep.mp3 non-stop
+========================================================= */
+const beepEl = new Audio(AUDIO_URL);
+beepEl.loop = true;
+beepEl.preload = 'auto';
+beepEl.volume = 0.75;
 
-    function draw() {
-      // trail fade
-      ctx.fillStyle = 'rgba(0, 0, 0, 0.07)';
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-      ctx.font = fontSize + "px 'VT323', ui-monospace, monospace";
+let soundOn = false;
+let audioReady = false;
 
-      for (let i = 0; i < cols; i++) {
-        const ch = glyphs.charAt(Math.floor(Math.random() * glyphs.length));
-        const x = i * fontSize;
-        const y = drops[i] * fontSize;
-
-        const roll = Math.random();
-        if (roll < 0.012) ctx.fillStyle = '#FFC72C';        // McD yellow
-        else if (roll < 0.02) ctx.fillStyle = '#DA291C';    // McD red
-        else if (roll < 0.05) ctx.fillStyle = '#a7ffb6';    // head glow
-        else ctx.fillStyle = '#00ff41';                     // matrix green
-
-        ctx.fillText(ch, x, y);
-        if (y > canvas.height && Math.random() > 0.975) drops[i] = 0;
-        drops[i]++;
-      }
-    }
-    setInterval(draw, 45);
-  })();
-
-  // -------- Beeping McDonald's meme sound --------
-  //  Recreates the classic order-ready timer: 5 short square-wave beeps ~2.1 kHz,
-  //  then a 1s pause, on loop. Generated locally with WebAudio (no external files).
-  const audio = (() => {
-    let ctx = null;
-    let loopHandle = null;
-    let on = false;
-
-    function ensure() {
-      if (!ctx) ctx = new (window.AudioContext || window.webkitAudioContext)();
-      if (ctx.state === 'suspended') ctx.resume();
-    }
-
-    function scheduleBurst(startAt) {
-      const beeps = 5;
-      const gap = 0.17;    // seconds between beeps
-      const dur = 0.11;
-      for (let i = 0; i < beeps; i++) {
-        const t = startAt + i * gap;
-        const osc  = ctx.createOscillator();
-        const gain = ctx.createGain();
-        osc.type = 'square';
-        osc.frequency.setValueAtTime(2100, t);
-        gain.gain.setValueAtTime(0.0001, t);
-        gain.gain.exponentialRampToValueAtTime(0.12, t + 0.005);
-        gain.gain.exponentialRampToValueAtTime(0.0001, t + dur);
-        osc.connect(gain).connect(ctx.destination);
-        osc.start(t);
-        osc.stop(t + dur + 0.02);
-      }
-    }
-
-    function tick() {
-      if (!on) return;
-      ensure();
-      scheduleBurst(ctx.currentTime + 0.02);
-    }
-
-    function start() {
-      ensure();
-      on = true;
-      tick();                              // immediate
-      loopHandle = setInterval(tick, 2000); // ~5 beeps then rest, ~every 2s
-      paint();
-    }
-
-    function stop() {
-      on = false;
-      if (loopHandle) clearInterval(loopHandle);
-      loopHandle = null;
-      paint();
-    }
-
-    function toggle() { on ? stop() : start(); }
-
-    function paint() {
-      const btn = document.getElementById('sound-toggle');
-      if (on) {
-        btn.textContent = '🔊 SOUND ON';
-        btn.classList.add('sound-on');
-      } else {
-        btn.textContent = '🔇 SOUND OFF';
-        btn.classList.remove('sound-on');
-      }
-    }
-
-    return { start, stop, toggle };
-  })();
-
-  // -------- Splash / audio gate --------
-  const splash = document.getElementById('splash');
-  document.getElementById('enter-btn').addEventListener('click', () => {
-    splash.classList.add('hide');
-    setTimeout(() => splash && splash.remove(), 750);
-    audio.start();
-  });
-  document.getElementById('sound-toggle').addEventListener('click', () => audio.toggle());
-
-  // Keyboard escape from splash (still counts as user gesture)
-  splash.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter' || e.key === ' ') {
-      document.getElementById('enter-btn').click();
-    }
-  });
-
-  // -------- Copy CA --------
-  document.getElementById('copy-btn').addEventListener('click', async () => {
-    const btn = document.getElementById('copy-btn');
-    const val = document.getElementById('ca-value').textContent.trim();
+function paintSoundBtn() {
+  const btn = document.getElementById('sound-toggle');
+  if (soundOn) { btn.textContent = '🔊 SOUND ON';  btn.classList.add('on'); }
+  else         { btn.textContent = '🔇 SOUND OFF'; btn.classList.remove('on'); }
+}
+async function ensureAudio() {
+  if (audioReady) return;
+  try {
+    await beepEl.play();
+    audioReady = true;
+    soundOn = true;
+    paintSoundBtn();
+  } catch (err) {
+    // Browser blocked — user needs to hit the sound button
+    audioReady = false;
+  }
+}
+document.getElementById('sound-toggle').addEventListener('click', async () => {
+  if (soundOn) {
+    beepEl.pause();
+    soundOn = false;
+  } else {
     try {
-      await navigator.clipboard.writeText(val);
-    } catch {
-      const ta = document.createElement('textarea');
-      ta.value = val;
-      document.body.appendChild(ta);
-      ta.select();
-      try { document.execCommand('copy'); } catch {}
-      ta.remove();
+      await beepEl.play();
+      soundOn = true;
+      audioReady = true;
+    } catch (e) { /* still blocked */ }
+  }
+  paintSoundBtn();
+});
+
+/* =========================================================
+   HERO — falling fries
+========================================================= */
+(function setupHeroFries() {
+  const wrap = document.getElementById('hero-fries');
+  if (!wrap) return;
+  const N = 26;
+  for (let i = 0; i < N; i++) {
+    const s = document.createElement('span');
+    s.style.left = (Math.random() * 100) + '%';
+    s.style.animationDuration = (2.4 + Math.random() * 3.4) + 's';
+    s.style.animationDelay    = (-Math.random() * 5) + 's';
+    s.style.transform = `rotate(${Math.random() * 360}deg)`;
+    wrap.appendChild(s);
+  }
+})();
+
+/* =========================================================
+   LANDING — game side fry rain
+========================================================= */
+(function setupGameSideFries() {
+  const wrap = document.getElementById('fry-rain-game');
+  if (!wrap) return;
+  const N = 40;
+  for (let i = 0; i < N; i++) {
+    const s = document.createElement('span');
+    s.style.left = (Math.random() * 100) + '%';
+    s.style.animationDuration = (2.5 + Math.random() * 3) + 's';
+    s.style.animationDelay    = (-Math.random() * 5) + 's';
+    s.style.opacity = (0.45 + Math.random() * 0.4).toFixed(2);
+    wrap.appendChild(s);
+  }
+})();
+
+/* =========================================================
+   COPY CA
+========================================================= */
+document.getElementById('copy-btn').addEventListener('click', async () => {
+  const btn = document.getElementById('copy-btn');
+  const val = document.getElementById('ca-value').textContent.trim();
+  try { await navigator.clipboard.writeText(val); }
+  catch {
+    const ta = document.createElement('textarea');
+    ta.value = val; document.body.appendChild(ta); ta.select();
+    try { document.execCommand('copy'); } catch {}
+    ta.remove();
+  }
+  const orig = btn.textContent;
+  btn.textContent = 'COPIED ✓';
+  btn.classList.add('ok');
+  setTimeout(() => { btn.textContent = orig; btn.classList.remove('ok'); }, 1500);
+});
+
+/* =========================================================
+   BURGER MATRIX — the game
+========================================================= */
+const Game = (() => {
+  const INGREDIENTS = [
+    { id: 'bun-bot', name: 'BOTTOM BUN', h: 44 },
+    { id: 'patty',   name: 'PATTY',      h: 32 },
+    { id: 'cheese',  name: 'CHEESE',     h: 30 },
+    { id: 'lettuce', name: 'LETTUCE',    h: 26 },
+    { id: 'tomato',  name: 'TOMATO',     h: 18 },
+    { id: 'pickle',  name: 'PICKLES',    h: 18 },
+    { id: 'sauce',   name: 'SAUCE',      h: 18 },
+    { id: 'bun-top', name: 'TOP BUN',    h: 60 },
+  ];
+  const RECIPES = [
+    { name: 'MATRIX CLASSIC',  items: ['bun-bot','patty','cheese','bun-top'] },
+    { name: 'RED PILL',        items: ['bun-bot','patty','sauce','lettuce','bun-top'] },
+    { name: 'BLUE PILL',       items: ['bun-bot','patty','cheese','pickle','bun-top'] },
+    { name: 'TRINITY DOUBLE',  items: ['bun-bot','patty','patty','cheese','bun-top'] },
+    { name: 'NEO SPECIAL',     items: ['bun-bot','patty','cheese','tomato','lettuce','sauce','bun-top'] },
+    { name: 'OPS SANDWICH',    items: ['bun-bot','patty','cheese','pickle','tomato','bun-top'] },
+    { name: 'AGENT SMITH',     items: ['bun-bot','patty','cheese','patty','cheese','bun-top'] },
+    { name: 'BIG MATRIX',      items: ['bun-bot','patty','cheese','lettuce','tomato','sauce','pickle','patty','cheese','bun-top'] },
+    { name: 'THE ORACLE',      items: ['bun-bot','lettuce','patty','tomato','patty','cheese','bun-top'] },
+    { name: 'BUG BURGER',      items: ['bun-bot','patty','pickle','sauce','bun-top'] },
+  ];
+
+  const $ = (id) => document.getElementById(id);
+  const el = {
+    ings:      $('ings'),
+    orderName: $('g-order-name'),
+    orderStk:  $('order-stack'),
+    playerStk: $('player-stack'),
+    empty:     $('stack-empty'),
+    score:     $('g-score'),
+    time:      $('g-time'),
+    timeWrap:  $('g-time-wrap'),
+    combo:     $('g-combo'),
+    serve:     $('g-serve'),
+    undo:      $('g-undo'),
+    trash:     $('g-trash'),
+    over:      $('game-over'),
+    served:    $('g-served'),
+    final:     $('g-final'),
+    again:     $('g-again'),
+    stackPanel:document.querySelector('.stack-panel'),
+  };
+
+  let state = null;
+  let ticker = null;
+
+  function svgFor(id) {
+    return `<svg class="ing" viewBox="0 0 200 60" preserveAspectRatio="xMidYMid meet"><use href="#ing-${id}"/></svg>`;
+  }
+
+  function renderTray() {
+    el.ings.innerHTML = '';
+    INGREDIENTS.forEach(ing => {
+      const b = document.createElement('button');
+      b.className = 'ing-btn';
+      b.dataset.id = ing.id;
+      b.innerHTML = `<svg viewBox="0 0 200 60"><use href="#ing-${ing.id}"/></svg><span>${ing.name}</span>`;
+      b.addEventListener('click', () => addIngredient(ing.id));
+      el.ings.appendChild(b);
+    });
+  }
+
+  function newOrder() {
+    // scale difficulty with orders served
+    const served = state ? state.served : 0;
+    const maxIndex = Math.min(RECIPES.length - 1, 3 + Math.floor(served / 2));
+    const pool = RECIPES.slice(0, maxIndex + 1);
+    const pick = pool[Math.floor(Math.random() * pool.length)];
+    state.order = pick;
+    el.orderName.textContent = pick.name;
+    el.orderStk.innerHTML = pick.items.map(svgFor).join('');
+    state.stack = [];
+    renderStack();
+  }
+
+  function renderStack() {
+    el.playerStk.innerHTML = state.stack.map(svgFor).join('');
+    el.empty.hidden = state.stack.length > 0;
+  }
+
+  function addIngredient(id) {
+    if (!state || state.finished) return;
+    if (state.stack.length >= 14) return;
+    state.stack.push(id);
+    renderStack();
+    beepClick();
+  }
+
+  function undo() {
+    if (!state || state.finished) return;
+    state.stack.pop();
+    renderStack();
+  }
+  function trash() {
+    if (!state || state.finished) return;
+    state.stack = [];
+    renderStack();
+    beepClick(true);
+  }
+
+  function serve() {
+    if (!state || state.finished) return;
+    const want = state.order.items;
+    const got  = state.stack;
+    let correct = want.length === got.length && want.every((v,i) => v === got[i]);
+    if (correct) {
+      state.combo++;
+      const gain = 100 * state.combo + Math.max(0, Math.floor(state.time / 3));
+      state.score += gain;
+      state.served++;
+      state.time = Math.min(120, state.time + 6);  // small time refund
+      floater('+' + gain, false);
+      newOrder();
+    } else {
+      state.combo = 1;
+      state.score = Math.max(0, state.score - 40);
+      state.time  = Math.max(0, state.time - 4);
+      floater('WRONG! -40', true);
+      el.playerStk.classList.remove('shake');
+      void el.playerStk.offsetWidth;
+      el.playerStk.classList.add('shake');
     }
-    const orig = btn.textContent;
-    btn.textContent = 'COPIED ✓';
-    btn.classList.add('ok');
-    setTimeout(() => { btn.textContent = orig; btn.classList.remove('ok'); }, 1500);
+    paint();
+  }
+
+  function paint() {
+    el.score.textContent = state.score;
+    el.time.textContent  = state.time;
+    el.combo.textContent = '×' + state.combo;
+    el.timeWrap.classList.toggle('warn', state.time <= 10);
+  }
+
+  function floater(text, bad) {
+    const f = document.createElement('div');
+    f.className = 'floater' + (bad ? ' bad' : '');
+    f.textContent = text;
+    f.style.left = '50%';
+    f.style.top  = '40%';
+    el.stackPanel.appendChild(f);
+    setTimeout(() => f.remove(), 1100);
+  }
+
+  function beepClick(bad) {
+    try {
+      const ctx = beepClick._ctx = beepClick._ctx || new (window.AudioContext || window.webkitAudioContext)();
+      const o = ctx.createOscillator();
+      const g = ctx.createGain();
+      o.type = 'square';
+      o.frequency.value = bad ? 220 : 1200;
+      g.gain.setValueAtTime(0.0001, ctx.currentTime);
+      g.gain.exponentialRampToValueAtTime(0.08, ctx.currentTime + 0.005);
+      g.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.08);
+      o.connect(g).connect(ctx.destination);
+      o.start();
+      o.stop(ctx.currentTime + 0.09);
+    } catch (e) {}
+  }
+
+  function start() {
+    if (ticker) return;  // already running
+    renderTray();
+    state = { score: 0, time: 90, combo: 0, served: 0, order: null, stack: [], finished: false };
+    el.over.hidden = true;
+    newOrder();
+    paint();
+    ticker = setInterval(() => {
+      if (!state || state.finished) return;
+      state.time = Math.max(0, state.time - 1);
+      paint();
+      if (state.time <= 0) end();
+    }, 1000);
+  }
+
+  function stop() {
+    if (ticker) clearInterval(ticker);
+    ticker = null;
+  }
+
+  function end() {
+    state.finished = true;
+    el.served.textContent = state.served;
+    el.final.textContent  = state.score;
+    el.over.hidden = false;
+  }
+
+  el.serve.addEventListener('click', serve);
+  el.undo.addEventListener('click',  undo);
+  el.trash.addEventListener('click', trash);
+  el.again.addEventListener('click', () => { stop(); start(); });
+
+  // Keyboard shortcuts
+  document.addEventListener('keydown', (e) => {
+    if (!document.body.classList.contains('view-game')) return;
+    if (e.key === 'Enter') serve();
+    if (e.key === 'Backspace') { e.preventDefault(); undo(); }
   });
+
+  return { start, stop };
+})();
 </script>
 </body>
 </html>
