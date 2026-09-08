@@ -461,12 +461,37 @@
       drop-shadow(0 0 60px rgba(255,199,44,0.55))
       drop-shadow(0 0 120px rgba(218,41,28,0.35))
       drop-shadow(0 24px 40px rgba(0,0,0,0.6));
-    animation: coinSpin 8s ease-in-out infinite;
+    animation: coinSpin 6s ease-in-out infinite;
+    will-change: transform;
   }
   @keyframes coinSpin {
-    0%, 100% { transform: translateY(0)   rotate(-4deg) scale(1); }
-    50%      { transform: translateY(-14px) rotate(4deg) scale(1.02); }
+    0%   { transform: translateY(0)    rotateY(-14deg) rotate(-2deg); }
+    50%  { transform: translateY(-16px) rotateY( 14deg) rotate( 2deg); }
+    100% { transform: translateY(0)    rotateY(-14deg) rotate(-2deg); }
   }
+  .hero-boards {
+    display: flex;
+    gap: 10px;
+    margin-top: 26px;
+    flex-wrap: wrap;
+  }
+  .hboard {
+    font-family: ui-monospace, Menlo, Consolas, monospace;
+    font-weight: 700;
+    font-size: 11px;
+    letter-spacing: 1.5px;
+    padding: 10px 14px;
+    border-radius: 8px;
+    line-height: 1.2;
+    background: #000;
+    border: 2px solid currentColor;
+    text-transform: uppercase;
+    text-align: center;
+  }
+  .hboard b { font-family: ui-monospace, Menlo, Consolas, monospace; }
+  .hboard.green  { color: #00ff41; box-shadow: 0 0 16px rgba(0,255,65,0.35); }
+  .hboard.yellow { color: #FFC72C; box-shadow: 0 0 16px rgba(255,199,44,0.35); }
+  .hboard.red    { color: #ff5252; box-shadow: 0 0 16px rgba(255,82,82,0.35); }
   .hero-art .box-wrap {
     width: 340px;
     max-width: 100%;
@@ -784,11 +809,22 @@
   }
   .order-name {
     font-family: 'Bagel Fat One', sans-serif;
-    font-size: 26px;
+    font-size: 24px;
     color: var(--yellow);
-    line-height: 1;
+    line-height: 1.1;
     margin: 4px 0 14px;
     text-shadow: 0 0 12px rgba(255,199,44,0.4);
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .order-name .order-num {
+    font-family: ui-monospace, Menlo, monospace;
+    font-size: 18px;
+    color: #00ff41;
+    text-shadow: 0 0 8px rgba(0,255,65,0.6);
+    letter-spacing: 1px;
   }
   .need-list {
     display: grid;
@@ -1267,6 +1303,11 @@
           <a class="btn btn-primary" href="#howto">Get $TMCD</a>
           <a class="btn btn-ghost"   href="#how">See How It Works</a>
         </div>
+        <div class="hero-boards">
+          <div class="hboard green"><b>BURGERS FUEL</b><br>BETTER TRADERS</div>
+          <div class="hboard yellow"><b>GOOD FOOD</b><br>HIGHER NUMBERS</div>
+          <div class="hboard red"><b>FIAT FOOD</b><br>IS DEAD</div>
+        </div>
       </div>
       <div class="hero-art">
         <div class="stars">
@@ -1611,10 +1652,12 @@ const Game = (() => {
     { id: 'toy',          name: 'TOY' },
   ];
   const RECIPES = [
-    { name: 'Classic Happy Meal', items: ['cheeseburger', 'fries', 'coke',   'apples', 'toy'] },
-    { name: 'Nuggets Happy Meal', items: ['nuggets',      'fries', 'sprite', 'apples', 'toy'] },
-    { name: 'Milk Happy Meal',    items: ['cheeseburger', 'fries', 'milk',   'apples', 'toy'] },
-    { name: 'Big Kid Meal',       items: ['nuggets',      'fries', 'coke',   'apples', 'toy'] },
+    { name: 'Big Mac Meal',        items: ['cheeseburger', 'fries', 'coke',   'apples', 'toy'] },
+    { name: 'McGain Meal',         items: ['nuggets',      'fries', 'coke',   'apples', 'toy'] },
+    { name: 'Bull Burger',         items: ['cheeseburger', 'fries', 'sprite', 'apples', 'toy'] },
+    { name: 'Moon Meal',           items: ['cheeseburger', 'fries', 'milk',   'apples', 'toy'] },
+    { name: 'Recession Combo',     items: ['nuggets',      'fries', 'milk',   'apples', 'toy'] },
+    { name: 'Hodl Happy Meal',     items: ['nuggets',      'fries', 'sprite', 'apples', 'toy'] },
   ];
 
   const KEY_SCORES = 'tmcd-happymeal-scores-v1';
@@ -1715,14 +1758,17 @@ const Game = (() => {
   function start() {
     if (ticker) return;
     renderShelf();
+    const orderNumber = loadServed() + 1;
     state = {
       order: pickRecipe(),
       have:  [],
       startedAt: performance.now(),
       penaltyMs: 0,
       finished: false,
+      orderNumber,
     };
-    el.orderName.textContent = state.order.name;
+    el.orderName.innerHTML =
+      `<span class="order-num">#${String(orderNumber).padStart(3, '0')}</span> ${state.order.name}`;
     el.hint.hidden = false;
     el.hint.textContent = 'Click each item on the shelf. Build the meal.';
     el.done.hidden = true;
