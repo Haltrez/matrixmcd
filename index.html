@@ -1092,6 +1092,129 @@
   }
   #sound-toggle:hover { transform: translateY(-2px); }
   #sound-toggle.on { background: var(--yellow); color: #000; box-shadow: 0 4px 0 var(--yellow-dark); }
+
+  /* =====================================================
+     RESPONSIVE / PERFORMANCE
+  ===================================================== */
+
+  /* Tablet and below */
+  @media (max-width: 900px) {
+    .site-wrap { padding: 24px 14px 40px; }
+    .hero-art { height: 340px; }
+    .hero-coin { width: 300px; }
+    .section { margin-top: 44px; }
+    .hero .sub { max-width: 100%; }
+  }
+
+  /* Phone */
+  @media (max-width: 640px) {
+    /* Backdrop blur is a big GPU cost on phones — kill it */
+    .topnav-inner,
+    .ca-strip,
+    .order-panel,
+    .box-panel,
+    .shelf,
+    .game-top { backdrop-filter: none; -webkit-backdrop-filter: none; }
+
+    /* Landing */
+    .menu-brand .coin-logo { width: 118px; height: 118px; }
+    .menu-brand h1 { font-size: 40px; }
+    .menu-brand .lede { font-size: 14px; padding: 0 8px; }
+    .menu-pick { font-size: 11px; padding: 8px 14px; letter-spacing: 2px; }
+    .menu-tile { padding: 22px 18px; }
+    .menu-tile .icon { font-size: 42px; }
+    .menu-tile .title { font-size: 26px; }
+    .menu-tile .sub { font-size: 12px; }
+    .ticker { height: 32px; }
+    .ticker-track { font-size: 12px; }
+    #landing { padding-top: 50px; padding-left: 14px; padding-right: 14px; }
+
+    /* Site topnav */
+    .topnav { margin-top: 8px; padding: 0 8px; }
+    .topnav-inner { padding: 8px 10px 8px 12px; gap: 8px; border-radius: 22px; }
+    .brand { font-size: 15px; gap: 6px; }
+    .brand svg, .brand .brand-coin { width: 30px; height: 30px; }
+    .brand span { display: none; }
+    .search { display: none; }
+    .buy-btn { padding: 9px 14px; font-size: 12px; }
+
+    /* Site hero */
+    .hero { gap: 20px; margin-top: 6px; }
+    .hero h1.headline { font-size: 44px; }
+    .hero .sub { font-size: 15px; margin-top: 14px; }
+    .cta-row { gap: 10px; }
+    .btn { padding: 13px 20px; font-size: 14px; }
+    .pill { font-size: 11px; padding: 8px 14px; letter-spacing: 1.5px; margin-bottom: 16px; }
+    .hero-art { height: 260px; }
+    .hero-coin { width: 220px; }
+    .hero-boards { gap: 8px; margin-top: 18px; }
+    .hboard { font-size: 10px; padding: 8px 10px; letter-spacing: 1px; }
+
+    /* Site sections */
+    .section h2 { font-size: 32px; }
+    .section p { font-size: 15px; }
+    .ca-strip { padding: 18px 16px; border-radius: 18px; }
+    #ca-value { padding: 12px 14px; font-size: 14px; }
+    #copy-btn { padding: 12px 18px; font-size: 13px; }
+    .steps { gap: 10px; }
+    .steps li { padding: 18px 18px 18px 62px; font-size: 14px; }
+    .steps li::before { width: 36px; height: 36px; font-size: 18px; }
+    .x-btn { padding: 13px 20px; font-size: 14px; }
+
+    /* Game */
+    .game-top { padding: 10px 12px; gap: 8px; }
+    .game-top .exit { padding: 8px 12px; font-size: 12px; }
+    .game-brand { gap: 8px; }
+    .game-coin, .game-arch { width: 34px; height: 34px; }
+    .game-top h1 { font-size: 17px; }
+    .lovin-small { font-size: 10px; }
+    .game-stats { gap: 6px; width: 100%; justify-content: flex-start; }
+    .stat { padding: 4px 10px; font-size: 10px; letter-spacing: 1px; }
+    .stat b { font-size: 17px; }
+    .game-body { padding: 10px; gap: 10px; }
+    .order-panel { padding: 12px; }
+    .order-name { font-size: 20px; }
+    .order-name .order-num { font-size: 15px; }
+    .need-list { grid-template-columns: repeat(3, 1fr); gap: 6px; }
+    .need-item { padding: 6px; }
+    .need-item svg { width: 32px; height: 32px; }
+    .need-item span { font-size: 10px; }
+    .box-panel .hm-svg { width: 46%; }
+    .shelf { padding: 10px; }
+    .shelf .items-grid { grid-template-columns: repeat(4, 1fr); gap: 8px; }
+    .shelf-item { padding: 8px 6px; min-width: 0; border-radius: 12px; }
+    .shelf-item svg { width: 42px; height: 42px; }
+    .shelf-item span { font-size: 10px; }
+
+    /* Game done modal */
+    .done-inner { padding: 24px 22px; }
+    .done-inner h2 { font-size: 32px; }
+    .done-time { font-size: 42px; }
+    .done-inner h3 { font-size: 18px; }
+    .done-buttons .btn { padding: 10px 16px; font-size: 13px; }
+
+    /* Sound toggle smaller on mobile so it doesn't block content */
+    #sound-toggle { right: 10px; bottom: 10px; padding: 8px 12px; font-size: 12px; }
+  }
+
+  /* Very small phones */
+  @media (max-width: 380px) {
+    .menu-brand .coin-logo { width: 100px; height: 100px; }
+    .menu-brand h1 { font-size: 34px; }
+    .hero h1.headline { font-size: 36px; }
+    .hero-coin { width: 180px; }
+    .shelf .items-grid { grid-template-columns: repeat(3, 1fr); }
+    .stat { padding: 3px 8px; }
+    .stat b { font-size: 15px; }
+  }
+
+  /* Reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    .hero-coin, .menu-brand .coin-logo, .hero-art .box-wrap,
+    .stars span, .ticker-track, .ca-label::before, .fry-rain span {
+      animation: none !important;
+    }
+  }
 </style>
 </head>
 <body class="view-landing">
@@ -1452,50 +1575,97 @@ document.getElementById('ca-value').textContent = CONTRACT_ADDRESS;
 document.getElementById('x-link').href = X_URL;
 document.getElementById('x-link-menu').href = X_URL;
 
-/* Matrix rain — reusable canvas animator, driven per canvas element */
-function attachMatrixRain(canvasId, opts) {
-  const canvas = document.getElementById(canvasId);
-  if (!canvas) return;
-  const ctx = canvas.getContext('2d');
+/* Matrix rain — one rAF loop drives every canvas. Only the canvas
+   whose parent view is visible actually draws; everything else is
+   skipped, so mobile CPUs don't melt. Resolution is scaled down on
+   narrow screens, and the whole system respects prefers-reduced-motion. */
+const RainRig = (() => {
+  const rains = [];
   const glyphs = 'ﾊﾐﾋｰｳｼﾅﾓﾆｻﾜﾂｵﾘｱﾎﾃﾏｹﾒｴｶｷﾑﾕﾗｾﾈｽﾀﾇﾍMcDONALDSHAPPYMEAL$TMCD01234567890$';
-  const fontSize = (opts && opts.fontSize) || 16;
-  const fadeAlpha = (opts && opts.fadeAlpha) || 0.09;
-  let cols = 0;
-  let drops = [];
+  const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const isMobile = () => window.innerWidth < 700;
 
-  function resize() {
-    canvas.width  = window.innerWidth;
-    canvas.height = window.innerHeight;
-    cols = Math.floor(canvas.width / fontSize);
-    drops = Array(cols).fill(0).map(() => Math.random() * -canvas.height / fontSize);
+  function attach(canvasId, opts) {
+    const canvas = document.getElementById(canvasId);
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d', { alpha: true });
+    const parent = canvas.closest('.view');
+    const rain = {
+      canvas, ctx, parent,
+      fontSize: (opts && opts.fontSize) || 16,
+      fadeAlpha: (opts && opts.fadeAlpha) || 0.09,
+      cols: 0, drops: [], scale: 1,
+    };
+    resizeOne(rain);
+    rains.push(rain);
   }
-  window.addEventListener('resize', resize, { passive: true });
-  resize();
 
-  function draw() {
+  function resizeOne(r) {
+    // Draw at 60% res on mobile to save GPU/CPU. CSS keeps it full-size.
+    r.scale = isMobile() ? 0.6 : 1;
+    const w = Math.max(320, Math.floor(window.innerWidth  * r.scale));
+    const h = Math.max(240, Math.floor(window.innerHeight * r.scale));
+    r.canvas.width  = w;
+    r.canvas.height = h;
+    r.canvas.style.width  = '100%';
+    r.canvas.style.height = '100%';
+    r.cols = Math.floor(w / r.fontSize);
+    r.drops = Array(r.cols).fill(0).map(() => Math.random() * -h / r.fontSize);
+  }
+
+  function resizeAll() { rains.forEach(resizeOne); }
+  window.addEventListener('resize', resizeAll, { passive: true });
+
+  function isVisible(r) {
+    if (!r.parent) return true;
+    // Cheap: check the parent view's classList against body's current view
+    const cls = document.body.className;
+    if (r.parent.id === 'landing') return cls.indexOf('view-landing') !== -1;
+    if (r.parent.id === 'site')    return cls.indexOf('view-site') !== -1;
+    if (r.parent.id === 'game')    return cls.indexOf('view-game') !== -1;
+    return true;
+  }
+
+  function drawOne(r) {
+    const { ctx, canvas, cols, drops, fontSize, fadeAlpha } = r;
     ctx.fillStyle = 'rgba(0, 8, 3, ' + fadeAlpha + ')';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     ctx.font = fontSize + 'px ui-monospace, Menlo, monospace';
     for (let i = 0; i < cols; i++) {
-      const ch = glyphs.charAt(Math.floor(Math.random() * glyphs.length));
+      const ch = glyphs.charAt((Math.random() * glyphs.length) | 0);
       const x = i * fontSize;
       const y = drops[i] * fontSize;
-      const r = Math.random();
-      if      (r < 0.015) ctx.fillStyle = '#FFC72C';
-      else if (r < 0.025) ctx.fillStyle = '#DA291C';
-      else if (r < 0.06)  ctx.fillStyle = '#c7ffb0';
-      else                ctx.fillStyle = '#00ff41';
+      const roll = Math.random();
+      if      (roll < 0.015) ctx.fillStyle = '#FFC72C';
+      else if (roll < 0.025) ctx.fillStyle = '#DA291C';
+      else if (roll < 0.06)  ctx.fillStyle = '#c7ffb0';
+      else                   ctx.fillStyle = '#00ff41';
       ctx.fillText(ch, x, y);
       if (y > canvas.height && Math.random() > 0.975) drops[i] = 0;
       drops[i]++;
     }
   }
-  setInterval(draw, 50);
-}
 
-attachMatrixRain('landing-rain');
-attachMatrixRain('site-rain', { fadeAlpha: 0.12 });
-attachMatrixRain('game-rain', { fadeAlpha: 0.12 });
+  const FRAME_MS = 55;         // ~18 fps, plenty for code-rain
+  let last = 0;
+  let raf = 0;
+  function tick(now) {
+    raf = requestAnimationFrame(tick);
+    if (now - last < FRAME_MS) return;
+    last = now;
+    if (document.hidden) return;         // tab hidden = no draw
+    for (let i = 0; i < rains.length; i++) {
+      if (isVisible(rains[i])) drawOne(rains[i]);
+    }
+  }
+
+  if (!reduceMotion) raf = requestAnimationFrame(tick);
+  return { attach };
+})();
+
+RainRig.attach('landing-rain');
+RainRig.attach('site-rain', { fadeAlpha: 0.12 });
+RainRig.attach('game-rain', { fadeAlpha: 0.12 });
 
 /* Landing stock ticker */
 (function initTicker() {
