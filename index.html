@@ -9,9 +9,9 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bagel+Fat+One&family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="icon" href="assets/logo.jpg">
-<link rel="apple-touch-icon" href="assets/logo.jpg">
-<meta property="og:image" content="assets/logo.jpg">
+<link rel="icon" href="assets/logo.png">
+<link rel="apple-touch-icon" href="assets/logo.png">
+<meta property="og:image" content="assets/logo.png">
 <style>
   :root {
     --yellow: #FFBC0D;        /* McDonald's Yellow (Pantone 123) */
@@ -168,7 +168,7 @@
   }
   .menu-brand .coin-logo {
     width: 160px;
-    height: 160px;
+    height: auto;
     display: block;
     filter:
       drop-shadow(0 0 24px rgba(255,199,44,0.75))
@@ -341,14 +341,18 @@
     color: var(--yellow);
     text-shadow: 0 0 12px rgba(255,199,44,0.4);
   }
-  .brand svg,
-  .brand .brand-coin {
+  .brand svg {
     width: 38px;
     height: 38px;
     display: block;
     filter: drop-shadow(0 0 8px rgba(255,199,44,0.5));
   }
-  .brand .brand-coin { border-radius: 6px; }
+  .brand .brand-coin {
+    width: 38px;
+    height: auto;
+    display: block;
+    filter: drop-shadow(0 0 8px rgba(255,199,44,0.5));
+  }
   .topnav nav {
     display: flex;
     gap: 4px;
@@ -724,12 +728,10 @@
     align-items: center;
     gap: 12px;
   }
-  .game-arch,
   .game-coin {
     width: 42px;
-    height: 42px;
+    height: auto;
     display: block;
-    border-radius: 8px;
     filter: drop-shadow(0 0 8px rgba(255,199,44,0.5));
   }
   .lovin-small {
@@ -1117,7 +1119,7 @@
     .game-top { backdrop-filter: none; -webkit-backdrop-filter: none; }
 
     /* Landing */
-    .menu-brand .coin-logo { width: 118px; height: 118px; }
+    .menu-brand .coin-logo { width: 118px; height: auto; }
     .menu-brand h1 { font-size: 40px; }
     .menu-brand .lede { font-size: 14px; padding: 0 8px; }
     .menu-pick { font-size: 11px; padding: 8px 14px; letter-spacing: 2px; }
@@ -1165,7 +1167,7 @@
     .game-top { padding: 10px 12px; gap: 8px; }
     .game-top .exit { padding: 8px 12px; font-size: 12px; }
     .game-brand { gap: 8px; }
-    .game-coin, .game-arch { width: 34px; height: 34px; }
+    .game-coin { width: 34px; height: auto; }
     .game-top h1 { font-size: 17px; }
     .lovin-small { font-size: 10px; }
     .game-stats { gap: 6px; width: 100%; justify-content: flex-start; }
@@ -1199,7 +1201,7 @@
 
   /* Very small phones */
   @media (max-width: 380px) {
-    .menu-brand .coin-logo { width: 100px; height: 100px; }
+    .menu-brand .coin-logo { width: 100px; height: auto; }
     .menu-brand h1 { font-size: 34px; }
     .hero h1.headline { font-size: 36px; }
     .hero-coin { width: 180px; }
@@ -1363,7 +1365,7 @@
   <div class="meme-corner bottom-right"><span>COOK ▸ HODL ▸ REPEAT</span></div>
   <div class="menu-wrap">
     <div class="menu-brand">
-      <img class="coin-logo" src="assets/logo.jpg" alt="Tokenised McDonald's coin">
+      <img class="coin-logo" src="assets/logo.png" alt="Tokenised McDonald's coin">
       <div class="lovin">i'm lovin' it&nbsp;™</div>
       <h1>Tokenised <span class="accent">McDonald's</span></h1>
       <p class="lede">Hold $TMCD. Earn real McDonald's stock. That is the whole idea.</p>
@@ -1399,7 +1401,7 @@
   <header class="topnav">
     <div class="topnav-inner">
       <a class="brand" href="#" data-goto="landing" aria-label="Home">
-        <img class="brand-coin" src="assets/logo.jpg" alt="">
+        <img class="brand-coin" src="assets/logo.png" alt="">
         <span>Tokenised McDonald's</span>
       </a>
       <nav>
@@ -1440,7 +1442,7 @@
           <span style="top:38%; right:6%; animation-delay:.8s;">★</span>
           <span style="bottom:26%; right:22%; animation-delay:1.4s;">✦</span>
         </div>
-        <img class="hero-coin" src="assets/logo.jpg" alt="$TMCD coin">
+        <img class="hero-coin" src="assets/logo.png" alt="$TMCD coin">
       </div>
     </section>
 
@@ -1513,7 +1515,7 @@
   <div class="game-top">
     <button class="exit" type="button" data-goto="landing">← Menu</button>
     <div class="game-brand">
-      <img class="game-coin" src="assets/logo.jpg" alt="">
+      <img class="game-coin" src="assets/logo.png" alt="">
 
       <div class="game-titles">
         <h1>Happy Meal Builder</h1>
