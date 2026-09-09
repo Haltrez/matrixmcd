@@ -4,7 +4,7 @@
 // updates the existing record rather than creating a duplicate), plus
 // a Redis SET ("entries:index") of every wallet seen so the admin
 // endpoint can enumerate them without a KV key-scan.
-const { kv } = require('@vercel/kv');
+const { getRedis } = require('./_redis');
 
 // Base58, no 0/O/I/l (matches the Solana/Bitcoin base58 alphabet).
 // Solana addresses are ed25519 public keys base58-encoded, 32-44 chars.
@@ -35,6 +35,7 @@ module.exports = async (req, res) => {
   }
 
   try {
+    const kv = getRedis();
     const key = `entry:${wallet}`;
     const now = Date.now();
     const existing = await kv.get(key);

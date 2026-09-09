@@ -3,7 +3,7 @@
 // be set in the Vercel project -- if it isn't, this refuses all requests
 // rather than serving an accidentally-open list of everyone's wallet.
 // Pass the secret either as header "x-admin-secret" or query "?secret=".
-const { kv } = require('@vercel/kv');
+const { getRedis } = require('./_redis');
 const crypto = require('crypto');
 
 function safeEqual(a, b) {
@@ -29,6 +29,7 @@ module.exports = async (req, res) => {
   }
 
   try {
+    const kv = getRedis();
     const wallets = await kv.smembers('entries:index');
     if (!wallets || wallets.length === 0) {
       res.status(200).json({ entries: [] });
