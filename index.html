@@ -744,6 +744,14 @@
     text-transform: uppercase;
     margin-bottom: 10px;
   }
+  .round-countdown {
+    font-family: ui-monospace, Menlo, monospace;
+    font-weight: 700;
+    letter-spacing: 0;
+    text-transform: none;
+    opacity: 0.6;
+    font-size: 0.8em;
+  }
   #g-leaderboard-live {
     list-style: none;
     padding: 0;
@@ -772,6 +780,14 @@
     white-space: nowrap;
     min-width: 0;
   }
+  #g-leaderboard-live li.you {
+    background: var(--yellow);
+    color: var(--ink);
+    box-shadow: 0 6px 18px rgba(255,188,13,0.35);
+    border-color: transparent;
+  }
+  #g-leaderboard-live li.you .rank { color: var(--red); }
+  .wallet-tag { opacity: 0.55; }
   #g-leaderboard-live li.empty {
     background: none;
     border-style: dashed;
@@ -1258,6 +1274,10 @@
     #g-leaderboard-live li { flex: 0 0 auto; padding: 4px 8px; font-size: 10px; white-space: nowrap; border-radius: 8px; }
     #g-leaderboard-live li span:first-child { max-width: 76px; }
     #g-leaderboard-live li.empty { padding: 4px 10px; }
+    /* Wallet tags fit fine in the roomy desktop sidebar but just add
+       width to an already-tight horizontally-scrolling mobile strip --
+       rank/name/time is what a glance needs here. */
+    .wallet-tag { display: none; }
 
     .gate-inner { max-width: 92vw; padding: 22px 20px; }
     .gate-sub { font-size: 12px; margin: 8px 0 14px; }
@@ -1595,7 +1615,7 @@
     </div>
 
     <div class="leaderboard-panel">
-      <div class="lbl">Leaderboard</div>
+      <div class="lbl">Top 5 <span class="round-countdown" id="g-round-countdown">this round</span></div>
       <ol id="g-leaderboard-live"></ol>
     </div>
   </div>
@@ -1603,7 +1623,7 @@
   <div id="g-start-gate" class="game-done" hidden>
     <div class="done-inner gate-inner">
       <h2>Ready to build?</h2>
-      <p class="gate-sub">Enter a name (or your X handle) and your Solana wallet. Leaderboard winners get shouted out and rewarded on that wallet.</p>
+      <p class="gate-sub">Enter a name (or your X handle) and your Solana wallet. Top 5 fastest every 3 hours win $MCD, sent straight to that wallet.</p>
       <input id="g-gate-name" type="text" maxlength="18" placeholder="@yourhandle or name" autocomplete="off">
       <input id="g-gate-wallet" type="text" maxlength="44" placeholder="Solana wallet address" autocomplete="off" spellcheck="false" autocapitalize="off" autocorrect="off">
       <div class="gate-err" id="g-gate-err" hidden></div>
@@ -1824,10 +1844,13 @@ const Game = (() => {
     gateErr:       $('g-gate-err'),
     gateStart:     $('g-gate-start'),
     gateReset:     $('g-gate-reset'),
+    roundCountdown: $('g-round-countdown'),
   };
 
   let state = null;
   let ticker = null;
+  let lbTimer = null;
+  let epochEnd = null;
 
   function escapeHtml(str) {
     return String(str).replace(/[&<>"']/g, (c) => ({
@@ -1933,6 +1956,67 @@ const Game = (() => {
     }).join('') || '<li class="empty">No scores yet</li>';
   }
 
+  function shortWallet(w) {
+    return w.length > 10 ? w.slice(0, 4) + '…' + w.slice(-4) : w;
+  }
+
+  function fmtCountdown(msRemaining) {
+    const totalMin = Math.max(0, Math.ceil(msRemaining / 60000));
+    const h = Math.floor(totalMin / 60);
+    const m = totalMin % 60;
+    return h > 0 ? `${h}h ${String(m).padStart(2, '0')}m left` : `${m}m left`;
+  }
+
+  // The real, global, cross-player leaderboard for the current 3-hour
+  // airdrop round (api/leaderboard.js -> Vercel KV) -- distinct from the
+  // per-browser "your best times" list above, which only ever compares a
+  // player against their own past runs on this device.
+  function renderGlobalBoard(entries) {
+    const myWallet = loadWallet();
+    el.liveBoard.innerHTML = entries.slice(0, 5).map((e, i) => {
+      const isMine = myWallet && e.wallet === myWallet;
+      const label = escapeHtml(e.name || DEFAULT_NAME);
+      return `<li${isMine ? ' class="you"' : ''}>
+        <span><span class="rank">#${i+1}</span> &nbsp; ${label} &nbsp;<span class="wallet-tag">${shortWallet(e.wallet)}</span></span>
+        <span>${fmt(e.timeMs)}</span>
+      </li>`;
+    }).join('') || '<li class="empty">No runs yet this round</li>';
+  }
+
+  function updateCountdownLabel() {
+    if (!el.roundCountdown) return;
+    el.roundCountdown.textContent = epochEnd == null ? 'this round' : fmtCountdown(epochEnd - Date.now());
+  }
+
+  // Best-effort refresh of the global round leaderboard. Silently keeps
+  // the last-known board on a network hiccup rather than surfacing an
+  // error over what's meant to be ambient, low-stakes info.
+  async function fetchLeaderboard() {
+    try {
+      const res = await fetch('/api/leaderboard');
+      if (!res.ok) return;
+      const data = await res.json();
+      epochEnd = data.epochEnd;
+      renderGlobalBoard(data.top || []);
+      updateCountdownLabel();
+    } catch {}
+  }
+
+  // Best-effort save of a completed round's time (api/submit-score.js).
+  // Never blocks or interrupts the completion screen -- errors are
+  // swallowed since this is background sync, not something the player
+  // needs to retry or even know about.
+  async function submitScore(name, wallet, timeMs) {
+    try {
+      await fetch('/api/submit-score', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, wallet, timeMs }),
+      });
+      fetchLeaderboard();
+    } catch {}
+  }
+
   // enterView(): called by goto() whenever the player navigates INTO the
   // game. Resets the board to idle and shows the pre-round gate -- it
   // does not start a round itself, so leaderboard visitors and repeat
@@ -1948,7 +2032,10 @@ const Game = (() => {
     el.done.hidden = true;
     paintPlayerDisplay();
     el.best.textContent = fmt(bestTime());
-    renderLeaderboardInto(el.liveBoard);
+    updateCountdownLabel();
+    fetchLeaderboard();
+    if (lbTimer) clearInterval(lbTimer);
+    lbTimer = setInterval(fetchLeaderboard, 30000);
     showGate();
   }
 
@@ -2024,6 +2111,8 @@ const Game = (() => {
   function stop() {
     if (ticker) clearInterval(ticker);
     ticker = null;
+    if (lbTimer) clearInterval(lbTimer);
+    lbTimer = null;
     hideGate();
   }
 
@@ -2089,9 +2178,9 @@ const Game = (() => {
     el.doneTime.textContent = fmt(total);
     el.doneSub.textContent  = state.order.name;
     renderLeaderboardInto(el.board, total);
-    renderLeaderboardInto(el.liveBoard);
     el.best.textContent = fmt(bestTime());
     el.done.hidden = false;
+    submitScore(currentName(), loadWallet(), total);
   }
 
   // buttons

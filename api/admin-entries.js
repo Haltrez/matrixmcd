@@ -4,14 +4,7 @@
 // rather than serving an accidentally-open list of everyone's wallet.
 // Pass the secret either as header "x-admin-secret" or query "?secret=".
 const { getRedis } = require('./_redis');
-const crypto = require('crypto');
-
-function safeEqual(a, b) {
-  const bufA = Buffer.from(String(a));
-  const bufB = Buffer.from(String(b));
-  if (bufA.length !== bufB.length) return false;
-  return crypto.timingSafeEqual(bufA, bufB);
-}
+const { isAdminAuthorized } = require('./_auth');
 
 module.exports = async (req, res) => {
   if (req.method !== 'GET') {
@@ -20,10 +13,7 @@ module.exports = async (req, res) => {
     return;
   }
 
-  const expected = process.env.ADMIN_SECRET || '';
-  const provided = req.headers['x-admin-secret'] || (req.query && req.query.secret) || '';
-
-  if (!expected || !safeEqual(provided, expected)) {
+  if (!isAdminAuthorized(req)) {
     res.status(401).json({ error: 'Unauthorized' });
     return;
   }

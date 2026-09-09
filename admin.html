@@ -71,6 +71,17 @@
   .wrap-table { overflow-x: auto; border: 1px solid var(--panel-line); border-radius: 14px; background: var(--panel); }
   .empty { padding: 40px; text-align: center; color: rgba(242,232,216,0.5); }
   [hidden] { display: none !important; }
+
+  h2.section-title { font-size: 16px; color: var(--yellow); margin: 36px 0 4px; }
+  .epoch-list { display: flex; flex-direction: column; gap: 12px; }
+  .epoch-card { border: 1px solid var(--panel-line); border-radius: 14px; background: var(--panel); padding: 14px 16px; }
+  .epoch-head { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; margin-bottom: 10px; flex-wrap: wrap; }
+  .epoch-range { font-weight: 700; font-size: 14px; }
+  .epoch-id { color: rgba(242,232,216,0.45); font-size: 11px; font-family: ui-monospace, Menlo, monospace; }
+  .epoch-card table { margin: 0; }
+  .epoch-card th, .epoch-card td { padding: 6px 10px; }
+  .epoch-card .empty { padding: 10px 0; text-align: left; font-size: 13px; }
+  .rank-cell { color: var(--yellow); font-weight: 700; width: 28px; }
 </style>
 </head>
 <body>
@@ -106,12 +117,21 @@
     </table>
     <div class="empty" id="empty" hidden>No entries yet.</div>
   </div>
+
+  <h2 class="section-title">Airdrop Rounds — Top 5 every 3h</h2>
+  <p class="sub">One card per 3-hour round, newest first. Full wallets included for sending payouts.</p>
+  <div class="toolbar">
+    <button id="csv-lb-btn" type="button" class="secondary">Export Payouts CSV</button>
+    <span class="count" id="lb-count"></span>
+  </div>
+  <div id="epochs-list" class="epoch-list"></div>
 </div>
 
 <script>
   const $ = (id) => document.getElementById(id);
   const KEY = 'tmcd-admin-secret';
   let entries = [];
+  let epochs = [];
 
   function fmtDate(ms) {
     if (!ms) return '—';
@@ -119,16 +139,42 @@
     return d.toLocaleString();
   }
 
-  async function loadEntries(secret) {
-    const res = await fetch('/api/admin-entries', {
-      headers: { 'x-admin-secret': secret },
-    });
+  function fmtTime(ms) {
+    const d = new Date(ms);
+    return d.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
+  }
+
+  function fmtRange(startMs, endMs) {
+    const start = new Date(startMs);
+    const dateStr = start.toLocaleDateString([], { month: 'short', day: 'numeric' });
+    return `${dateStr}, ${fmtTime(startMs)} – ${fmtTime(endMs)}`;
+  }
+
+  function fmtDuration(ms) {
+    const total = Math.max(0, ms);
+    const m = Math.floor(total / 60000);
+    const s = Math.floor((total % 60000) / 1000);
+    const c = Math.floor((total % 1000) / 10);
+    return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}.${String(c).padStart(2, '0')}`;
+  }
+
+  async function authedGet(path, secret) {
+    const res = await fetch(path, { headers: { 'x-admin-secret': secret } });
     if (!res.ok) {
       const body = await res.json().catch(() => ({}));
       throw new Error(body.error || ('HTTP ' + res.status));
     }
-    const data = await res.json();
+    return res.json();
+  }
+
+  async function loadEntries(secret) {
+    const data = await authedGet('/api/admin-entries', secret);
     return data.entries || [];
+  }
+
+  async function loadEpochs(secret) {
+    const data = await authedGet('/api/admin-leaderboard?count=16', secret);
+    return data.epochs || [];
   }
 
   function render() {
@@ -146,10 +192,42 @@
     `).join('');
   }
 
+  function renderEpochs() {
+    const withRunners = epochs.filter(ep => ep.top && ep.top.length);
+    $('lb-count').textContent = withRunners.length + ' round' + (withRunners.length === 1 ? '' : 's') + ' with runs, of ' + epochs.length + ' shown';
+    $('epochs-list').innerHTML = epochs.map(ep => {
+      const rows = (ep.top || []).map((e, i) => `
+        <tr>
+          <td class="rank-cell">#${i + 1}</td>
+          <td>${escapeHtml(e.name || '')}</td>
+          <td class="wallet">${escapeHtml(e.wallet || '')}</td>
+          <td>${fmtDuration(e.timeMs)}</td>
+        </tr>
+      `).join('');
+      const body = rows
+        ? `<table><thead><tr><th></th><th>Name</th><th>Wallet</th><th>Time</th></tr></thead><tbody>${rows}</tbody></table>`
+        : `<div class="empty">No runs this round.</div>`;
+      return `
+        <div class="epoch-card">
+          <div class="epoch-head">
+            <span class="epoch-range">${fmtRange(ep.epochStart, ep.epochEnd)}</span>
+            <span class="epoch-id">epoch ${ep.epochId}</span>
+          </div>
+          ${body}
+        </div>
+      `;
+    }).join('');
+  }
+
   function escapeHtml(str) {
     return String(str).replace(/[&<>"']/g, (c) => ({
       '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;',
     }[c]));
+  }
+
+  function csvEscape(v) {
+    const s = String(v);
+    return /[",\n]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s;
   }
 
   function toCsv() {
@@ -160,20 +238,46 @@
       e.lastSeen ? new Date(e.lastSeen).toISOString() : '',
       e.timesEntered || 1,
     ]));
-    return rows.map(r => r.map(v => {
-      const s = String(v);
-      return /[",\n]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s;
-    }).join(',')).join('\n');
+    return rows.map(r => r.map(csvEscape).join(',')).join('\n');
+  }
+
+  function toCsvPayouts() {
+    const rows = [['epoch_id', 'epoch_start', 'epoch_end', 'rank', 'name', 'wallet', 'time_ms']];
+    epochs.forEach(ep => {
+      (ep.top || []).forEach((e, i) => rows.push([
+        ep.epochId,
+        new Date(ep.epochStart).toISOString(),
+        new Date(ep.epochEnd).toISOString(),
+        i + 1,
+        e.name || '',
+        e.wallet || '',
+        e.timeMs,
+      ]));
+    });
+    return rows.map(r => r.map(csvEscape).join(',')).join('\n');
+  }
+
+  function downloadCsv(content, filename) {
+    const blob = new Blob([content], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
   }
 
   async function tryLoad(secret) {
     $('gate-err').textContent = '';
     try {
-      entries = await loadEntries(secret);
+      [entries, epochs] = await Promise.all([loadEntries(secret), loadEpochs(secret)]);
       try { sessionStorage.setItem(KEY, secret); } catch {}
       $('gate').hidden = true;
       $('main').hidden = false;
       render();
+      renderEpochs();
     } catch (err) {
       $('gate-err').textContent = err.message === 'Unauthorized' ? 'Wrong secret.' : ('Error: ' + err.message);
     }
@@ -188,15 +292,11 @@
   });
 
   $('csv-btn').addEventListener('click', () => {
-    const blob = new Blob([toCsv()], { type: 'text/csv' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'mcd-coin-entries-' + new Date().toISOString().slice(0, 10) + '.csv';
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-    URL.revokeObjectURL(url);
+    downloadCsv(toCsv(), 'mcd-coin-entries-' + new Date().toISOString().slice(0, 10) + '.csv');
+  });
+
+  $('csv-lb-btn').addEventListener('click', () => {
+    downloadCsv(toCsvPayouts(), 'mcd-coin-payouts-' + new Date().toISOString().slice(0, 10) + '.csv');
   });
 
   // Auto-load if we already have a secret from this session.
