@@ -1215,7 +1215,12 @@
 
     .box-panel { padding: 6px; }
     .box-panel .hm-svg { width: 22%; min-width: 46px; }
-    .box-hint { font-size: 10px; top: 6px; }
+    /* The box is short enough here that the hint text (absolute, pinned
+       near the top) and the flex-centered box icon land on top of each
+       other -- garbled, overlapping text. The gate already explains the
+       mechanic, so just drop the redundant hint on mobile instead of
+       fighting for the same few pixels. */
+    .box-hint { display: none; }
     .box-items { bottom: 6px; gap: 4px; padding: 0 8px; }
     .box-items .filled { width: 28px; height: 28px; }
 
