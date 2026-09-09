@@ -382,6 +382,14 @@
     box-shadow: 0 8px 22px rgba(0,0,0,0.4);
   }
   .btn-ghost:hover { transform: translateY(-2px); background: rgba(255,255,255,0.1); }
+  .btn-x {
+    background: #000;
+    color: #fff;
+    border: 1px solid rgba(255,255,255,0.15);
+    box-shadow: 0 8px 22px rgba(0,0,0,0.5);
+  }
+  .btn-x:hover { transform: translateY(-2px); }
+  .btn-x svg { width: 16px; height: 16px; fill: currentColor; }
 
   .hero-art {
     position: relative;
@@ -1289,6 +1297,7 @@
     .done-time { font-size: 40px; }
     .done-inner h3 { font-size: 18px; }
     .done-buttons .btn { padding: 10px 16px; font-size: 13px; }
+    .done-buttons .btn-x svg { width: 14px; height: 14px; }
 
     #sound-toggle { right: 10px; bottom: 10px; padding: 8px 12px; font-size: 12px; }
   }
@@ -1328,13 +1337,72 @@
       <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
     </symbol>
 
+    <!-- Shared gradients for the icons below: soft shading so items read
+         as glossy/appetizing instead of flat clip-art. -->
+    <linearGradient id="gradBunTop" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#f6d698"/>
+      <stop offset="1" stop-color="#d99a4e"/>
+    </linearGradient>
+    <linearGradient id="gradBunBottom" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#e3ad63"/>
+      <stop offset="1" stop-color="#c1832f"/>
+    </linearGradient>
+    <linearGradient id="gradPatty" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#6b3a1c"/>
+      <stop offset="1" stop-color="#3d1f0c"/>
+    </linearGradient>
+    <linearGradient id="gradCheese" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffd873"/>
+      <stop offset="1" stop-color="#f0ab1c"/>
+    </linearGradient>
+    <linearGradient id="gradNugget" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#f3c96b"/>
+      <stop offset="1" stop-color="#c07a34"/>
+    </linearGradient>
+    <linearGradient id="gradFryLight" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffedb0"/>
+      <stop offset="1" stop-color="#ffd35c"/>
+    </linearGradient>
+    <linearGradient id="gradFryDark" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffd35c"/>
+      <stop offset="1" stop-color="#f0a827"/>
+    </linearGradient>
+    <linearGradient id="gradBoxRed" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#ec3524"/>
+      <stop offset="1" stop-color="#a81c11"/>
+    </linearGradient>
+    <linearGradient id="gradBagGreen" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#79cf5c"/>
+      <stop offset="1" stop-color="#458c2e"/>
+    </linearGradient>
+    <linearGradient id="gradAppleFlesh" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#fffceb"/>
+      <stop offset="1" stop-color="#f0dfa0"/>
+    </linearGradient>
+    <linearGradient id="gradToyYellow" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#ffd753"/>
+      <stop offset="1" stop-color="#f0a800"/>
+    </linearGradient>
+    <linearGradient id="gradBoxBody" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#ec3524"/>
+      <stop offset="0.55" stop-color="#DA291C"/>
+      <stop offset="1" stop-color="#a81c11"/>
+    </linearGradient>
+    <linearGradient id="gradGloss" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#fff" stop-opacity="0.32"/>
+      <stop offset="0.3" stop-color="#fff" stop-opacity="0"/>
+      <stop offset="1" stop-color="#000" stop-opacity="0.14"/>
+    </linearGradient>
+
     <!-- Happy Meal Box (front view with arches handle) -->
     <symbol id="hm-box" viewBox="0 0 200 200">
       <!-- handles -->
       <path d="M55,50 Q75,10 95,50" fill="none" stroke="#000" stroke-width="6" stroke-linecap="round"/>
       <path d="M105,50 Q125,10 145,50" fill="none" stroke="#000" stroke-width="6" stroke-linecap="round"/>
       <!-- box body -->
-      <path d="M18,54 L182,54 L172,192 L28,192 Z" fill="#DA291C" stroke="#000" stroke-width="4" stroke-linejoin="round"/>
+      <path d="M18,54 L182,54 L172,192 L28,192 Z" fill="url(#gradBoxBody)" stroke="#000" stroke-width="4" stroke-linejoin="round"/>
+      <!-- glossy highlight streak -->
+      <path d="M32,58 L48,58 L38,186 L26,186 Z" fill="#fff" opacity="0.08"/>
       <!-- yellow flap -->
       <path d="M18,54 L182,54 L178,72 L22,72 Z" fill="#B01810"/>
       <!-- Golden Arches on the front of the box.
@@ -1353,70 +1421,90 @@
 
     <!-- ITEMS -->
     <symbol id="item-cheeseburger" viewBox="0 0 100 80">
-      <ellipse cx="50" cy="68" rx="42" ry="10" fill="#e0a458" stroke="#7a4d18" stroke-width="2.5"/>
-      <rect x="10" y="46" width="80" height="10" fill="#5a2d15" stroke="#2a1608" stroke-width="2"/>
-      <path d="M10,42 L14,42 L14,50 L20,50 L20,42 L26,42 L26,50 L32,50 L32,42 L38,42 L38,50 L44,50 L44,42 L50,42 L50,50 L56,50 L56,42 L62,42 L62,50 L68,50 L68,42 L74,42 L74,50 L80,50 L80,42 L86,42 L86,50 L90,50 L90,42 L90,38 L10,38 Z" fill="#f2c14a" stroke="#a67810" stroke-width="2"/>
-      <path d="M12,42 Q50,12 88,42 Q50,50 12,42 Z" fill="#eab364" stroke="#7a4d18" stroke-width="2.5"/>
-      <ellipse cx="40" cy="28" rx="2.5" ry="1.5" fill="#fff5db"/>
-      <ellipse cx="55" cy="22" rx="2.5" ry="1.5" fill="#fff5db"/>
-      <ellipse cx="65" cy="30" rx="2.5" ry="1.5" fill="#fff5db"/>
+      <path d="M8,58 Q8,71 50,71 Q92,71 92,58 L90,50 L10,50 Z" fill="url(#gradBunBottom)" stroke="#7a4d18" stroke-width="2.5" stroke-linejoin="round"/>
+      <path d="M6,50 Q10,42 15,50 Q20,42 25,50 Q30,42 35,50 Q40,42 45,50 Q50,42 55,50 Q60,42 65,50 Q70,42 75,50 Q80,42 85,50 Q88,44 90,50 L90,55 L6,55 Z" fill="#6ab04c" stroke="#3f7a2c" stroke-width="1.5" stroke-linejoin="round"/>
+      <rect x="9" y="43" width="82" height="10" rx="3" fill="url(#gradPatty)" stroke="#2a1608" stroke-width="2"/>
+      <path d="M9,43 Q13,51 17,43 Q21,51 25,43 Q29,51 33,43 Q37,51 41,43 Q45,51 49,43 Q53,51 57,43 Q61,51 65,43 Q69,51 73,43 Q77,51 81,43 Q85,51 89,43 L91,38 L9,38 Z" fill="url(#gradCheese)" stroke="#c9910f" stroke-width="1.5" stroke-linejoin="round"/>
+      <path d="M10,40 Q12,14 50,12 Q88,14 90,40 Z" fill="url(#gradBunTop)" stroke="#7a4d18" stroke-width="2.5"/>
+      <ellipse cx="38" cy="26" rx="2.6" ry="1.6" fill="#fff6df"/>
+      <ellipse cx="50" cy="20" rx="2.6" ry="1.6" fill="#fff6df"/>
+      <ellipse cx="62" cy="27" rx="2.6" ry="1.6" fill="#fff6df"/>
+      <ellipse cx="44" cy="33" rx="2.2" ry="1.4" fill="#fff6df"/>
+      <ellipse cx="57" cy="34" rx="2.2" ry="1.4" fill="#fff6df"/>
     </symbol>
 
     <symbol id="item-hamburger" viewBox="0 0 100 80">
-      <ellipse cx="50" cy="68" rx="42" ry="10" fill="#e0a458" stroke="#7a4d18" stroke-width="2.5"/>
-      <rect x="10" y="46" width="80" height="10" fill="#5a2d15" stroke="#2a1608" stroke-width="2"/>
-      <path d="M12,42 Q50,12 88,42 Q50,50 12,42 Z" fill="#eab364" stroke="#7a4d18" stroke-width="2.5"/>
-      <ellipse cx="40" cy="28" rx="2.5" ry="1.5" fill="#fff5db"/>
-      <ellipse cx="55" cy="22" rx="2.5" ry="1.5" fill="#fff5db"/>
-      <ellipse cx="65" cy="30" rx="2.5" ry="1.5" fill="#fff5db"/>
+      <path d="M8,58 Q8,71 50,71 Q92,71 92,58 L90,50 L10,50 Z" fill="url(#gradBunBottom)" stroke="#7a4d18" stroke-width="2.5" stroke-linejoin="round"/>
+      <path d="M6,50 Q10,42 15,50 Q20,42 25,50 Q30,42 35,50 Q40,42 45,50 Q50,42 55,50 Q60,42 65,50 Q70,42 75,50 Q80,42 85,50 Q88,44 90,50 L90,55 L6,55 Z" fill="#6ab04c" stroke="#3f7a2c" stroke-width="1.5" stroke-linejoin="round"/>
+      <rect x="9" y="43" width="82" height="10" rx="3" fill="url(#gradPatty)" stroke="#2a1608" stroke-width="2"/>
+      <path d="M10,40 Q12,14 50,12 Q88,14 90,40 Z" fill="url(#gradBunTop)" stroke="#7a4d18" stroke-width="2.5"/>
+      <ellipse cx="38" cy="26" rx="2.6" ry="1.6" fill="#fff6df"/>
+      <ellipse cx="50" cy="20" rx="2.6" ry="1.6" fill="#fff6df"/>
+      <ellipse cx="62" cy="27" rx="2.6" ry="1.6" fill="#fff6df"/>
+      <ellipse cx="44" cy="33" rx="2.2" ry="1.4" fill="#fff6df"/>
+      <ellipse cx="57" cy="34" rx="2.2" ry="1.4" fill="#fff6df"/>
     </symbol>
 
     <symbol id="item-nuggets" viewBox="0 0 100 80">
       <!-- box -->
-      <path d="M10,40 L90,40 L84,72 Q50,80 16,72 Z" fill="#DA291C" stroke="#000" stroke-width="2.5"/>
+      <path d="M10,40 L90,40 L84,72 Q50,80 16,72 Z" fill="url(#gradBoxRed)" stroke="#000" stroke-width="2.5"/>
       <text x="50" y="62" text-anchor="middle" fill="#FFC72C" font-family="Bagel Fat One, sans-serif" font-size="18">M</text>
-      <!-- 4 nuggets -->
-      <path d="M22,20 Q16,10 24,8 Q32,4 36,14 Q40,4 44,10 Q36,30 26,28 Z" fill="#e8a94a" stroke="#8a5e15" stroke-width="1.8"/>
-      <path d="M48,18 Q42,8 50,6 Q60,4 64,12 Q68,4 72,10 Q60,30 50,28 Z" fill="#e8a94a" stroke="#8a5e15" stroke-width="1.8"/>
-      <path d="M15,32 Q10,26 18,24 Q28,22 32,30 Q36,22 40,28 Q30,44 22,42 Z" fill="#e8a94a" stroke="#8a5e15" stroke-width="1.8"/>
-      <path d="M56,34 Q52,26 60,24 Q68,22 72,30 Q76,22 80,28 Q68,44 60,42 Z" fill="#e8a94a" stroke="#8a5e15" stroke-width="1.8"/>
+      <!-- 4 chunky nuggets, each a rounded irregular blob with fried speckles -->
+      <path d="M18,30 Q10,28 10,20 Q9,10 20,9 Q28,3 34,11 Q42,8 42,18 Q44,28 34,30 Q26,35 18,30 Z" fill="url(#gradNugget)" stroke="#8a5518" stroke-width="1.8" stroke-linejoin="round"/>
+      <path d="M48,28 Q40,25 41,16 Q41,7 51,6 Q59,1 65,9 Q73,7 72,17 Q73,27 63,28 Q55,33 48,28 Z" fill="url(#gradNugget)" stroke="#8a5518" stroke-width="1.8" stroke-linejoin="round"/>
+      <path d="M12,46 Q5,43 6,35 Q6,27 15,26 Q22,21 28,28 Q35,26 34,35 Q35,44 26,45 Q19,49 12,46 Z" fill="url(#gradNugget)" stroke="#8a5518" stroke-width="1.8" stroke-linejoin="round"/>
+      <path d="M56,44 Q49,41 50,33 Q50,25 59,24 Q66,19 72,26 Q79,24 78,33 Q79,42 70,43 Q63,47 56,44 Z" fill="url(#gradNugget)" stroke="#8a5518" stroke-width="1.8" stroke-linejoin="round"/>
+      <circle cx="20" cy="16" r="1.3" fill="#8a5518" opacity="0.55"/>
+      <circle cx="30" cy="20" r="1.1" fill="#8a5518" opacity="0.55"/>
+      <circle cx="53" cy="14" r="1.3" fill="#8a5518" opacity="0.55"/>
+      <circle cx="63" cy="19" r="1.1" fill="#8a5518" opacity="0.55"/>
+      <circle cx="14" cy="34" r="1.2" fill="#8a5518" opacity="0.55"/>
+      <circle cx="24" cy="38" r="1.1" fill="#8a5518" opacity="0.55"/>
+      <circle cx="58" cy="32" r="1.2" fill="#8a5518" opacity="0.55"/>
+      <circle cx="68" cy="37" r="1.1" fill="#8a5518" opacity="0.55"/>
     </symbol>
 
     <symbol id="item-fries" viewBox="0 0 80 100">
-      <rect x="18" y="14" width="6" height="42" fill="#FFE082" stroke="#8a5e15" stroke-width="1.5" rx="1.5"/>
-      <rect x="27" y="6"  width="6" height="50" fill="#FFC72C" stroke="#8a5e15" stroke-width="1.5" rx="1.5"/>
-      <rect x="36" y="18" width="6" height="38" fill="#FFE082" stroke="#8a5e15" stroke-width="1.5" rx="1.5"/>
-      <rect x="45" y="10" width="6" height="46" fill="#FFC72C" stroke="#8a5e15" stroke-width="1.5" rx="1.5"/>
-      <rect x="54" y="20" width="6" height="36" fill="#FFE082" stroke="#8a5e15" stroke-width="1.5" rx="1.5"/>
-      <path d="M8,50 L72,50 L64,92 Q40,100 16,92 Z" fill="#DA291C" stroke="#000" stroke-width="2.5"/>
+      <rect x="18" y="14" width="6" height="42" fill="url(#gradFryLight)" stroke="#8a5e15" stroke-width="1.5" rx="2"/>
+      <rect x="27" y="6"  width="6" height="50" fill="url(#gradFryDark)" stroke="#8a5e15" stroke-width="1.5" rx="2"/>
+      <rect x="36" y="18" width="6" height="38" fill="url(#gradFryLight)" stroke="#8a5e15" stroke-width="1.5" rx="2"/>
+      <rect x="45" y="10" width="6" height="46" fill="url(#gradFryDark)" stroke="#8a5e15" stroke-width="1.5" rx="2"/>
+      <rect x="54" y="20" width="6" height="36" fill="url(#gradFryLight)" stroke="#8a5e15" stroke-width="1.5" rx="2"/>
+      <path d="M8,50 L72,50 L64,92 Q40,100 16,92 Z" fill="url(#gradBoxRed)" stroke="#000" stroke-width="2.5"/>
+      <path d="M11,52 L19,52 L14,89 L11,87 Z" fill="#fff" opacity="0.08"/>
       <text x="40" y="80" text-anchor="middle" fill="#FFC72C" font-family="Bagel Fat One, sans-serif" font-size="22">M</text>
     </symbol>
 
     <symbol id="item-coke" viewBox="0 0 70 100">
-      <!-- straw -->
-      <rect x="38" y="0" width="6" height="24" fill="#fff" stroke="#000" stroke-width="2"/>
-      <!-- cup -->
-      <path d="M10,20 L60,20 L52,92 Q35,100 18,92 Z" fill="#DA291C" stroke="#000" stroke-width="2.5"/>
-      <rect x="10" y="20" width="50" height="8" fill="#fff"/>
-      <text x="35" y="60" text-anchor="middle" fill="#fff" font-family="Bagel Fat One, sans-serif" font-size="16">COKE</text>
+      <path d="M10,22 L60,22 L52,92 Q35,100 18,92 Z" fill="#DA291C" stroke="#000" stroke-width="2.5"/>
+      <path d="M10,22 L60,22 L52,92 Q35,100 18,92 Z" fill="url(#gradGloss)"/>
+      <rect x="10" y="22" width="50" height="7" fill="#fff"/>
+      <text x="35" y="60" text-anchor="middle" fill="#fff" font-family="Bagel Fat One, sans-serif" font-size="15">COKE</text>
+      <path d="M8,22 Q35,4 62,22 Q35,14 8,22 Z" fill="#fff" stroke="#000" stroke-width="2"/>
+      <rect x="37" y="0" width="6" height="20" rx="2" fill="#fff" stroke="#000" stroke-width="2"/>
     </symbol>
 
     <symbol id="item-sprite" viewBox="0 0 70 100">
-      <rect x="38" y="0" width="6" height="24" fill="#fff" stroke="#000" stroke-width="2"/>
-      <path d="M10,20 L60,20 L52,92 Q35,100 18,92 Z" fill="#5abd3e" stroke="#000" stroke-width="2.5"/>
-      <rect x="10" y="20" width="50" height="8" fill="#fff"/>
-      <text x="35" y="60" text-anchor="middle" fill="#fff" font-family="Bagel Fat One, sans-serif" font-size="14">SPRITE</text>
+      <path d="M10,22 L60,22 L52,92 Q35,100 18,92 Z" fill="#5abd3e" stroke="#000" stroke-width="2.5"/>
+      <path d="M10,22 L60,22 L52,92 Q35,100 18,92 Z" fill="url(#gradGloss)"/>
+      <rect x="10" y="22" width="50" height="7" fill="#fff"/>
+      <text x="35" y="60" text-anchor="middle" fill="#fff" font-family="Bagel Fat One, sans-serif" font-size="13">SPRITE</text>
+      <path d="M8,22 Q35,4 62,22 Q35,14 8,22 Z" fill="#fff" stroke="#000" stroke-width="2"/>
+      <rect x="37" y="0" width="6" height="20" rx="2" fill="#fff" stroke="#000" stroke-width="2"/>
     </symbol>
 
     <symbol id="item-oj" viewBox="0 0 70 100">
-      <rect x="38" y="0" width="6" height="24" fill="#fff" stroke="#000" stroke-width="2"/>
-      <path d="M10,20 L60,20 L52,92 Q35,100 18,92 Z" fill="#FFA200" stroke="#000" stroke-width="2.5"/>
-      <rect x="10" y="20" width="50" height="8" fill="#fff"/>
-      <text x="35" y="62" text-anchor="middle" fill="#fff" font-family="Bagel Fat One, sans-serif" font-size="20">OJ</text>
+      <path d="M10,22 L60,22 L52,92 Q35,100 18,92 Z" fill="#FFA200" stroke="#000" stroke-width="2.5"/>
+      <path d="M10,22 L60,22 L52,92 Q35,100 18,92 Z" fill="url(#gradGloss)"/>
+      <rect x="10" y="22" width="50" height="7" fill="#fff"/>
+      <text x="35" y="62" text-anchor="middle" fill="#fff" font-family="Bagel Fat One, sans-serif" font-size="19">OJ</text>
+      <path d="M8,22 Q35,4 62,22 Q35,14 8,22 Z" fill="#fff" stroke="#000" stroke-width="2"/>
+      <rect x="37" y="0" width="6" height="20" rx="2" fill="#fff" stroke="#000" stroke-width="2"/>
     </symbol>
 
     <symbol id="item-milk" viewBox="0 0 60 100">
       <path d="M10,30 L50,30 L45,92 L15,92 Z" fill="#fff" stroke="#000" stroke-width="2.5"/>
+      <path d="M30,30 L50,30 L45,92 L30,92 Z" fill="#000" opacity="0.05"/>
       <path d="M10,30 L30,10 L50,30" fill="#fff" stroke="#000" stroke-width="2.5"/>
       <path d="M22,20 L38,20 L38,30 L22,30 Z" fill="#DA291C"/>
       <text x="30" y="60" text-anchor="middle" fill="#000" font-family="Bagel Fat One, sans-serif" font-size="11">MILK</text>
@@ -1425,23 +1513,24 @@
 
     <symbol id="item-apples" viewBox="0 0 80 90">
       <!-- bag -->
-      <path d="M12,20 L68,20 L64,84 L16,84 Z" fill="#5abd3e" stroke="#000" stroke-width="2.5"/>
+      <path d="M12,20 L68,20 L64,84 L16,84 Z" fill="url(#gradBagGreen)" stroke="#000" stroke-width="2.5"/>
       <path d="M12,20 L68,20 L64,32 L16,32 Z" fill="#3a8f26"/>
       <text x="40" y="30" text-anchor="middle" fill="#fff" font-family="Bagel Fat One, sans-serif" font-size="9">APPLE</text>
       <!-- slices window -->
-      <rect x="22" y="40" width="36" height="30" fill="#fff5db" stroke="#000" stroke-width="1.5"/>
-      <path d="M24,50 Q30,44 36,50 Q30,55 24,50" fill="#f2e5a8" stroke="#c9a852" stroke-width="1"/>
-      <path d="M40,54 Q48,48 54,54 Q48,60 40,54" fill="#f2e5a8" stroke="#c9a852" stroke-width="1"/>
-      <path d="M26,62 Q34,56 42,62 Q34,68 26,62" fill="#f2e5a8" stroke="#c9a852" stroke-width="1"/>
+      <rect x="22" y="40" width="36" height="30" rx="3" fill="#fff5db" stroke="#000" stroke-width="1.5"/>
+      <path d="M24,50 Q30,44 36,50 Q30,55 24,50" fill="url(#gradAppleFlesh)" stroke="#c9a852" stroke-width="1"/>
+      <path d="M40,54 Q48,48 54,54 Q48,60 40,54" fill="url(#gradAppleFlesh)" stroke="#c9a852" stroke-width="1"/>
+      <path d="M26,62 Q34,56 42,62 Q34,68 26,62" fill="url(#gradAppleFlesh)" stroke="#c9a852" stroke-width="1"/>
     </symbol>
 
     <symbol id="item-toy" viewBox="0 0 80 80">
       <!-- gift box -->
-      <rect x="10" y="26" width="60" height="46" fill="#FFC72C" stroke="#000" stroke-width="2.5"/>
-      <rect x="10" y="22" width="60" height="12" fill="#DA291C" stroke="#000" stroke-width="2.5"/>
-      <rect x="36" y="22" width="8" height="50" fill="#DA291C" stroke="#000" stroke-width="2"/>
+      <rect x="10" y="26" width="60" height="46" fill="url(#gradToyYellow)" stroke="#000" stroke-width="2.5"/>
+      <rect x="10" y="22" width="60" height="12" fill="url(#gradBoxRed)" stroke="#000" stroke-width="2.5"/>
+      <rect x="36" y="22" width="8" height="50" fill="url(#gradBoxRed)" stroke="#000" stroke-width="2"/>
+      <path d="M12,30 L20,30 L14,70 L12,68 Z" fill="#fff" opacity="0.16"/>
       <!-- bow -->
-      <path d="M28,10 Q22,20 34,22 Q40,22 40,22 Q40,22 46,22 Q58,20 52,10 Q46,4 40,14 Q34,4 28,10 Z" fill="#DA291C" stroke="#000" stroke-width="2"/>
+      <path d="M28,10 Q22,20 34,22 Q40,22 40,22 Q40,22 46,22 Q58,20 52,10 Q46,4 40,14 Q34,4 28,10 Z" fill="url(#gradBoxRed)" stroke="#000" stroke-width="2"/>
       <text x="40" y="60" text-anchor="middle" fill="#000" font-family="Bagel Fat One, sans-serif" font-size="24">?</text>
     </symbol>
 
@@ -1642,6 +1731,10 @@
       <ol id="g-leaderboard"></ol>
       <div class="done-buttons">
         <button class="btn btn-primary" type="button" id="g-again">Play Again</button>
+        <button class="btn btn-x" type="button" id="g-share-x">
+          <svg><use href="#x-logo"/></svg>
+          Share
+        </button>
         <button class="btn btn-ghost"   type="button" data-goto="site">Read Lore</button>
         <button class="btn btn-ghost"   type="button" data-goto="landing">Menu</button>
       </div>
@@ -1845,12 +1938,14 @@ const Game = (() => {
     gateStart:     $('g-gate-start'),
     gateReset:     $('g-gate-reset'),
     roundCountdown: $('g-round-countdown'),
+    shareX:        $('g-share-x'),
   };
 
   let state = null;
   let ticker = null;
   let lbTimer = null;
   let epochEnd = null;
+  let lastResult = null;
 
   function escapeHtml(str) {
     return String(str).replace(/[&<>"']/g, (c) => ({
@@ -2180,11 +2275,24 @@ const Game = (() => {
     renderLeaderboardInto(el.board, total);
     el.best.textContent = fmt(bestTime());
     el.done.hidden = false;
+    lastResult = { name: state.order.name, timeMs: total };
     submitScore(currentName(), loadWallet(), total);
+  }
+
+  // Opens X's compose-tweet intent pre-filled with the just-finished
+  // round's result -- no API/OAuth needed, just a URL. location.origin is
+  // used instead of a hardcoded domain so this also works correctly from
+  // a Vercel preview deployment or localhost during testing.
+  function shareOnX(mealName, timeMs) {
+    const text = `Clocked ${fmt(timeMs)} building a "${mealName}" on the $MCD drive-thru. Top 5 fastest every 3h win real $MCD — think you're faster?`;
+    const url = location.origin + location.pathname + '#game';
+    const intent = `https://x.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`;
+    window.open(intent, '_blank', 'noopener,noreferrer');
   }
 
   // buttons
   el.again.addEventListener('click', beginRound);
+  el.shareX.addEventListener('click', () => shareOnX(lastResult.name, lastResult.timeMs));
   el.gateStart.addEventListener('click', async () => {
     const name = el.gateName.value.trim();
     const wallet = el.gateWallet.value.trim();
