@@ -635,18 +635,22 @@
   .game-body {
     flex: 1;
     display: grid;
-    grid-template-columns: 300px 1fr;
+    grid-template-columns: 280px 1fr 240px;
     grid-template-rows: 1fr auto;
     grid-template-areas:
-      "order box"
-      "shelf shelf";
+      "order box leaderboard"
+      "shelf shelf leaderboard";
     gap: 14px;
     padding: 14px;
     min-height: 0;
     overflow-y: auto;   /* scroll the body (not the whole view) when stacked mobile content is taller than the screen; game-top stays pinned */
   }
+  @media (max-width: 1000px) {
+    .game-body { grid-template-columns: 260px 1fr; grid-template-areas: "order box" "shelf shelf" "leaderboard leaderboard"; }
+    .leaderboard-panel { max-height: 160px; }
+  }
   @media (max-width: 820px) {
-    .game-body { grid-template-columns: 1fr; grid-template-areas: "order" "box" "shelf"; }
+    .game-body { grid-template-columns: 1fr; grid-template-areas: "order" "box" "shelf" "leaderboard"; }
   }
   .order-panel {
     grid-area: order;
@@ -673,20 +677,156 @@
     text-transform: uppercase;
     white-space: nowrap;
   }
-  #g-player-name {
+  .player-display {
     flex: 1;
     min-width: 0;
     font-family: 'Fredoka', sans-serif;
     font-weight: 700;
     font-size: 14px;
     color: var(--yellow);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .reset-btn {
+    all: unset;
+    cursor: pointer;
+    flex-shrink: 0;
+    font-family: 'Fredoka', sans-serif;
+    font-weight: 700;
+    font-size: 10px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: rgba(242,232,216,0.5);
+    border: 1px solid var(--panel-line);
+    border-radius: 999px;
+    padding: 4px 10px;
+    transition: color .12s ease, border-color .12s ease;
+  }
+  .reset-btn:hover { color: var(--red); border-color: var(--red); }
+
+  /* Persistent leaderboard, visible throughout play (right sidebar on
+     desktop, a compact strip at the bottom on mobile -- see the mobile
+     override further down, which keeps this from re-breaking the
+     no-scroll game layout). */
+  .leaderboard-panel {
+    grid-area: leaderboard;
+    background: var(--panel);
+    border: 1px solid var(--panel-line);
+    border-radius: 20px;
+    padding: 14px;
+    box-shadow: 0 10px 26px rgba(0,0,0,0.45);
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+  }
+  .leaderboard-panel .lbl {
+    font-family: 'Bagel Fat One', sans-serif;
+    font-size: 13px;
+    letter-spacing: 2px;
+    color: var(--yellow);
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  #g-leaderboard-live {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  #g-leaderboard-live li {
     background: rgba(255,255,255,0.05);
     border: 1px solid var(--panel-line);
-    border-radius: 8px;
-    padding: 6px 10px;
+    border-radius: 10px;
+    padding: 7px 10px;
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+    font-weight: 700;
+    font-family: ui-monospace, Menlo, monospace;
+    font-size: 13px;
+    color: var(--text);
   }
-  #g-player-name:focus { outline: none; border-color: var(--yellow); }
-  #g-player-name::placeholder { color: rgba(242,232,216,0.35); font-weight: 500; }
+  #g-leaderboard-live li .rank { color: var(--red); }
+  #g-leaderboard-live li span:first-child {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    min-width: 0;
+  }
+  #g-leaderboard-live li.empty {
+    background: none;
+    border-style: dashed;
+    color: rgba(242,232,216,0.4);
+    font-family: 'Fredoka', sans-serif;
+    font-weight: 500;
+    justify-content: center;
+  }
+
+  /* Pre-round name / X-handle gate -- shares the .game-done overlay
+     treatment (same full-screen scrim + centered card), see #g-start-gate. */
+  .gate-inner { max-width: 420px; }
+  .gate-sub {
+    color: rgba(242,232,216,0.7);
+    font-size: 14px;
+    line-height: 1.5;
+    margin: 10px 0 20px;
+  }
+  #g-gate-name {
+    width: 100%;
+    font-family: 'Fredoka', sans-serif;
+    font-weight: 700;
+    font-size: 16px;
+    color: var(--yellow);
+    background: rgba(255,255,255,0.05);
+    border: 1px solid var(--panel-line);
+    border-radius: 12px;
+    padding: 12px 14px;
+    text-align: center;
+    margin-bottom: 16px;
+  }
+  #g-gate-name:focus { outline: none; border-color: var(--yellow); }
+  #g-gate-name::placeholder { color: rgba(242,232,216,0.35); font-weight: 500; }
+  #g-gate-start { width: 100%; justify-content: center; }
+  .reset-link {
+    all: unset;
+    cursor: pointer;
+    display: block;
+    margin: 14px auto 0;
+    text-align: center;
+    font-family: 'Fredoka', sans-serif;
+    font-weight: 600;
+    font-size: 12px;
+    color: rgba(242,232,216,0.4);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+  .reset-link:hover { color: var(--red); }
+
+  .new-best {
+    display: inline-block;
+    margin-top: 10px;
+    padding: 6px 14px;
+    border-radius: 999px;
+    background: rgba(255,188,13,0.15);
+    border: 1px solid var(--yellow);
+    color: var(--yellow);
+    font-weight: 700;
+    font-size: 13px;
+    letter-spacing: 0.5px;
+    animation: newBestPulse 1s ease-in-out infinite alternate;
+  }
+  @keyframes newBestPulse {
+    from { box-shadow: 0 0 0 rgba(255,188,13,0.4); }
+    to   { box-shadow: 0 0 16px rgba(255,188,13,0.6); }
+  }
+  /* Same fix as .game-done[hidden]: .new-best's own display:inline-block
+     above would otherwise beat the browser's [hidden]{display:none} at
+     equal specificity, showing the badge on every completion regardless
+     of the isNewBest check in JS. */
+  .new-best[hidden] { display: none; }
 
   .order-panel .lbl {
     font-family: 'Bagel Fat One', sans-serif;
@@ -1034,12 +1174,16 @@
     .stat { padding: 3px 8px; font-size: 9px; letter-spacing: 0.5px; }
     .stat b { font-size: 13px; margin-left: 4px; }
 
-    .game-body { padding: 6px; gap: 6px; grid-template-rows: auto auto 1fr; }
+    /* 4th row (auto) holds the compact leaderboard strip added below --
+       still auto-height like order/box, so .shelf's 1fr keeps claiming
+       whatever's left and the whole thing stays scroll-free. */
+    .game-body { padding: 6px; gap: 6px; grid-template-rows: auto auto 1fr auto; }
 
     .order-panel { padding: 8px 10px; overflow: visible; }
     .player-row { margin-bottom: 6px; padding-bottom: 6px; gap: 6px; }
     .player-lbl { font-size: 9px; }
-    #g-player-name { font-size: 12px; padding: 4px 8px; }
+    .player-display { font-size: 12px; }
+    .reset-btn { font-size: 9px; padding: 3px 8px; }
     .order-panel .lbl { display: none; }
     .order-name { font-size: 15px; margin: 0 0 6px; gap: 6px; }
     .order-name .order-num { font-size: 11px; }
@@ -1064,6 +1208,27 @@
     .shelf-item { padding: 6px 4px; min-width: 0; border-radius: 10px; }
     .shelf-item svg { width: 28px; height: 28px; }
     .shelf-item span { font-size: 8px; }
+
+    /* Leaderboard collapses to one row: label + a horizontally
+       scrolling strip of chips, so it costs one compact line instead
+       of a stacked list. */
+    .leaderboard-panel {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 10px;
+      max-height: none;
+    }
+    .leaderboard-panel .lbl { margin: 0; flex-shrink: 0; font-size: 9px; }
+    #g-leaderboard-live { flex-direction: row; flex: 1; overflow-x: auto; gap: 6px; min-width: 0; }
+    #g-leaderboard-live li { flex: 0 0 auto; padding: 4px 8px; font-size: 10px; white-space: nowrap; border-radius: 8px; }
+    #g-leaderboard-live li span:first-child { max-width: 76px; }
+    #g-leaderboard-live li.empty { padding: 4px 10px; }
+
+    .gate-inner { max-width: 92vw; padding: 22px 20px; }
+    .gate-sub { font-size: 12px; margin: 8px 0 14px; }
+    #g-gate-name { font-size: 14px; padding: 10px 12px; margin-bottom: 12px; }
 
     .done-inner { padding: 24px 22px; }
     .done-inner h2 { font-size: 32px; }
@@ -1118,8 +1283,11 @@
       <path d="M18,54 L182,54 L172,192 L28,192 Z" fill="#DA291C" stroke="#000" stroke-width="4" stroke-linejoin="round"/>
       <!-- yellow flap -->
       <path d="M18,54 L182,54 L178,72 L22,72 Z" fill="#B01810"/>
-      <!-- Golden Arches on the front of the box -->
-      <g transform="translate(56 88) scale(0.55)">
+      <!-- Golden Arches on the front of the box.
+           Arches path bbox is x:[20,230] (center 125) at this scale(0.55),
+           so translate-x = 100 - 125*0.55 = 31.25 centers it on the box,
+           which is itself centered at x=100 (top edge 18-182, bottom 28-172). -->
+      <g transform="translate(31 88) scale(0.55)">
         <path fill="#FFBC0D" d="
           M20,170 V90 C20,50 50,20 85,20 C115,20 125,45 125,70
           C125,45 135,20 165,20 C200,20 230,50 230,90 V170
@@ -1367,23 +1535,23 @@
     <div class="game-stats">
       <div class="stat time" id="g-time-wrap">Time <b id="g-time">00:00.00</b></div>
       <div class="stat">Best <b id="g-best">--:--.--</b></div>
-      <div class="stat">Meals <b id="g-served">0</b></div>
     </div>
   </div>
 
   <div class="game-body">
     <div class="order-panel">
-      <label class="player-row" for="g-player-name">
+      <div class="player-row">
         <span class="player-lbl">Playing as</span>
-        <input id="g-player-name" type="text" maxlength="18" placeholder="New Employee" autocomplete="off">
-      </label>
+        <span class="player-display" id="g-player-display">New Employee</span>
+        <button class="reset-btn" id="g-reset" type="button" title="Reset your name and local scores">Reset</button>
+      </div>
       <div class="lbl">Order</div>
       <div class="order-name" id="g-order-name">Ready?</div>
       <div class="need-list" id="g-need"></div>
     </div>
 
     <div class="box-panel" id="g-box-panel">
-      <div class="box-hint" id="g-hint">Hit START to begin. Click items to fill the box.</div>
+      <div class="box-hint" id="g-hint">Click items to fill the box.</div>
       <svg class="hm-svg" viewBox="0 0 200 200" aria-hidden="true"><use href="#hm-box"/></svg>
       <div class="box-items" id="g-box"></div>
     </div>
@@ -1391,11 +1559,27 @@
     <div class="shelf">
       <div id="g-shelf" class="items-grid"></div>
     </div>
+
+    <div class="leaderboard-panel">
+      <div class="lbl">Leaderboard</div>
+      <ol id="g-leaderboard-live"></ol>
+    </div>
+  </div>
+
+  <div id="g-start-gate" class="game-done" hidden>
+    <div class="done-inner gate-inner">
+      <h2>Ready to build?</h2>
+      <p class="gate-sub">Enter a name or your X handle. Leaderboard winners get shouted out and may be contacted for rewards.</p>
+      <input id="g-gate-name" type="text" maxlength="18" placeholder="@yourhandle or name" autocomplete="off">
+      <button class="btn btn-primary" id="g-gate-start" type="button">Start Building</button>
+      <button class="reset-link" id="g-gate-reset" type="button">Reset local scores</button>
+    </div>
   </div>
 
   <div id="game-done" class="game-done" hidden>
     <div class="done-inner">
       <h2>Meal complete!</h2>
+      <div class="new-best" id="g-new-best" hidden>🏆 New best time!</div>
       <div class="done-time" id="g-done-time">00:00.00</div>
       <div class="done-sub" id="g-done-sub">Your time</div>
       <h3>Leaderboard</h3>
@@ -1416,7 +1600,7 @@
    CONFIG. Edit these once the token launches.
 ========================================================= */
 const CONTRACT_ADDRESS = "Coming soon. Paste CA here.";
-const X_URL            = "https://x.com/";      // your X profile URL
+const X_URL            = "https://x.com/tmcdfun";
 const AUDIO_URL        = "sounds/mcd-beep.mp3"; // loops non-stop after entry
 
 document.getElementById('ca-value').textContent = CONTRACT_ADDRESS;
@@ -1575,22 +1759,28 @@ const Game = (() => {
 
   const $ = (id) => document.getElementById(id);
   const el = {
-    shelf:      $('g-shelf'),
-    orderName:  $('g-order-name'),
-    need:       $('g-need'),
-    box:        $('g-box'),
-    boxPanel:   $('g-box-panel'),
-    hint:       $('g-hint'),
-    time:       $('g-time'),
-    timeWrap:   $('g-time-wrap'),
-    best:       $('g-best'),
-    served:     $('g-served'),
-    done:       $('game-done'),
-    doneTime:   $('g-done-time'),
-    doneSub:    $('g-done-sub'),
-    board:      $('g-leaderboard'),
-    again:      $('g-again'),
-    playerName: $('g-player-name'),
+    shelf:         $('g-shelf'),
+    orderName:     $('g-order-name'),
+    need:          $('g-need'),
+    box:           $('g-box'),
+    boxPanel:      $('g-box-panel'),
+    hint:          $('g-hint'),
+    time:          $('g-time'),
+    timeWrap:      $('g-time-wrap'),
+    best:          $('g-best'),
+    done:          $('game-done'),
+    doneTime:      $('g-done-time'),
+    doneSub:       $('g-done-sub'),
+    newBest:       $('g-new-best'),
+    board:         $('g-leaderboard'),
+    liveBoard:     $('g-leaderboard-live'),
+    again:         $('g-again'),
+    playerDisplay: $('g-player-display'),
+    resetBtn:      $('g-reset'),
+    gate:          $('g-start-gate'),
+    gateName:      $('g-gate-name'),
+    gateStart:     $('g-gate-start'),
+    gateReset:     $('g-gate-reset'),
   };
 
   let state = null;
@@ -1614,15 +1804,11 @@ const Game = (() => {
     try { localStorage.setItem(KEY_NAME, name.slice(0, 18)); } catch {}
   }
   function currentName() {
-    const typed = (el.playerName.value || '').trim();
-    return typed || DEFAULT_NAME;
+    return loadName() || DEFAULT_NAME;
   }
-
-  // Pre-fill from the last saved name and persist on every edit, so it
-  // survives across rounds, replays, and future visits without ever
-  // needing an explicit "save" step.
-  el.playerName.value = loadName();
-  el.playerName.addEventListener('input', () => saveName(el.playerName.value.trim()));
+  function paintPlayerDisplay() {
+    el.playerDisplay.textContent = currentName();
+  }
 
   function loadScores() {
     try { return JSON.parse(localStorage.getItem(KEY_SCORES) || '[]'); } catch { return []; }
@@ -1685,8 +1871,52 @@ const Game = (() => {
     el.box.innerHTML = state.have.map(id => svgItem(id, 'filled')).join('');
   }
 
-  function start() {
+  function renderLeaderboardInto(targetEl, highlightTime) {
+    const scores = loadScores();
+    targetEl.innerHTML = scores.slice(0, 5).map((s, i) => {
+      const isHighlight = highlightTime != null && s.time === highlightTime;
+      const label = escapeHtml(s.name || DEFAULT_NAME);
+      return `<li${isHighlight ? ' class="you"' : ''}>
+        <span><span class="rank">#${i+1}</span> &nbsp; ${label}</span>
+        <span>${fmt(s.time)}</span>
+      </li>`;
+    }).join('') || '<li class="empty">No scores yet</li>';
+  }
+
+  // enterView(): called by goto() whenever the player navigates INTO the
+  // game. Resets the board to idle and shows the pre-round gate -- it
+  // does not start a round itself, so leaderboard visitors and repeat
+  // players always confirm/see their name before the clock runs.
+  function enterView() {
+    renderShelf();
+    state = null;
+    el.orderName.textContent = 'Ready?';
+    el.need.innerHTML = '';
+    el.box.innerHTML = '';
+    el.time.textContent = fmt(0);
+    el.timeWrap.classList.remove('warn');
+    el.done.hidden = true;
+    paintPlayerDisplay();
+    el.best.textContent = fmt(bestTime());
+    renderLeaderboardInto(el.liveBoard);
+    showGate();
+  }
+
+  function showGate() {
+    el.gateName.value = loadName();
+    el.gate.hidden = false;
+    el.gateName.focus();
+  }
+  function hideGate() {
+    el.gate.hidden = true;
+  }
+
+  // beginRound(): actually starts the timer and generates an order.
+  // Triggered by the gate's Start button and by Play Again -- Play
+  // Again skips the gate entirely since the player is already in.
+  function beginRound() {
     if (ticker) return;
+    hideGate();
     renderShelf();
     const orderNumber = loadServed() + 1;
     state = {
@@ -1706,8 +1936,7 @@ const Game = (() => {
     resetShelfState();
     renderNeed();
     renderBox();
-    el.served.textContent = loadServed();
-    el.best.textContent   = fmt(bestTime());
+    el.best.textContent = fmt(bestTime());
     ticker = setInterval(paintTime, 40);
     paintTime();
   }
@@ -1715,6 +1944,7 @@ const Game = (() => {
   function stop() {
     if (ticker) clearInterval(ticker);
     ticker = null;
+    hideGate();
   }
 
   function resetShelfState() {
@@ -1765,40 +1995,56 @@ const Game = (() => {
     state.finished = true;
     state.finishedAt = performance.now();
     const total = currentTimeMs();
+    const previousBest = bestTime();
     stop();
-    const served = bumpServed();
-    el.served.textContent = served;
-    const scores = saveScore({
+    bumpServed();   // still needed: drives the next order's #NNN numbering
+    saveScore({
       time: total,
       recipe: state.order.name,
       name: currentName(),
       when: Date.now(),
     });
-    const you = scores.findIndex(s => s.time === total);
+    const isNewBest = previousBest == null || total < previousBest;
+    el.newBest.hidden = !isNewBest;
     el.doneTime.textContent = fmt(total);
     el.doneSub.textContent  = state.order.name;
-    el.board.innerHTML = scores.slice(0, 5).map((s, i) => {
-      const isYou = i === you;
-      const label = escapeHtml(s.name || DEFAULT_NAME);
-      return `<li${isYou ? ' class="you"' : ''}>
-        <span><span class="rank">#${i+1}</span> &nbsp; ${label}</span>
-        <span>${fmt(s.time)}</span>
-      </li>`;
-    }).join('') || '<li>No scores yet. Play a round.</li>';
+    renderLeaderboardInto(el.board, total);
+    renderLeaderboardInto(el.liveBoard);
     el.best.textContent = fmt(bestTime());
     el.done.hidden = false;
   }
 
   // buttons
-  el.again.addEventListener('click', () => { stop(); start(); });
+  el.again.addEventListener('click', beginRound);
+  el.gateStart.addEventListener('click', () => {
+    saveName(el.gateName.value.trim());
+    paintPlayerDisplay();
+    beginRound();
+  });
+  el.gateName.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') el.gateStart.click();
+  });
+  function resetProgress() {
+    const ok = confirm("Reset your name and local scores? This can't be undone.");
+    if (!ok) return;
+    try {
+      localStorage.removeItem(KEY_NAME);
+      localStorage.removeItem(KEY_SCORES);
+      localStorage.removeItem(KEY_SERVED);
+    } catch {}
+    stop();
+    enterView();
+  }
+  el.resetBtn.addEventListener('click', resetProgress);
+  el.gateReset.addEventListener('click', resetProgress);
 
   // keyboard
   document.addEventListener('keydown', (e) => {
     if (!document.body.classList.contains('view-game')) return;
-    if (e.key === 'r' || e.key === 'R') { stop(); start(); }
+    if ((e.key === 'r' || e.key === 'R') && el.gate.hidden) beginRound();
   });
 
-  return { start, stop };
+  return { start: enterView, stop };
 })();
 
 /* =========================================================
