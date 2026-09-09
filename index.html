@@ -534,6 +534,35 @@
   }
   .steps li b { color: var(--yellow); }
 
+  .token-bar {
+    display: flex;
+    height: 16px;
+    border-radius: 999px;
+    overflow: hidden;
+    border: 1px solid var(--panel-line);
+    max-width: 560px;
+    margin-bottom: 24px;
+  }
+  .token-seg.token-public { background: var(--yellow); }
+  .token-seg.token-dev { background: var(--red); }
+  .token-legend { display: flex; flex-wrap: wrap; gap: 28px; }
+  .token-item { display: flex; align-items: center; gap: 12px; }
+  .token-swatch { width: 14px; height: 14px; border-radius: 4px; flex-shrink: 0; }
+  .token-swatch.token-public { background: var(--yellow); }
+  .token-swatch.token-dev { background: var(--red); }
+  .token-pct {
+    font-family: ui-monospace, Menlo, monospace;
+    font-weight: 700;
+    font-size: 20px;
+    color: var(--text);
+    line-height: 1.2;
+  }
+  .token-label {
+    font-size: 13px;
+    color: rgba(242,232,216,0.6);
+    font-weight: 600;
+  }
+
   .community-row {
     display: flex;
     gap: 14px;
@@ -1201,6 +1230,8 @@
 
     .section h2 { font-size: 32px; }
     .section p { font-size: 15px; }
+    .token-legend { gap: 18px; }
+    .token-pct { font-size: 17px; }
     .ca-strip { padding: 18px 16px; border-radius: 18px; }
     #ca-value { padding: 12px 14px; font-size: 14px; }
     #copy-btn { padding: 12px 18px; font-size: 13px; }
@@ -1585,6 +1616,7 @@
       <nav>
         <a href="#what">What Is It</a>
         <a href="#howto">How To Buy</a>
+        <a href="#tokenomics">Tokenomics</a>
         <a href="#community">Community</a>
         <a href="#" class="game-link" data-goto="game">🍟 Game</a>
       </nav>
@@ -1641,6 +1673,31 @@
         <li>Swap for <b>$MCD</b> on your DEX.</li>
         <li>Hold. You're on the payroll. Real McDonald's stock lands in your wallet on a schedule.</li>
       </ol>
+    </section>
+
+    <section class="section" id="tokenomics">
+      <h2>Tokenomics</h2>
+      <p>Simple, on purpose. No presale, no team cliffs, no hidden wallets to track.</p>
+      <div class="token-bar">
+        <div class="token-seg token-public" style="flex: 92.5"></div>
+        <div class="token-seg token-dev" style="flex: 7.5"></div>
+      </div>
+      <div class="token-legend">
+        <div class="token-item">
+          <span class="token-swatch token-public"></span>
+          <div>
+            <div class="token-pct">92.5%</div>
+            <div class="token-label">Public &amp; liquidity</div>
+          </div>
+        </div>
+        <div class="token-item">
+          <span class="token-swatch token-dev"></span>
+          <div>
+            <div class="token-pct">7.5%</div>
+            <div class="token-label">Dev wallet &mdash; airdrops &amp; development</div>
+          </div>
+        </div>
+      </div>
     </section>
 
     <section class="section" id="community">
