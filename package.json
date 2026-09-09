@@ -1,0 +1,8 @@
+{
+  "name": "official-mcdonalds-coin",
+  "private": true,
+  "description": "Static site + serverless API for tmcd.fun ($MCD). No build step for the frontend; /api functions are deployed automatically by Vercel.",
+  "dependencies": {
+    "@vercel/kv": "^3.0.0"
+  }
+}

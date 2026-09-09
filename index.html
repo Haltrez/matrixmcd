@@ -790,7 +790,7 @@
     line-height: 1.5;
     margin: 10px 0 20px;
   }
-  #g-gate-name {
+  #g-gate-name, #g-gate-wallet {
     width: 100%;
     font-family: 'Fredoka', sans-serif;
     font-weight: 700;
@@ -801,11 +801,23 @@
     border-radius: 12px;
     padding: 12px 14px;
     text-align: center;
-    margin-bottom: 16px;
+    margin-bottom: 12px;
   }
-  #g-gate-name:focus { outline: none; border-color: var(--yellow); }
-  #g-gate-name::placeholder { color: rgba(242,232,216,0.35); font-weight: 500; }
+  #g-gate-wallet { font-family: ui-monospace, Menlo, monospace; font-size: 13px; margin-bottom: 4px; }
+  #g-gate-name:focus, #g-gate-wallet:focus { outline: none; border-color: var(--yellow); }
+  #g-gate-name::placeholder, #g-gate-wallet::placeholder { color: rgba(242,232,216,0.35); font-weight: 500; font-family: 'Fredoka', sans-serif; }
+  #g-gate-wallet.invalid { border-color: #ff6a6a; }
+  .gate-err {
+    color: #ff6a6a;
+    font-size: 12px;
+    font-weight: 600;
+    text-align: center;
+    margin: 4px 0 12px;
+    min-height: 16px;
+  }
   #g-gate-start { width: 100%; justify-content: center; }
+  #g-gate-start:disabled { opacity: 0.55; cursor: not-allowed; }
+  #g-gate-start:disabled:hover { transform: none; }
   .reset-link {
     all: unset;
     cursor: pointer;
@@ -1249,7 +1261,8 @@
 
     .gate-inner { max-width: 92vw; padding: 22px 20px; }
     .gate-sub { font-size: 12px; margin: 8px 0 14px; }
-    #g-gate-name { font-size: 14px; padding: 10px 12px; margin-bottom: 12px; }
+    #g-gate-name, #g-gate-wallet { font-size: 14px; padding: 10px 12px; }
+    #g-gate-wallet { font-size: 12px; }
 
     .done-inner { padding: 24px 22px; }
     .done-inner h2 { font-size: 32px; }
@@ -1590,8 +1603,10 @@
   <div id="g-start-gate" class="game-done" hidden>
     <div class="done-inner gate-inner">
       <h2>Ready to build?</h2>
-      <p class="gate-sub">Enter a name or your X handle. Leaderboard winners get shouted out and may be contacted for rewards.</p>
+      <p class="gate-sub">Enter a name (or your X handle) and your Solana wallet. Leaderboard winners get shouted out and rewarded on that wallet.</p>
       <input id="g-gate-name" type="text" maxlength="18" placeholder="@yourhandle or name" autocomplete="off">
+      <input id="g-gate-wallet" type="text" maxlength="44" placeholder="Solana wallet address" autocomplete="off" spellcheck="false" autocapitalize="off" autocorrect="off">
+      <div class="gate-err" id="g-gate-err" hidden></div>
       <button class="btn btn-primary" id="g-gate-start" type="button">Start Building</button>
       <button class="reset-link" id="g-gate-reset" type="button">Reset local scores</button>
     </div>
@@ -1776,7 +1791,12 @@ const Game = (() => {
   const KEY_SCORES = 'tmcd-happymeal-scores-v1';
   const KEY_SERVED = 'tmcd-happymeal-served-v1';
   const KEY_NAME   = 'tmcd-happymeal-name-v1';
+  const KEY_WALLET = 'tmcd-happymeal-wallet-v1';
   const DEFAULT_NAME = 'New Employee';
+
+  // Same pattern the server checks in api/submit-entry.js: base58,
+  // no 0/O/I/l, 32-44 chars -- covers Solana public keys.
+  const SOLANA_ADDRESS_RE = /^[1-9A-HJ-NP-Za-km-z]{32,44}$/;
 
   const $ = (id) => document.getElementById(id);
   const el = {
@@ -1800,6 +1820,8 @@ const Game = (() => {
     resetBtn:      $('g-reset'),
     gate:          $('g-start-gate'),
     gateName:      $('g-gate-name'),
+    gateWallet:    $('g-gate-wallet'),
+    gateErr:       $('g-gate-err'),
     gateStart:     $('g-gate-start'),
     gateReset:     $('g-gate-reset'),
   };
@@ -1829,6 +1851,13 @@ const Game = (() => {
   }
   function paintPlayerDisplay() {
     el.playerDisplay.textContent = currentName();
+  }
+
+  function loadWallet() {
+    try { return (localStorage.getItem(KEY_WALLET) || '').trim(); } catch { return ''; }
+  }
+  function saveWallet(wallet) {
+    try { localStorage.setItem(KEY_WALLET, wallet.trim()); } catch {}
   }
 
   function loadScores() {
@@ -1925,8 +1954,38 @@ const Game = (() => {
 
   function showGate() {
     el.gateName.value = loadName();
+    el.gateWallet.value = loadWallet();
+    el.gateWallet.classList.remove('invalid');
+    setGateError('');
+    setGateSubmitting(false);
     el.gate.hidden = false;
     el.gateName.focus();
+  }
+
+  function setGateError(msg) {
+    el.gateErr.textContent = msg;
+    el.gateErr.hidden = !msg;
+  }
+
+  function setGateSubmitting(isSubmitting) {
+    el.gateStart.disabled = isSubmitting;
+    el.gateStart.textContent = isSubmitting ? 'Saving…' : 'Start Building';
+  }
+
+  // Best-effort save to the backend (api/submit-entry.js -> Vercel KV) so
+  // the site owner can actually see who played and where to send rewards.
+  // Client-side format check happens first so obviously-bad input never
+  // hits the network; the server re-validates independently either way.
+  async function submitEntry(name, wallet) {
+    const res = await fetch('/api/submit-entry', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name, wallet }),
+    });
+    if (!res.ok) {
+      const body = await res.json().catch(() => ({}));
+      throw new Error(body.error || 'Could not save your entry. Please try again.');
+    }
   }
   function hideGate() {
     el.gate.hidden = true;
@@ -2037,19 +2096,48 @@ const Game = (() => {
 
   // buttons
   el.again.addEventListener('click', beginRound);
-  el.gateStart.addEventListener('click', () => {
-    saveName(el.gateName.value.trim());
+  el.gateStart.addEventListener('click', async () => {
+    const name = el.gateName.value.trim();
+    const wallet = el.gateWallet.value.trim();
+
+    if (!SOLANA_ADDRESS_RE.test(wallet)) {
+      el.gateWallet.classList.add('invalid');
+      setGateError("That doesn't look like a valid Solana wallet address.");
+      el.gateWallet.focus();
+      return;
+    }
+    el.gateWallet.classList.remove('invalid');
+    setGateError('');
+
+    saveName(name);
+    saveWallet(wallet);
     paintPlayerDisplay();
-    beginRound();
+
+    setGateSubmitting(true);
+    try {
+      await submitEntry(name || DEFAULT_NAME, wallet);
+      beginRound();
+    } catch (err) {
+      setGateError(err.message + ' You can try again.');
+      setGateSubmitting(false);
+    }
   });
   el.gateName.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter') el.gateStart.click();
+    if (e.key === 'Enter') { e.preventDefault(); el.gateWallet.focus(); }
+  });
+  el.gateWallet.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') { e.preventDefault(); el.gateStart.click(); }
+  });
+  el.gateWallet.addEventListener('input', () => {
+    el.gateWallet.classList.remove('invalid');
+    setGateError('');
   });
   function resetProgress() {
-    const ok = confirm("Reset your name and local scores? This can't be undone.");
+    const ok = confirm("Reset your name, wallet, and local scores on this device? This can't be undone. (Your submitted entry isn't deleted from our records.)");
     if (!ok) return;
     try {
       localStorage.removeItem(KEY_NAME);
+      localStorage.removeItem(KEY_WALLET);
       localStorage.removeItem(KEY_SCORES);
       localStorage.removeItem(KEY_SERVED);
     } catch {}

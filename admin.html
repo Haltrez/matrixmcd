@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Entries — Official McDonald's Coin</title>
+<style>
+  :root {
+    --yellow: #FFBC0D;
+    --red: #DA291C;
+    --text: #F2E8D8;
+    --panel: #18120c;
+    --panel-line: rgba(255,188,13,0.25);
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0;
+    background: radial-gradient(ellipse at 50% 22%, #241206 0%, #140a05 45%, #0a0503 100%);
+    color: var(--text);
+    font-family: 'Fredoka', system-ui, -apple-system, sans-serif;
+    min-height: 100vh;
+    padding: 24px;
+  }
+  h1 { font-size: 22px; margin: 0 0 4px; color: var(--yellow); }
+  .sub { color: rgba(242,232,216,0.6); font-size: 13px; margin-bottom: 24px; }
+  .gate {
+    max-width: 420px;
+    margin: 80px auto;
+    background: var(--panel);
+    border: 1px solid var(--panel-line);
+    border-radius: 20px;
+    padding: 28px;
+    text-align: center;
+  }
+  .gate input {
+    width: 100%;
+    font-size: 15px;
+    padding: 12px 14px;
+    border-radius: 10px;
+    border: 1px solid var(--panel-line);
+    background: rgba(255,255,255,0.05);
+    color: var(--text);
+    margin: 16px 0;
+  }
+  .gate button, .toolbar button {
+    font-family: inherit;
+    font-weight: 700;
+    font-size: 14px;
+    padding: 10px 20px;
+    border-radius: 999px;
+    border: none;
+    background: var(--red);
+    color: #fff;
+    cursor: pointer;
+  }
+  .gate .err { color: #ff6a6a; font-size: 13px; min-height: 18px; }
+  .toolbar { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
+  .toolbar button.secondary { background: var(--yellow); color: #000; }
+  .count { color: rgba(242,232,216,0.6); font-size: 13px; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th, td {
+    text-align: left;
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--panel-line);
+    white-space: nowrap;
+  }
+  th { color: var(--yellow); font-size: 11px; text-transform: uppercase; letter-spacing: 1px; }
+  td.wallet { font-family: ui-monospace, Menlo, monospace; }
+  tbody tr:hover { background: rgba(255,255,255,0.04); }
+  .wrap-table { overflow-x: auto; border: 1px solid var(--panel-line); border-radius: 14px; background: var(--panel); }
+  .empty { padding: 40px; text-align: center; color: rgba(242,232,216,0.5); }
+  [hidden] { display: none !important; }
+</style>
+</head>
+<body>
+
+<div id="gate" class="gate">
+  <h1>Entries</h1>
+  <p class="sub">Enter the admin secret to view submitted names &amp; wallets.</p>
+  <input id="secret-input" type="password" placeholder="Admin secret" autocomplete="off">
+  <div class="err" id="gate-err"></div>
+  <button id="gate-btn" type="button">View Entries</button>
+</div>
+
+<div id="main" hidden>
+  <h1>Official McDonald's Coin — Entries</h1>
+  <p class="sub">Submitted whenever someone starts a round. One row per unique wallet.</p>
+  <div class="toolbar">
+    <button id="refresh-btn" type="button">Refresh</button>
+    <button id="csv-btn" type="button" class="secondary">Export CSV</button>
+    <span class="count" id="count"></span>
+  </div>
+  <div class="wrap-table">
+    <table id="table" hidden>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Wallet</th>
+          <th>First seen</th>
+          <th>Last seen</th>
+          <th>Times entered</th>
+        </tr>
+      </thead>
+      <tbody id="tbody"></tbody>
+    </table>
+    <div class="empty" id="empty" hidden>No entries yet.</div>
+  </div>
+</div>
+
+<script>
+  const $ = (id) => document.getElementById(id);
+  const KEY = 'tmcd-admin-secret';
+  let entries = [];
+
+  function fmtDate(ms) {
+    if (!ms) return '—';
+    const d = new Date(ms);
+    return d.toLocaleString();
+  }
+
+  async function loadEntries(secret) {
+    const res = await fetch('/api/admin-entries', {
+      headers: { 'x-admin-secret': secret },
+    });
+    if (!res.ok) {
+      const body = await res.json().catch(() => ({}));
+      throw new Error(body.error || ('HTTP ' + res.status));
+    }
+    const data = await res.json();
+    return data.entries || [];
+  }
+
+  function render() {
+    $('count').textContent = entries.length + (entries.length === 1 ? ' entry' : ' entries');
+    $('table').hidden = entries.length === 0;
+    $('empty').hidden = entries.length !== 0;
+    $('tbody').innerHTML = entries.map(e => `
+      <tr>
+        <td>${escapeHtml(e.name || '')}</td>
+        <td class="wallet">${escapeHtml(e.wallet || '')}</td>
+        <td>${fmtDate(e.firstSeen)}</td>
+        <td>${fmtDate(e.lastSeen)}</td>
+        <td>${e.timesEntered || 1}</td>
+      </tr>
+    `).join('');
+  }
+
+  function escapeHtml(str) {
+    return String(str).replace(/[&<>"']/g, (c) => ({
+      '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;',
+    }[c]));
+  }
+
+  function toCsv() {
+    const rows = [['name', 'wallet', 'first_seen', 'last_seen', 'times_entered']];
+    entries.forEach(e => rows.push([
+      e.name || '', e.wallet || '',
+      e.firstSeen ? new Date(e.firstSeen).toISOString() : '',
+      e.lastSeen ? new Date(e.lastSeen).toISOString() : '',
+      e.timesEntered || 1,
+    ]));
+    return rows.map(r => r.map(v => {
+      const s = String(v);
+      return /[",\n]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s;
+    }).join(',')).join('\n');
+  }
+
+  async function tryLoad(secret) {
+    $('gate-err').textContent = '';
+    try {
+      entries = await loadEntries(secret);
+      try { sessionStorage.setItem(KEY, secret); } catch {}
+      $('gate').hidden = true;
+      $('main').hidden = false;
+      render();
+    } catch (err) {
+      $('gate-err').textContent = err.message === 'Unauthorized' ? 'Wrong secret.' : ('Error: ' + err.message);
+    }
+  }
+
+  $('gate-btn').addEventListener('click', () => tryLoad($('secret-input').value.trim()));
+  $('secret-input').addEventListener('keydown', (e) => { if (e.key === 'Enter') $('gate-btn').click(); });
+
+  $('refresh-btn').addEventListener('click', () => {
+    const secret = sessionStorage.getItem(KEY);
+    if (secret) tryLoad(secret);
+  });
+
+  $('csv-btn').addEventListener('click', () => {
+    const blob = new Blob([toCsv()], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'mcd-coin-entries-' + new Date().toISOString().slice(0, 10) + '.csv';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+  });
+
+  // Auto-load if we already have a secret from this session.
+  (function init() {
+    let saved = '';
+    try { saved = sessionStorage.getItem(KEY) || ''; } catch {}
+    if (saved) tryLoad(saved);
+  })();
+</script>
+</body>
+</html>
