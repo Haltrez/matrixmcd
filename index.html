@@ -1017,29 +1017,53 @@
     .steps li::before { width: 36px; height: 36px; font-size: 18px; }
     .x-btn { padding: 13px 20px; font-size: 14px; }
 
-    .game-top { padding: 10px 12px; gap: 8px; }
-    .game-top .exit { padding: 8px 12px; font-size: 12px; }
-    .game-brand { gap: 8px; }
-    .game-coin { width: 34px; height: auto; }
-    .game-top h1 { font-size: 17px; }
-    .lovin-small { font-size: 10px; }
-    .game-stats { gap: 6px; width: 100%; justify-content: flex-start; }
-    .stat { padding: 4px 10px; font-size: 10px; letter-spacing: 1px; }
-    .stat b { font-size: 17px; }
-    .game-body { padding: 10px; gap: 10px; }
-    .order-panel { padding: 12px; }
-    .order-name { font-size: 20px; }
-    .order-name .order-num { font-size: 14px; }
-    .need-list { grid-template-columns: repeat(3, 1fr); gap: 6px; }
-    .need-item { padding: 6px; }
-    .need-item svg { width: 32px; height: 32px; }
-    .need-item span { font-size: 10px; }
-    .box-panel .hm-svg { width: 46%; }
-    .shelf { padding: 10px; }
-    .shelf .items-grid { grid-template-columns: repeat(4, 1fr); gap: 8px; }
-    .shelf-item { padding: 8px 6px; min-width: 0; border-radius: 12px; }
-    .shelf-item svg { width: 42px; height: 42px; }
-    .shelf-item span { font-size: 10px; }
+    /* Game view: sized to fit one screen with no scrolling, not just
+       compacted. .game-top and .order-panel/.box-panel stay auto-height
+       (as small as their trimmed content needs); .shelf gets whatever
+       space is left over via the 1fr row below. Purely decorative text
+       (the drive-thru subtitle, the "ORDER" label, need-item captions)
+       is dropped here since the icons alone stay legible at this size
+       and every row saved is a row that doesn't need to scroll. */
+    .game-top { padding: 6px 10px; gap: 6px; }
+    .game-top .exit { padding: 6px 10px; font-size: 11px; }
+    .game-brand { gap: 6px; }
+    .game-coin { width: 24px; height: auto; }
+    .game-top h1 { font-size: 13px; }
+    .lovin-small { display: none; }
+    .game-stats { gap: 5px; width: 100%; justify-content: flex-start; }
+    .stat { padding: 3px 8px; font-size: 9px; letter-spacing: 0.5px; }
+    .stat b { font-size: 13px; margin-left: 4px; }
+
+    .game-body { padding: 6px; gap: 6px; grid-template-rows: auto auto 1fr; }
+
+    .order-panel { padding: 8px 10px; overflow: visible; }
+    .player-row { margin-bottom: 6px; padding-bottom: 6px; gap: 6px; }
+    .player-lbl { font-size: 9px; }
+    #g-player-name { font-size: 12px; padding: 4px 8px; }
+    .order-panel .lbl { display: none; }
+    .order-name { font-size: 15px; margin: 0 0 6px; gap: 6px; }
+    .order-name .order-num { font-size: 11px; }
+    .need-list {
+      display: flex;
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      gap: 6px;
+    }
+    .need-item { flex: 0 0 40px; width: 40px; padding: 5px; }
+    .need-item svg { width: 26px; height: 26px; }
+    .need-item span { display: none; }
+
+    .box-panel { padding: 6px; }
+    .box-panel .hm-svg { width: 22%; min-width: 46px; }
+    .box-hint { font-size: 10px; top: 6px; }
+    .box-items { bottom: 6px; gap: 4px; padding: 0 8px; }
+    .box-items .filled { width: 28px; height: 28px; }
+
+    .shelf { padding: 8px; overflow: hidden; }
+    .shelf .items-grid { grid-template-columns: repeat(5, 1fr); gap: 6px; }
+    .shelf-item { padding: 6px 4px; min-width: 0; border-radius: 10px; }
+    .shelf-item svg { width: 28px; height: 28px; }
+    .shelf-item span { font-size: 8px; }
 
     .done-inner { padding: 24px 22px; }
     .done-inner h2 { font-size: 32px; }
@@ -1055,9 +1079,14 @@
     .menu-brand h1 { font-size: 28px; }
     .hero h1.headline { font-size: 36px; }
     .hero-coin { width: 180px; }
-    .shelf .items-grid { grid-template-columns: repeat(3, 1fr); }
-    .stat { padding: 3px 8px; }
-    .stat b { font-size: 15px; }
+    /* Keep 5 columns (not fewer) so the shelf still fits its 10 items in
+       2 rows on the narrowest phones -- more columns here means less
+       height, which is what keeps the game on one screen with no scroll. */
+    .shelf .items-grid { grid-template-columns: repeat(5, 1fr); gap: 4px; }
+    .shelf-item svg { width: 24px; height: 24px; }
+    .shelf-item span { font-size: 7px; }
+    .stat { padding: 3px 6px; }
+    .stat b { font-size: 12px; }
   }
 
   @media (prefers-reduced-motion: reduce) {
